@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ProfileForm } from "@/components/ProfileForm";
 import { SideMenu } from "@/components/SideMenu";
 import { SaveProfileDialog } from "@/components/SaveProfileDialog";
 import { SavedProfiles } from "@/components/SavedProfiles";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const emptyProfile = {
   userAge: "",
@@ -17,6 +19,26 @@ const Index = () => {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+      }
+    };
+    
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate("/login");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleUpdateProfile = (field: string, value: string) => {
     setCurrentProfile((prev) => ({
@@ -55,6 +77,14 @@ const Index = () => {
     setShowProfiles(false);
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#303D24] text-[#EDEDDD]">
       <SideMenu
@@ -62,6 +92,7 @@ const Index = () => {
         onSaveProfile={handleSaveProfile}
         onViewSavedMessages={handleViewSavedMessages}
         onViewProfiles={() => setShowProfiles(true)}
+        onLogout={handleLogout}
       />
       <main className="container mx-auto pt-16 pb-8">
         <h1 className="text-2xl font-bold text-center mb-8">Openera</h1>
