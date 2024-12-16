@@ -9,6 +9,8 @@ interface SideMenuProps {
   onViewSavedMessages: () => void;
   onViewProfiles: () => void;
   onLogout: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export const SideMenu: React.FC<SideMenuProps> = ({
@@ -17,9 +19,11 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   onViewSavedMessages,
   onViewProfiles,
   onLogout,
+  open,
+  onOpenChange,
 }) => {
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"

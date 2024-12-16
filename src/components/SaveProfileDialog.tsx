@@ -82,7 +82,7 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
             placeholder="Enter profile name"
             value={profileName}
             onChange={(e) => setProfileName(e.target.value)}
-            className="bg-[#1A2A1D] text-[#EDEDDD] border-[#303D24]"
+            className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
           />
         </div>
         <DialogFooter>

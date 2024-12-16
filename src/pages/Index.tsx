@@ -6,6 +6,8 @@ import { SavedProfiles } from "@/components/SavedProfiles";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Save } from "lucide-react";
 
 const emptyProfile = {
   userAge: "",
@@ -18,6 +20,8 @@ const Index = () => {
   const [currentProfile, setCurrentProfile] = useState(emptyProfile);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,6 +54,8 @@ const Index = () => {
   const handleNewProfile = () => {
     setCurrentProfile(emptyProfile);
     setShowProfiles(false);
+    setSelectedProfileId(null);
+    setMenuOpen(false);
     toast({
       title: "New Profile Created",
       description: "Start filling out the form for your new profile.",
@@ -58,9 +64,11 @@ const Index = () => {
 
   const handleSaveProfile = () => {
     setSaveDialogOpen(true);
+    setMenuOpen(false);
   };
 
   const handleViewSavedMessages = () => {
+    setMenuOpen(false);
     toast({
       title: "Coming Soon",
       description: "Saved messages feature will be available soon.",
@@ -74,11 +82,42 @@ const Index = () => {
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
     });
+    setSelectedProfileId(profile.id);
     setShowProfiles(false);
+  };
+
+  const handleSaveChanges = async () => {
+    if (!selectedProfileId) return;
+
+    try {
+      const { error } = await supabase
+        .from("user_profiles")
+        .update({
+          user_age: currentProfile.userAge,
+          user_gender: currentProfile.userGender,
+          target_age: currentProfile.targetAge,
+          target_gender: currentProfile.targetGender,
+        })
+        .eq("id", selectedProfileId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Profile updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setMenuOpen(false);
     toast({
       title: "Logged out",
       description: "You have been successfully logged out.",
@@ -91,15 +130,36 @@ const Index = () => {
         onNewProfile={handleNewProfile}
         onSaveProfile={handleSaveProfile}
         onViewSavedMessages={handleViewSavedMessages}
-        onViewProfiles={() => setShowProfiles(true)}
+        onViewProfiles={() => {
+          setShowProfiles(true);
+          setMenuOpen(false);
+        }}
         onLogout={handleLogout}
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
       />
       <main className="container mx-auto pt-16 pb-8">
-        <h1 className="text-2xl font-bold text-center mb-8">Openera</h1>
         {showProfiles ? (
-          <SavedProfiles onSelectProfile={handleSelectProfile} />
+          <SavedProfiles 
+            onSelectProfile={handleSelectProfile} 
+            onBack={() => setShowProfiles(false)}
+          />
         ) : (
-          <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
+          <>
+            <h1 className="text-2xl font-bold text-center mb-8 text-[#EDEDDD]">Openera</h1>
+            <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
+            {selectedProfileId && (
+              <div className="flex justify-center mt-6">
+                <Button
+                  onClick={handleSaveChanges}
+                  className="bg-[#2D4531] text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </main>
       <SaveProfileDialog

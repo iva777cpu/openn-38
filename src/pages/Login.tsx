@@ -36,9 +36,26 @@ export default function Login() {
                   brandAccent: '#2D4531',
                   inputBackground: '#EDEDDD',
                   inputText: '#1A2A1D',
+                  inputBorder: '#1A2A1D',
+                  inputBorderFocus: '#303D24',
+                  inputBorderHover: '#303D24',
+                  inputPlaceholder: '#1A2A1D',
                 }
               }
-            }
+            },
+            style: {
+              button: {
+                background: '#303D24',
+                color: '#EDEDDD',
+                borderRadius: '0.375rem',
+              },
+              anchor: {
+                color: '#EDEDDD',
+              },
+              label: {
+                color: '#EDEDDD',
+              },
+            },
           }}
           providers={[]}
         />
