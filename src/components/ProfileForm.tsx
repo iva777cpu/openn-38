@@ -23,19 +23,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const generateIcebreakers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/functions/v1/generate-icebreaker', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-        },
-        body: JSON.stringify({ userProfile, temperature: 0.7 }),
+      const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
+        body: { userProfile, temperature: 0.7 }
       });
 
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
+      if (error) throw error;
       setIcebreakers(data.icebreakers);
     } catch (error) {
+      console.error('Error generating icebreakers:', error);
       toast({
         title: "Error",
         description: "Failed to generate icebreakers. Please try again.",
