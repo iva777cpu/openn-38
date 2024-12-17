@@ -110,8 +110,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   );
 
   return (
-    <div className="space-y-6 w-full max-w-md mx-auto p-4">
-      <div className="flex items-center space-x-2 mb-4">
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="flex items-center space-x-2 mb-4 justify-start">
         <Checkbox 
           id="firstTime" 
           checked={isFirstTime}

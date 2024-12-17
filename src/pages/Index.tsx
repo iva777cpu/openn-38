@@ -183,7 +183,7 @@ const Index = () => {
         open={menuOpen}
         onOpenChange={setMenuOpen}
       />
-      <main className="container mx-auto pt-16 pb-8">
+      <main className="container mx-auto px-4 pt-8 pb-8">
         {showProfiles ? (
           <SavedProfiles 
             onSelectProfile={handleSelectProfile} 
