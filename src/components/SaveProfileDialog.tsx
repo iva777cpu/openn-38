@@ -14,12 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface SaveProfileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profileData: {
-    userAge: string;
-    userGender: string;
-    targetAge: string;
-    targetGender: string;
-  };
+  profileData: Record<string, string>;
 }
 
 export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
@@ -50,8 +45,22 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         profile_name: profileName,
         user_age: profileData.userAge,
         user_gender: profileData.userGender,
+        user_impression: profileData.impression,
         target_age: profileData.targetAge,
         target_gender: profileData.targetGender,
+        target_mood: profileData.mood,
+        target_origin: profileData.origin,
+        target_loves: profileData.loves,
+        target_dislikes: profileData.dislikes,
+        target_hobbies: profileData.hobbies,
+        target_books: profileData.books,
+        target_music: profileData.music,
+        target_humor: profileData.humor,
+        target_zodiac: profileData.zodiac,
+        target_mbti: profileData.mbti,
+        target_style: profileData.style,
+        situation: profileData.situation,
+        previous_topics: profileData.previousTopics,
       });
 
       if (error) throw error;

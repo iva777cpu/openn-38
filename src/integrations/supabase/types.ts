@@ -34,10 +34,22 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          previous_topics: string | null
           profile_name: string
+          situation: string | null
           target_age: string | null
+          target_books: string | null
+          target_dislikes: string | null
           target_gender: string | null
+          target_hobbies: string | null
+          target_humor: string | null
+          target_loves: string | null
+          target_mbti: string | null
           target_mood: string | null
+          target_music: string | null
+          target_origin: string | null
+          target_style: string | null
+          target_zodiac: string | null
           user_age: string | null
           user_gender: string | null
           user_id: string
@@ -46,10 +58,22 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          previous_topics?: string | null
           profile_name: string
+          situation?: string | null
           target_age?: string | null
+          target_books?: string | null
+          target_dislikes?: string | null
           target_gender?: string | null
+          target_hobbies?: string | null
+          target_humor?: string | null
+          target_loves?: string | null
+          target_mbti?: string | null
           target_mood?: string | null
+          target_music?: string | null
+          target_origin?: string | null
+          target_style?: string | null
+          target_zodiac?: string | null
           user_age?: string | null
           user_gender?: string | null
           user_id: string
@@ -58,10 +82,22 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          previous_topics?: string | null
           profile_name?: string
+          situation?: string | null
           target_age?: string | null
+          target_books?: string | null
+          target_dislikes?: string | null
           target_gender?: string | null
+          target_hobbies?: string | null
+          target_humor?: string | null
+          target_loves?: string | null
+          target_mbti?: string | null
           target_mood?: string | null
+          target_music?: string | null
+          target_origin?: string | null
+          target_style?: string | null
+          target_zodiac?: string | null
           user_age?: string | null
           user_gender?: string | null
           user_id?: string

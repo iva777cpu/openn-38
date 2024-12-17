@@ -3,6 +3,7 @@ import { ProfileForm } from "@/components/ProfileForm";
 import { SideMenu } from "@/components/SideMenu";
 import { SaveProfileDialog } from "@/components/SaveProfileDialog";
 import { SavedProfiles } from "@/components/SavedProfiles";
+import { SavedIcebreakers } from "@/components/SavedIcebreakers";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -12,14 +13,29 @@ import { Save } from "lucide-react";
 const emptyProfile = {
   userAge: "",
   userGender: "",
+  impression: "",
   targetAge: "",
   targetGender: "",
+  mood: "",
+  origin: "",
+  loves: "",
+  dislikes: "",
+  hobbies: "",
+  books: "",
+  music: "",
+  humor: "",
+  zodiac: "",
+  mbti: "",
+  style: "",
+  situation: "",
+  previousTopics: "",
 };
 
 const Index = () => {
   const [currentProfile, setCurrentProfile] = useState(emptyProfile);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
+  const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const { toast } = useToast();
@@ -54,6 +70,7 @@ const Index = () => {
   const handleNewProfile = () => {
     setCurrentProfile(emptyProfile);
     setShowProfiles(false);
+    setShowSavedIcebreakers(false);
     setSelectedProfileId(null);
     setMenuOpen(false);
     toast({
@@ -68,22 +85,35 @@ const Index = () => {
   };
 
   const handleViewSavedMessages = () => {
+    setShowSavedIcebreakers(true);
+    setShowProfiles(false);
     setMenuOpen(false);
-    toast({
-      title: "Coming Soon",
-      description: "Saved icebreakers feature will be available soon.",
-    });
   };
 
   const handleSelectProfile = (profile: any) => {
     setCurrentProfile({
       userAge: profile.user_age || "",
       userGender: profile.user_gender || "",
+      impression: profile.user_impression || "",
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
+      mood: profile.target_mood || "",
+      origin: profile.target_origin || "",
+      loves: profile.target_loves || "",
+      dislikes: profile.target_dislikes || "",
+      hobbies: profile.target_hobbies || "",
+      books: profile.target_books || "",
+      music: profile.target_music || "",
+      humor: profile.target_humor || "",
+      zodiac: profile.target_zodiac || "",
+      mbti: profile.target_mbti || "",
+      style: profile.target_style || "",
+      situation: profile.situation || "",
+      previousTopics: profile.previous_topics || "",
     });
     setSelectedProfileId(profile.id);
     setShowProfiles(false);
+    setShowSavedIcebreakers(false);
   };
 
   const handleSaveChanges = async () => {
@@ -95,8 +125,22 @@ const Index = () => {
         .update({
           user_age: currentProfile.userAge,
           user_gender: currentProfile.userGender,
+          user_impression: currentProfile.impression,
           target_age: currentProfile.targetAge,
           target_gender: currentProfile.targetGender,
+          target_mood: currentProfile.mood,
+          target_origin: currentProfile.origin,
+          target_loves: currentProfile.loves,
+          target_dislikes: currentProfile.dislikes,
+          target_hobbies: currentProfile.hobbies,
+          target_books: currentProfile.books,
+          target_music: currentProfile.music,
+          target_humor: currentProfile.humor,
+          target_zodiac: currentProfile.zodiac,
+          target_mbti: currentProfile.mbti,
+          target_style: currentProfile.style,
+          situation: currentProfile.situation,
+          previous_topics: currentProfile.previousTopics,
         })
         .eq("id", selectedProfileId);
 
@@ -132,6 +176,7 @@ const Index = () => {
         onViewSavedMessages={handleViewSavedMessages}
         onViewProfiles={() => {
           setShowProfiles(true);
+          setShowSavedIcebreakers(false);
           setMenuOpen(false);
         }}
         onLogout={handleLogout}
@@ -144,6 +189,10 @@ const Index = () => {
             onSelectProfile={handleSelectProfile} 
             onBack={() => setShowProfiles(false)}
           />
+        ) : showSavedIcebreakers ? (
+          <SavedIcebreakers 
+            onBack={() => setShowSavedIcebreakers(false)}
+          />
         ) : (
           <>
             <h1 className="text-2xl font-bold text-center mb-8 text-[#EDEDDD]">Openera</h1>
@@ -154,7 +203,7 @@ const Index = () => {
                   onClick={handleSaveChanges}
                   className="w-full max-w-md bg-[#EDEDDD] text-[#1A2A1D] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
                 >
-                  <Save className="h-4 w-4 mr-2 text-[#1A2A1D]" />
+                  <Save className="h-4 w-4 mr-2" />
                   Save Changes
                 </Button>
               </div>
