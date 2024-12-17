@@ -21,9 +21,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#303D24] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg mx-4">
-        <h1 className="text-3xl font-semibold text-[#EDEDDD] text-center mb-8">
-          Welcome
+      <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold text-[#EDEDDD] text-center mb-8">
+          Welcome to Openera
         </h1>
         <Auth
           supabaseClient={supabase}
@@ -34,93 +34,30 @@ export default function Login() {
                 colors: {
                   brand: '#1A2A1D',
                   brandAccent: '#2D4531',
-                  inputBackground: 'transparent',
-                  inputText: '#EDEDDD',
-                  inputBorder: '#EDEDDD',
-                  inputBorderFocus: '#EDEDDD',
-                  inputBorderHover: '#EDEDDD',
-                  inputPlaceholder: '#EDEDDD',
+                  inputBackground: '#EDEDDD',
+                  inputText: '#1A2A1D',
+                  inputBorder: '#1A2A1D',
+                  inputBorderFocus: '#303D24',
+                  inputBorderHover: '#303D24',
+                  inputPlaceholder: '#1A2A1D',
                 }
               }
             },
             style: {
-              container: {
-                width: '100%'
-              },
               button: {
-                background: 'transparent',
-                border: '1px solid #EDEDDD',
+                background: '#303D24',
                 color: '#EDEDDD',
-                borderRadius: '4px',
-                textTransform: 'none',
-                fontSize: '16px',
-                padding: '10px'
+                borderRadius: '0.375rem',
               },
               anchor: {
                 color: '#EDEDDD',
-                fontSize: '14px',
-                textAlign: 'center',
-                display: 'block',
-                marginTop: '10px',
-                textDecoration: 'none'
               },
               label: {
                 color: '#EDEDDD',
-                fontSize: '16px',
-                marginBottom: '8px',
               },
-              input: {
-                backgroundColor: 'transparent',
-                border: '1px solid #EDEDDD',
-                borderRadius: '4px',
-                color: '#EDEDDD',
-                padding: '10px',
-                fontSize: '16px',
-                width: '100%'
-              },
-              message: {
-                color: '#EDEDDD',
-              },
-              divider: {
-                backgroundColor: '#EDEDDD',
-              }
-            },
-            className: {
-              container: 'w-full space-y-4',
-              button: 'w-full hover:bg-[#2D4531]',
-              input: 'w-full focus:border-[#EDEDDD] focus:outline-none placeholder:text-[#EDEDDD] placeholder:opacity-70',
-              label: 'block text-sm font-medium mb-2',
-              anchor: 'text-center block mt-4 hover:underline',
             },
           }}
           providers={[]}
-          localization={{
-            variables: {
-              sign_in: {
-                email_label: 'Email',
-                password_label: 'Password',
-                email_input_placeholder: 'Your email address',
-                password_input_placeholder: 'Your password',
-                button_label: 'Sign in',
-                loading_button_label: 'Signing in ...',
-                social_provider_text: 'Sign in with {{provider}}',
-                link_text: "Don't have an account? Sign up",
-              },
-              sign_up: {
-                email_label: 'Email',
-                password_label: 'Password',
-                email_input_placeholder: 'Your email address',
-                password_input_placeholder: 'Your password',
-                button_label: 'Sign up',
-                loading_button_label: 'Signing up ...',
-                social_provider_text: 'Sign up with {{provider}}',
-                link_text: "Already have an account? Sign in",
-              },
-              forgotten_password: {
-                link_text: "Forgot your password?",
-              },
-            },
-          }}
         />
       </div>
     </div>
