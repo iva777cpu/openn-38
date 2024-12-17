@@ -7,6 +7,7 @@ export const questions = {
   targetTraits: [
     { id: "targetAge", text: "How old are they?", prompt: "Ensure age-appropriate conversation", temperature: 0.5 },
     { id: "targetGender", text: "What's their gender?", prompt: "Consider gender dynamics in conversation", temperature: 0.5 },
+    { id: "personality", text: "How's their personality?", prompt: "Consider personality traits in conversation", temperature: 0.8 },
     { id: "mood", text: "How are they feeling?", prompt: "Consider their emotional state", temperature: 0.5 },
     { id: "origin", text: "Where are they from?", prompt: "Consider cultural context if relevant", temperature: 0.5 },
     { id: "loves", text: "What do they love?", prompt: "Reference their interests positively", temperature: 0.5 },
