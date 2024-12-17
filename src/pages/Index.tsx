@@ -71,7 +71,7 @@ const Index = () => {
     setMenuOpen(false);
     toast({
       title: "Coming Soon",
-      description: "Saved messages feature will be available soon.",
+      description: "Saved icebreakers feature will be available soon.",
     });
   };
 
@@ -152,9 +152,9 @@ const Index = () => {
               <div className="flex justify-center mt-6">
                 <Button
                   onClick={handleSaveChanges}
-                  className="bg-[#2D4531] text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                  className="w-full max-w-md bg-[#EDEDDD] text-[#1A2A1D] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
                 >
-                  <Save className="h-4 w-4 mr-2" />
+                  <Save className="h-4 w-4 mr-2 text-[#1A2A1D]" />
                   Save Changes
                 </Button>
               </div>

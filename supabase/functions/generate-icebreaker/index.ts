@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -30,19 +29,21 @@ serve(async (req) => {
     ${context}
     
     Important guidelines:
-    - Mix between different formats:
-      * Casual questions
-      * Fun facts or observations
-      * Light-hearted statements
-      * Friendly banter (when appropriate)
+    - Mix between these formats with their specific tones:
+      * Casual questions (temperature: 0.5)
+      * Fun facts or observations (temperature: 0.8)
+      * Light-hearted statements (temperature: 0.5)
+      * Friendly banter when appropriate (temperature: 0.8)
+      * Be charming and charismatic
+      * Add a subtle touch of dark humor when appropriate
     - Keep responses under 30 words each
-    - Be casual and natural, avoid being cheesy or overly familiar
     - Be natural and conversational
     - Return exactly 3 ice breakers, numbered 1-3
     - No introductory text or explanations
     - No exclamation marks or emojis
-    - Consider both the speaker's traits and the target's characteristics
-    ${isFirstTime ? '- These should be suitable for a first-time conversation, so keep it light and approachable' : ''}`;
+    - Consider both the speaker's traits (About You) and the target's characteristics (About Them)
+    - Consider the General Information provided
+    ${isFirstTime ? '- These should be suitable for a first-time conversation icebreaker, so keep it approachable' : ''}`;
 
     console.log('Sending prompt to OpenAI:', prompt);
 
@@ -61,7 +62,7 @@ serve(async (req) => {
           },
           { role: 'user', content: prompt }
         ],
-        temperature: isFirstTime ? 0.8 : 0.7,
+        temperature: isFirstTime ? 0.9 : 0.7,
       }),
     });
 

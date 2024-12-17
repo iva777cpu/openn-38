@@ -1,7 +1,7 @@
 import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
-import { Menu, Plus, Save, MessageCircle, Users, LogOut } from "lucide-react";
+import { Menu, Plus, Save, BookmarkPlus, Users, LogOut } from "lucide-react";
 
 interface SideMenuProps {
   onNewProfile: () => void;
@@ -63,8 +63,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onViewSavedMessages}
           >
-            <MessageCircle className="mr-2 h-4 w-4" />
-            Saved Messages
+            <BookmarkPlus className="mr-2 h-4 w-4" />
+            Saved Icebreakers
           </Button>
           <Button
             variant="ghost"

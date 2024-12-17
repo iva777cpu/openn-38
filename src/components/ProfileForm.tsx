@@ -6,6 +6,7 @@ import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "./ui/checkbox";
 import { questions } from "@/utils/questions";
+import { BookmarkPlus } from "lucide-react";
 
 interface ProfileFormProps {
   userProfile: Record<string, string>;
@@ -21,7 +22,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const generateIcebreakers = async () => {
     setIsLoading(true);
     try {
-      // Filter out empty fields and create prompts object
       const filledFields = Object.entries(userProfile)
         .filter(([_, value]) => value && value.toString().trim() !== '')
         .reduce((acc, [key, value]) => {
@@ -45,7 +45,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         body: { 
           answers: filledFields,
           isFirstTime,
-          temperature: 0.7
+          temperature: 0.9
         }
       });
 
@@ -61,6 +61,31 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const saveIcebreaker = async (icebreaker: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from('saved_messages')
+        .insert([{ user_id: user.id, message_text: icebreaker }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Icebreaker saved successfully",
+      });
+    } catch (error) {
+      console.error('Error saving icebreaker:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save icebreaker",
+        variant: "destructive",
+      });
     }
   };
 
@@ -117,8 +142,16 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         {icebreakers.length > 0 && (
           <div className="space-y-4">
             {icebreakers.map((icebreaker, index) => (
-              <div key={index} className="p-4 bg-[#2D4531] rounded-md">
-                {icebreaker}
+              <div key={index} className="p-4 bg-[#2D4531] rounded-md flex justify-between items-start">
+                <span>{icebreaker}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => saveIcebreaker(icebreaker)}
+                  className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                >
+                  <BookmarkPlus className="h-4 w-4" />
+                </Button>
               </div>
             ))}
           </div>
