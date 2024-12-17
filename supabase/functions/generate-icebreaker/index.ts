@@ -13,8 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { userProfile, temperature, isFirstTime } = await req.json();
-    console.log('Received request with profile:', userProfile, 'temperature:', temperature, 'isFirstTime:', isFirstTime);
+    const { answers, isFirstTime } = await req.json();
 
     // Check if OPENAI_API_KEY is set
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
@@ -22,9 +21,13 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
+    // Create context from filled answers and their prompts
+    const context = Object.entries(answers)
+      .map(([key, data]: [string, any]) => `${key}: ${data.value} (${data.prompt})`)
+      .join('\n');
+
     const prompt = `Generate 3 ${isFirstTime ? 'first-time conversation' : ''} ice breakers based on this context:
-    Person 1: ${userProfile.userAge} years old, identifies as ${userProfile.userGender}
-    Person 2: ${userProfile.targetAge} years old, identifies as ${userProfile.targetGender}
+    ${context}
     
     Important guidelines:
     - Mix between different formats:
@@ -41,6 +44,8 @@ serve(async (req) => {
     - Consider both the speaker's traits and the target's characteristics
     ${isFirstTime ? '- These should be suitable for a first-time conversation, so keep it light and approachable' : ''}`;
 
+    console.log('Sending prompt to OpenAI:', prompt);
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -56,7 +61,7 @@ serve(async (req) => {
           },
           { role: 'user', content: prompt }
         ],
-        temperature: isFirstTime ? 0.8 : temperature,
+        temperature: isFirstTime ? 0.8 : 0.7,
       }),
     });
 

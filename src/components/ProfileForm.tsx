@@ -5,14 +5,10 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "./ui/checkbox";
+import { questions } from "@/utils/questions";
 
 interface ProfileFormProps {
-  userProfile: {
-    userAge: string;
-    userGender: string;
-    targetAge: string;
-    targetGender: string;
-  };
+  userProfile: Record<string, string>;
   onUpdate: (field: string, value: string) => void;
 }
 
@@ -25,19 +21,37 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const generateIcebreakers = async () => {
     setIsLoading(true);
     try {
+      // Filter out empty fields and create prompts object
+      const filledFields = Object.entries(userProfile)
+        .filter(([_, value]) => value && value.toString().trim() !== '')
+        .reduce((acc, [key, value]) => {
+          const question = [...questions.userTraits, ...questions.targetTraits, ...questions.generalInfo]
+            .find(q => q.id === key);
+          
+          if (question) {
+            return {
+              ...acc,
+              [key]: {
+                value,
+                prompt: question.prompt,
+                temperature: question.temperature
+              }
+            };
+          }
+          return acc;
+        }, {});
+
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
-        body: { userProfile, temperature: 0.7, isFirstTime }
+        body: { 
+          answers: filledFields,
+          isFirstTime,
+          temperature: 0.7
+        }
       });
 
       if (error) throw error;
       
-      // Split the response into an array of individual icebreakers
-      const icebreakerArray = data.icebreakers
-        .split(/\d+\./)
-        .filter(Boolean)
-        .map((text: string) => text.trim());
-      
-      setIcebreakers(icebreakerArray);
+      setIcebreakers(data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim()));
     } catch (error) {
       console.error('Error generating icebreakers:', error);
       toast({
@@ -49,6 +63,26 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
       setIsLoading(false);
     }
   };
+
+  const renderInputs = (fields: typeof questions.userTraits, title: string) => (
+    <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+      <h2 className="text-lg font-semibold mb-4 text-left">{title}</h2>
+      <div className="space-y-4">
+        {fields.map((field) => (
+          <div key={field.id}>
+            <label className="block text-[#EDEDDD] mb-1 text-left">{field.text}</label>
+            <Input
+              type="text"
+              value={userProfile[field.id] || ''}
+              onChange={(e) => onUpdate(field.id, e.target.value)}
+              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
+              placeholder={`Enter ${field.text.toLowerCase()}`}
+            />
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
 
   return (
     <div className="space-y-6 w-full max-w-md mx-auto p-4">
@@ -67,57 +101,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         </label>
       </div>
 
-      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4 text-left">About You</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-[#EDEDDD] mb-1 text-left">How old are you?</label>
-            <Input
-              type="number"
-              value={userProfile.userAge}
-              onChange={(e) => onUpdate("userAge", e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
-              placeholder="Your age"
-            />
-          </div>
-          <div>
-            <label className="block text-[#EDEDDD] mb-1 text-left">What's your gender?</label>
-            <Input
-              type="text"
-              value={userProfile.userGender}
-              onChange={(e) => onUpdate("userGender", e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
-              placeholder="Your gender"
-            />
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4 text-left">About Them</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-[#EDEDDD] mb-1 text-left">How old are they?</label>
-            <Input
-              type="number"
-              value={userProfile.targetAge}
-              onChange={(e) => onUpdate("targetAge", e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
-              placeholder="Their age"
-            />
-          </div>
-          <div>
-            <label className="block text-[#EDEDDD] mb-1 text-left">What's their gender?</label>
-            <Input
-              type="text"
-              value={userProfile.targetGender}
-              onChange={(e) => onUpdate("targetGender", e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
-              placeholder="Their gender"
-            />
-          </div>
-        </div>
-      </Card>
+      {renderInputs(questions.userTraits, "About You")}
+      {renderInputs(questions.targetTraits, "About Them")}
+      {renderInputs(questions.generalInfo, "General Information")}
 
       <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
         <h2 className="text-lg font-semibold mb-4 text-left">Ice Breakers</h2>
