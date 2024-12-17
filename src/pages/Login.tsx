@@ -55,7 +55,7 @@ export default function Login() {
                 textTransform: 'none',
                 fontSize: '16px',
                 padding: '10px',
-                '&:hover': {
+                ':hover': {
                   background: '#2D4531',
                 }
               },
@@ -66,7 +66,7 @@ export default function Login() {
                 display: 'block',
                 marginTop: '10px',
                 textDecoration: 'none',
-                '&:hover': {
+                ':hover': {
                   textDecoration: 'underline',
                 }
               },
@@ -83,11 +83,11 @@ export default function Login() {
                 padding: '10px',
                 fontSize: '16px',
                 width: '100%',
-                '&::placeholder': {
+                '::placeholder': {
                   color: '#EDEDDD',
                   opacity: 0.7,
                 },
-                '&:focus': {
+                ':focus': {
                   outline: 'none',
                   borderColor: '#EDEDDD',
                   boxShadow: 'none',
