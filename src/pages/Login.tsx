@@ -23,7 +23,7 @@ export default function Login() {
     <div className="min-h-screen bg-[#303D24] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold text-[#EDEDDD] text-center mb-8">
-          Welcome to Openera
+          Welcome
         </h1>
         <Auth
           supabaseClient={supabase}
@@ -34,28 +34,22 @@ export default function Login() {
                 colors: {
                   brand: '#1A2A1D',
                   brandAccent: '#2D4531',
-                  inputBackground: '#EDEDDD',
-                  inputText: '#1A2A1D',
-                  inputBorder: '#1A2A1D',
-                  inputBorderFocus: '#303D24',
-                  inputBorderHover: '#303D24',
-                  inputPlaceholder: '#1A2A1D',
+                  inputBackground: 'transparent',
+                  inputText: '#EDEDDD',
+                  inputBorder: '#EDEDDD',
+                  inputBorderFocus: '#EDEDDD',
+                  inputBorderHover: '#EDEDDD',
+                  inputPlaceholder: '#EDEDDD',
                 }
               }
             },
-            style: {
-              button: {
-                background: '#303D24',
-                color: '#EDEDDD',
-                borderRadius: '0.375rem',
-              },
-              anchor: {
-                color: '#EDEDDD',
-              },
-              label: {
-                color: '#EDEDDD',
-              },
-            },
+            className: {
+              container: 'w-full',
+              button: 'w-full bg-[#1A2A1D] hover:bg-[#2D4531] text-[#EDEDDD] py-2 rounded transition-colors',
+              input: 'w-full bg-transparent border border-[#EDEDDD] text-[#EDEDDD] rounded p-2 placeholder-[#EDEDDD]',
+              label: 'text-[#EDEDDD] block mb-2',
+              anchor: 'text-[#EDEDDD] hover:text-[#EDEDDD] underline',
+            }
           }}
           providers={[]}
         />

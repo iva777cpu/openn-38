@@ -90,7 +90,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   };
 
   const renderInputs = (fields: typeof questions.userTraits, title: string) => (
-    <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+    <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6 w-full">
       <h2 className="text-lg font-semibold mb-4 text-left">{title}</h2>
       <div className="space-y-4">
         {fields.map((field) => (
@@ -100,7 +100,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
               type="text"
               value={userProfile[field.id] || ''}
               onChange={(e) => onUpdate(field.id, e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
+              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D] w-full"
               placeholder={`Enter ${field.text.toLowerCase()}`}
             />
           </div>
@@ -110,8 +110,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   );
 
   return (
-    <div className="space-y-6 w-full max-w-md mx-auto p-4">
-      <div className="flex items-center space-x-2 mb-4">
+    <div className="space-y-6 w-full max-w-2xl mx-auto px-4 pt-4">
+      <h1 className="text-2xl font-bold text-center mb-6 text-[#EDEDDD]">Openera</h1>
+      <div className="flex items-center space-x-2 mb-4 justify-start">
         <Checkbox 
           id="firstTime" 
           checked={isFirstTime}
@@ -120,7 +121,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         />
         <label 
           htmlFor="firstTime"
-          className="text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-left"
         >
           First time approaching this person?
         </label>
@@ -130,7 +131,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
       {renderInputs(questions.targetTraits, "About Them")}
       {renderInputs(questions.generalInfo, "General Information")}
 
-      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
+      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] w-full">
         <h2 className="text-lg font-semibold mb-4 text-left">Ice Breakers</h2>
         <Button 
           onClick={generateIcebreakers} 
