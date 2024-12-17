@@ -13,18 +13,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_edited: boolean | null
           message_text: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_edited?: boolean | null
           message_text: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_edited?: boolean | null
           message_text?: string
           user_id?: string
         }
