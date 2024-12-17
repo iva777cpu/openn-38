@@ -54,10 +54,7 @@ export default function Login() {
                 borderRadius: '4px',
                 textTransform: 'none',
                 fontSize: '16px',
-                padding: '10px',
-                ':hover': {
-                  background: '#2D4531',
-                }
+                padding: '10px'
               },
               anchor: {
                 color: '#EDEDDD',
@@ -65,10 +62,7 @@ export default function Login() {
                 textAlign: 'center',
                 display: 'block',
                 marginTop: '10px',
-                textDecoration: 'none',
-                ':hover': {
-                  textDecoration: 'underline',
-                }
+                textDecoration: 'none'
               },
               label: {
                 color: '#EDEDDD',
@@ -82,16 +76,7 @@ export default function Login() {
                 color: '#EDEDDD',
                 padding: '10px',
                 fontSize: '16px',
-                width: '100%',
-                '::placeholder': {
-                  color: '#EDEDDD',
-                  opacity: 0.7,
-                },
-                ':focus': {
-                  outline: 'none',
-                  borderColor: '#EDEDDD',
-                  boxShadow: 'none',
-                }
+                width: '100%'
               },
               message: {
                 color: '#EDEDDD',
@@ -102,10 +87,10 @@ export default function Login() {
             },
             className: {
               container: 'w-full space-y-4',
-              button: 'w-full',
-              input: 'w-full',
+              button: 'w-full hover:bg-[#2D4531]',
+              input: 'w-full focus:border-[#EDEDDD] focus:outline-none placeholder:text-[#EDEDDD] placeholder:opacity-70',
               label: 'block text-sm font-medium mb-2',
-              anchor: 'text-center block mt-4',
+              anchor: 'text-center block mt-4 hover:underline',
             },
           }}
           providers={[]}
