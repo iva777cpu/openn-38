@@ -15,21 +15,18 @@ export type Database = {
           id: string
           message_text: string
           user_id: string
-          is_edited: boolean
         }
         Insert: {
           created_at?: string
           id?: string
           message_text: string
           user_id: string
-          is_edited?: boolean
         }
         Update: {
           created_at?: string
           id?: string
           message_text?: string
           user_id?: string
-          is_edited?: boolean
         }
         Relationships: []
       }
