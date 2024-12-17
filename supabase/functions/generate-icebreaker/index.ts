@@ -13,14 +13,33 @@ serve(async (req) => {
   }
 
   try {
-    const { userProfile, temperature } = await req.json();
-    console.log('Received request with profile:', userProfile, 'and temperature:', temperature);
+    const { userProfile, temperature, isFirstTime } = await req.json();
+    console.log('Received request with profile:', userProfile, 'temperature:', temperature, 'isFirstTime:', isFirstTime);
 
     // Check if OPENAI_API_KEY is set
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OPENAI_API_KEY is not set');
     }
+
+    const prompt = `Generate 3 ${isFirstTime ? 'first-time conversation' : ''} ice breakers based on this context:
+    Person 1: ${userProfile.userAge} years old, identifies as ${userProfile.userGender}
+    Person 2: ${userProfile.targetAge} years old, identifies as ${userProfile.targetGender}
+    
+    Important guidelines:
+    - Mix between different formats:
+      * Casual questions
+      * Fun facts or observations
+      * Light-hearted statements
+      * Friendly banter (when appropriate)
+    - Keep responses under 30 words each
+    - Be casual and natural, avoid being cheesy or overly familiar
+    - Be natural and conversational
+    - Return exactly 3 ice breakers, numbered 1-3
+    - No introductory text or explanations
+    - No exclamation marks or emojis
+    - Consider both the speaker's traits and the target's characteristics
+    ${isFirstTime ? '- These should be suitable for a first-time conversation, so keep it light and approachable' : ''}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -31,20 +50,13 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful assistant that generates engaging and appropriate ice breakers based on user profiles.'
+          { 
+            role: 'system', 
+            content: 'You are a friendly conversation starter that mixes questions, statements, and fun facts to create engaging ice breakers.'
           },
-          {
-            role: 'user',
-            content: `Generate 3 engaging ice breakers for:
-              Person 1: ${userProfile.userAge} years old, identifies as ${userProfile.userGender}
-              Person 2: ${userProfile.targetAge} years old, identifies as ${userProfile.targetGender}
-              
-              Make the ice breakers natural, friendly, and appropriate for their ages and identities.`
-          }
+          { role: 'user', content: prompt }
         ],
-        temperature: temperature,
+        temperature: isFirstTime ? 0.8 : temperature,
       }),
     });
 

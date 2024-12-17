@@ -4,6 +4,7 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "./ui/checkbox";
 
 interface ProfileFormProps {
   userProfile: {
@@ -16,19 +17,27 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate }) => {
-  const [icebreakers, setIcebreakers] = useState<string>("");
+  const [icebreakers, setIcebreakers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(false);
   const { toast } = useToast();
 
   const generateIcebreakers = async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
-        body: { userProfile, temperature: 0.7 }
+        body: { userProfile, temperature: 0.7, isFirstTime }
       });
 
       if (error) throw error;
-      setIcebreakers(data.icebreakers);
+      
+      // Split the response into an array of individual icebreakers
+      const icebreakerArray = data.icebreakers
+        .split(/\d+\./)
+        .filter(Boolean)
+        .map((text: string) => text.trim());
+      
+      setIcebreakers(icebreakerArray);
     } catch (error) {
       console.error('Error generating icebreakers:', error);
       toast({
@@ -43,6 +52,21 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
 
   return (
     <div className="space-y-6 w-full max-w-md mx-auto p-4">
+      <div className="flex items-center space-x-2 mb-4">
+        <Checkbox 
+          id="firstTime" 
+          checked={isFirstTime}
+          onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
+          className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD]"
+        />
+        <label 
+          htmlFor="firstTime"
+          className="text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          First time approaching this person?
+        </label>
+      </div>
+
       <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
         <h2 className="text-lg font-semibold mb-4 text-left">About You</h2>
         <div className="space-y-4">
@@ -104,9 +128,13 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         >
           {isLoading ? "Generating..." : "Generate Ice Breakers"}
         </Button>
-        {icebreakers && (
-          <div className="mt-4 p-4 bg-[#2D4531] rounded-md whitespace-pre-line">
-            {icebreakers}
+        {icebreakers.length > 0 && (
+          <div className="space-y-4">
+            {icebreakers.map((icebreaker, index) => (
+              <div key={index} className="p-4 bg-[#2D4531] rounded-md">
+                {icebreaker}
+              </div>
+            ))}
           </div>
         )}
       </Card>
