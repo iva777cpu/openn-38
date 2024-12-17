@@ -32,6 +32,27 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#EDEDDD];
+  }
+}
+
+/* Custom styles for Auth UI */
+.supabase-auth-ui_ui-container {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.supabase-auth-ui_ui-button {
+  width: 100% !important;
+  margin-top: 1rem !important;
+}
+
+.supabase-auth-ui_ui-input {
+  width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  .supabase-auth-ui_ui-container {
+    padding: 1rem !important;
   }
 }
