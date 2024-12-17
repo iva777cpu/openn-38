@@ -6,16 +6,13 @@ import { Button } from "./ui/button";
 import { Trash2, ArrowLeft, Pen, Save } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { Input } from "./ui/input";
+import type { Database } from "@/integrations/supabase/types";
 
 interface SavedIcebreakersProps {
   onBack: () => void;
 }
 
-interface Message {
-  id: string;
-  message_text: string;
-  is_edited?: boolean;
-}
+type Message = Database['public']['Tables']['saved_messages']['Row'];
 
 export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) => {
   const { toast } = useToast();
