@@ -85,7 +85,7 @@
 
   /* Auth UI Input Styles */
   .auth-input {
-    @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] focus:!ring-0 focus:!outline-none !important;
+    @apply !bg-[#EDEDDD] !text-[#1A2A1D] !border !border-[#EDEDDD] focus:!ring-0 focus:!outline-none !important;
   }
 
   /* Auth Container Styles */
