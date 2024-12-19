@@ -19,9 +19,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 }) => {
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-[#EDEDDD]">Openera</h1>
-      </div>
+      <h1 className="text-2xl font-bold text-[#EDEDDD] text-center mb-4">Openera</h1>
       <div className="flex justify-between items-center">
         {profileName && (
           <h2 className="text-lg text-[#EDEDDD] font-medium">
