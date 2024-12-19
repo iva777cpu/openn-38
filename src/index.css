@@ -36,9 +36,15 @@
   }
   *:focus {
     outline: none !important;
+    box-shadow: none !important;
   }
   *:focus-visible {
     outline: none !important;
+    box-shadow: none !important;
+  }
+  input:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
 }
 
@@ -48,4 +54,9 @@
 
 .toast {
   @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6 mx-auto max-w-[380px];
+}
+
+/* Override Auth UI styles for left alignment */
+.supabase-auth-ui_ui-container form label {
+  @apply text-left block w-full;
 }
