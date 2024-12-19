@@ -57,7 +57,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         <h1 className="text-xl font-bold text-[#EDEDDD]">Saved Icebreakers</h1>
       </div>
 
-      <div className={messages && messages.length > 0 ? 'space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto' : 'space-y-4'}>
+      <div className={`space-y-4 ${messages && messages.length > 0 ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
         {messages?.map((message) => (
           <Card key={message.id} className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
             <div className="flex justify-between items-start">

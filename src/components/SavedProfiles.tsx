@@ -125,7 +125,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         <h1 className="text-2xl font-bold text-[#EDEDDD]">Profiles</h1>
       </div>
 
-      <div className={profiles && profiles.length > 0 ? 'space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto' : 'space-y-4'}>
+      <div className={`space-y-4 ${profiles && profiles.length > 0 ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
         {profiles?.map((profile) => (
           <div
             key={profile.id}
