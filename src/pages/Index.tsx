@@ -177,7 +177,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#303D24] text-[#EDEDDD]">
+    <div className="min-h-screen bg-[#303D24]">
       <SideMenu
         onNewProfile={handleNewProfile}
         onSaveProfile={handleSaveProfile}

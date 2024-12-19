@@ -38,34 +38,38 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   hasChanges,
   selectedProfileName,
 }) => {
+  if (showProfiles) {
+    return (
+      <SavedProfiles 
+        onSelectProfile={handleSelectProfile} 
+        onBack={() => setShowProfiles(false)}
+      />
+    );
+  }
+
+  if (showSavedIcebreakers) {
+    return (
+      <SavedIcebreakers 
+        onBack={() => setShowSavedIcebreakers(false)}
+      />
+    );
+  }
+
   return (
-    <main className="container mx-auto px-4 pt-8 pb-8">
-      {showProfiles ? (
-        <SavedProfiles 
-          onSelectProfile={handleSelectProfile} 
-          onBack={() => setShowProfiles(false)}
-        />
-      ) : showSavedIcebreakers ? (
-        <SavedIcebreakers 
-          onBack={() => setShowSavedIcebreakers(false)}
-        />
-      ) : (
-        <>
-          <ProfileHeader
-            onSaveProfile={onSaveProfile}
-            selectedProfileId={selectedProfileId}
-            onSaveChanges={handleSaveChanges}
-            profileName={selectedProfileName}
-            hasChanges={hasChanges}
-          />
-          <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
-        </>
-      )}
+    <>
+      <ProfileHeader
+        onSaveProfile={onSaveProfile}
+        selectedProfileId={selectedProfileId}
+        onSaveChanges={handleSaveChanges}
+        profileName={selectedProfileName}
+        hasChanges={hasChanges}
+      />
+      <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
       <SaveProfileDialog
         open={saveDialogOpen}
         onOpenChange={setSaveDialogOpen}
         profileData={currentProfile}
       />
-    </main>
+    </>
   );
 };
