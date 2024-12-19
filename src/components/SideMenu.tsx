@@ -28,8 +28,10 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     const root = window.document.documentElement;
     if (isDarkMode) {
       root.classList.add("dark");
+      root.classList.remove("light");
     } else {
       root.classList.remove("dark");
+      root.classList.add("light");
     }
   }, [isDarkMode]);
 
@@ -39,17 +41,17 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         <SheetTrigger asChild>
           <Button
             variant="ghost"
-            className="p-2 text-foreground hover:bg-secondary dark:text-foreground-light"
+            className="p-2 text-[#2D4531] dark:text-[#EDEDDD] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
           >
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
       </div>
-      <SheetContent className="bg-secondary border-accent">
+      <SheetContent className="bg-[#2D4531] border-[#1A2A1D]">
         <div className="space-y-4 mt-8">
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onNewProfile}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -57,7 +59,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onSaveProfile}
           >
             <Save className="mr-2 h-4 w-4" />
@@ -65,7 +67,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onViewProfiles}
           >
             <Users className="mr-2 h-4 w-4" />
@@ -73,7 +75,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onViewSavedMessages}
           >
             <BookmarkPlus className="mr-2 h-4 w-4" />
@@ -81,7 +83,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={() => setIsDarkMode(!isDarkMode)}
           >
             {isDarkMode ? (
@@ -98,7 +100,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start text-foreground hover:bg-accent"
+            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
             onClick={onLogout}
           >
             <LogOut className="mr-2 h-4 w-4" />

@@ -52,17 +52,14 @@
   body {
     @apply bg-background text-foreground;
   }
-  *:focus {
-    outline: none !important;
-    box-shadow: none !important;
+  html {
+    @apply bg-[#EDEDDD] text-[#2D4531];
   }
-  *:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
+  html.dark {
+    @apply bg-[#303D24] text-[#EDEDDD];
   }
-  input:focus {
-    outline: none !important;
-    box-shadow: none !important;
+  #root {
+    @apply min-h-screen bg-[#EDEDDD] dark:bg-[#303D24];
   }
 }
 
