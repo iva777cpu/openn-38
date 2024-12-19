@@ -1,54 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { SideMenu } from "@/components/SideMenu";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { ProfileManager } from "@/components/ProfileManager";
-
-// Move profile state interface to a separate types file later if it grows
-interface ProfileState {
-  userAge: string;
-  userGender: string;
-  impression: string;
-  targetAge: string;
-  targetGender: string;
-  targetPersonality: string;
-  mood: string;
-  origin: string;
-  loves: string;
-  dislikes: string;
-  hobbies: string;
-  books: string;
-  music: string;
-  humor: string;
-  zodiac: string;
-  mbti: string;
-  style: string;
-  situation: string;
-  previousTopics: string;
-}
-
-const emptyProfile: ProfileState = {
-  userAge: "",
-  userGender: "",
-  impression: "",
-  targetAge: "",
-  targetGender: "",
-  targetPersonality: "",
-  mood: "",
-  origin: "",
-  loves: "",
-  dislikes: "",
-  hobbies: "",
-  books: "",
-  music: "",
-  humor: "",
-  zodiac: "",
-  mbti: "",
-  style: "",
-  situation: "",
-  previousTopics: "",
-};
+import { useAuthCheck } from "@/hooks/useAuthCheck";
+import { ProfileState, emptyProfile } from "@/types/profile";
 
 const Index = () => {
   const [currentProfile, setCurrentProfile] = useState<ProfileState>(emptyProfile);
@@ -60,48 +16,9 @@ const Index = () => {
   const [selectedProfileName, setSelectedProfileName] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        console.log("Checking authentication status...");
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Auth check error:", error);
-          throw error;
-        }
-
-        if (!session) {
-          console.log("No active session, redirecting to login");
-          navigate("/login");
-          return;
-        }
-
-        console.log("Authentication successful");
-      } catch (error) {
-        console.error("Failed to check auth status:", error);
-        toast({
-          title: "Error",
-          description: "Failed to verify authentication status",
-          variant: "destructive",
-        });
-        navigate("/login");
-      }
-    };
-    
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event);
-      if (!session) {
-        navigate("/login");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  // Use the auth check hook
+  useAuthCheck();
 
   const hasChanges = JSON.stringify(currentProfile) !== JSON.stringify(originalProfile);
 
@@ -143,7 +60,7 @@ const Index = () => {
 
   const handleSelectProfile = (profile: any) => {
     console.log("Selecting profile:", profile.id);
-    const profileData = {
+    const profileData: ProfileState = {
       userAge: profile.user_age || "",
       userGender: profile.user_gender || "",
       impression: profile.user_impression || "",
