@@ -47,26 +47,36 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
   }
+  
   html {
     @apply bg-[#EDEDDD] text-[#2D4531];
   }
+  
   html.dark {
     @apply bg-[#303D24] text-[#EDEDDD];
   }
-  #root {
+  
+  /* Override root background only for auth pages */
+  [data-component-path="src/pages/Login.tsx"] #root {
+    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
+  }
+
+  /* Regular app root styling */
+  #root:not([data-component-path="src/pages/Login.tsx"] #root) {
     @apply min-h-screen bg-[#EDEDDD] dark:bg-[#303D24];
   }
 
   /* Auth UI specific styles */
   div[data-component-path="src/pages/Login.tsx"] {
-    @apply bg-[#EDEDDD] dark:bg-[#EDEDDD] !important;
+    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
   }
 
   div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
-    @apply bg-[#2D4531] !important;
+    @apply !bg-[#2D4531];
   }
 
   /* Override Auth UI styles for left alignment */
@@ -98,5 +108,15 @@
   /* Auth Container Styles */
   .auth-container {
     @apply space-y-4;
+  }
+
+  /* Save Profile Input Styles */
+  div[data-component-path="src/components/SaveProfileForm.tsx"] input {
+    @apply w-full focus:ring-0 focus:outline-none;
+  }
+
+  /* Save Profile Dialog Footer Styles */
+  div[data-component-path="src/components/SaveProfileDialog.tsx"] footer button {
+    @apply w-full;
   }
 }
