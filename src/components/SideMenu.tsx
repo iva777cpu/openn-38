@@ -27,7 +27,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="absolute top-4 right-4 p-2 text-[#EDEDDD] hover:bg-[#2D4531]"
+          className="fixed top-4 right-4 p-2 text-[#EDEDDD] hover:bg-[#2D4531]"
         >
           <Menu className="h-6 w-6" />
         </Button>

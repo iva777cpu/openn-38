@@ -125,57 +125,55 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         <h1 className="text-2xl font-bold text-[#EDEDDD]">Profiles</h1>
       </div>
 
-      <div className={`space-y-4 ${profiles && profiles.length > 0 ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
-        {profiles?.map((profile) => (
-          <div
-            key={profile.id}
-            className="flex items-center justify-between p-3 bg-[#2D4531] rounded-lg"
-          >
-            {editingId === profile.id ? (
-              <div className="flex items-center gap-2 flex-grow">
-                <Input
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleSaveProfileName}
-                  className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
-                >
-                  <Save className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <span
-                className="text-[#EDEDDD] cursor-pointer flex-grow"
-                onClick={() => onSelectProfile(profile)}
-              >
-                {profile.profile_name}
-              </span>
-            )}
-            <div className="flex gap-2">
+      {profiles?.map((profile) => (
+        <div
+          key={profile.id}
+          className="flex items-center justify-between p-3 bg-[#2D4531] rounded-lg"
+        >
+          {editingId === profile.id ? (
+            <div className="flex items-center gap-2 flex-grow">
+              <Input
+                value={editingName}
+                onChange={(e) => setEditingName(e.target.value)}
+                className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
+              />
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => startEditing(profile)}
+                onClick={handleSaveProfileName}
                 className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
               >
-                <Edit2 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleDeleteProfile(profile.id)}
-                className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
-              >
-                <Trash2 className="h-4 w-4" />
+                <Save className="h-4 w-4" />
               </Button>
             </div>
+          ) : (
+            <span
+              className="text-[#EDEDDD] cursor-pointer flex-grow"
+              onClick={() => onSelectProfile(profile)}
+            >
+              {profile.profile_name}
+            </span>
+          )}
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => startEditing(profile)}
+              className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+            >
+              <Edit2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDeleteProfile(profile.id)}
+              className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
