@@ -62,7 +62,7 @@
 
   /* Auth UI specific styles */
   div[data-component-path="src/pages/Login.tsx"] {
-    @apply bg-[#EDEDDD] !important;
+    @apply bg-[#EDEDDD] dark:bg-[#EDEDDD] !important;
   }
 
   div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
