@@ -14,19 +14,19 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onSaveChanges,
 }) => {
   return (
-    <>
-      <h1 className="text-2xl font-bold text-center mb-8 text-[#EDEDDD]">Openera</h1>
+    <div className="mb-8">
+      <h1 className="text-2xl font-bold text-center text-[#EDEDDD]">Openera</h1>
       {selectedProfileId && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4">
           <Button
             onClick={onSaveChanges}
-            className="w-full max-w-md bg-[#EDEDDD] text-[#1A2A1D] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
+            className="bg-[#EDEDDD] text-[#1A2A1D] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
           >
             <Save className="h-4 w-4 mr-2" />
             Save Changes
           </Button>
         </div>
       )}
-    </>
+    </div>
   );
 };
