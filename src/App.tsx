@@ -5,12 +5,14 @@ import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
+    <div className="min-h-screen bg-background text-foreground">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

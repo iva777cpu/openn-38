@@ -5,12 +5,7 @@ import './index.css'
 
 const queryClient = new QueryClient()
 
-const root = document.getElementById("root")!;
-if (root) {
-  root.className = "min-h-screen bg-background text-foreground";
-}
-
-createRoot(root).render(
+createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
     <App />
   </QueryClientProvider>
