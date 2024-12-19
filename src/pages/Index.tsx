@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { SideMenu } from "@/components/SideMenu";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ProfileManager } from "@/components/ProfileManager";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
@@ -15,9 +14,7 @@ const Index = () => {
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
   const [selectedProfileName, setSelectedProfileName] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { toast } = useToast();
 
-  // Use the auth check hook
   useAuthCheck();
 
   const hasChanges = JSON.stringify(currentProfile) !== JSON.stringify(originalProfile);
@@ -39,10 +36,6 @@ const Index = () => {
     setSelectedProfileId(null);
     setSelectedProfileName("");
     setMenuOpen(false);
-    toast({
-      title: "New Profile Created",
-      description: "Start filling out the form for your new profile.",
-    });
   };
 
   const handleSaveProfile = () => {
@@ -123,17 +116,8 @@ const Index = () => {
 
       setOriginalProfile(currentProfile);
       console.log("Profile updated successfully");
-      toast({
-        title: "Success",
-        description: "Profile updated successfully",
-      });
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      });
     }
   };
 
@@ -142,17 +126,8 @@ const Index = () => {
       console.log("Logging out...");
       await supabase.auth.signOut();
       setMenuOpen(false);
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-      });
     } catch (error) {
       console.error("Logout error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to log out",
-        variant: "destructive",
-      });
     }
   };
 

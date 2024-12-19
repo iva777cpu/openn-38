@@ -48,14 +48,6 @@
   }
 }
 
-.toast-viewport {
-  @apply fixed top-0 left-1/2 -translate-x-1/2 flex flex-col p-4 gap-2 w-full z-[100] outline-none items-center;
-}
-
-.toast {
-  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-2 pr-6 mx-auto max-w-[380px];
-}
-
 /* Override Auth UI styles for left alignment */
 .supabase-auth-ui_ui-container form > div > label,
 .supabase-auth-ui_ui-container form > div > div > label {

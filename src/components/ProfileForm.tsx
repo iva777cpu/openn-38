@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "./ui/checkbox";
 import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
 import { GeneralInfoForm } from "./forms/GeneralInfoForm";
-import { IcebreakersSection } from "./forms/IcebreakersSection";
 import { questions } from "@/utils/questions";
 
 interface ProfileFormProps {
@@ -19,7 +17,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const [icebreakers, setIcebreakers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
-  const { toast } = useToast();
 
   const generateIcebreakers = async () => {
     setIsLoading(true);
@@ -56,12 +53,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
       setIcebreakers(data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim()));
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      toast({
-        title: "Error",
-        description: "Failed to generate icebreakers. Please try again.",
-        variant: "destructive",
-        className: "fixed inset-x-0 mx-auto max-w-md"
-      });
     } finally {
       setIsLoading(false);
     }
@@ -78,19 +69,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Icebreaker saved successfully",
-        className: "fixed inset-x-0 mx-auto max-w-md"
-      });
+      console.log('Icebreaker saved successfully');
     } catch (error) {
       console.error('Error saving icebreaker:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save icebreaker",
-        variant: "destructive",
-        className: "fixed inset-x-0 mx-auto max-w-md"
-      });
     }
   };
 
@@ -136,7 +117,21 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
           {isLoading ? "Generating..." : "Generate Ice Breakers"}
         </Button>
         {icebreakers.length > 0 && (
-          <IcebreakersSection icebreakers={icebreakers} onSave={saveIcebreaker} />
+          <div className="space-y-4">
+            {icebreakers.map((icebreaker, index) => (
+              <div key={index} className="p-4 bg-[#2D4531] rounded-md flex justify-between items-start">
+                <span>{icebreaker}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => saveIcebreaker(icebreaker)}
+                  className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                >
+                  <BookmarkPlus className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
         )}
       </Card>
     </div>

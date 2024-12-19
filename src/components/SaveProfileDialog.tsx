@@ -8,7 +8,6 @@ import {
   DialogDescription,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SaveProfileForm } from "./SaveProfileForm";
 
@@ -24,7 +23,6 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
   profileData,
 }) => {
   const [profileName, setProfileName] = useState("");
-  const { toast } = useToast();
 
   const getUniqueProfileName = async (userId: string, baseName: string) => {
     let finalName = baseName;
@@ -57,15 +55,10 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
       } = await supabase.auth.getUser();
 
       if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to save profiles",
-          variant: "destructive",
-        });
+        console.error("You must be logged in to save profiles");
         return;
       }
 
-      // Get a unique name for the profile
       const uniqueName = await getUniqueProfileName(user.id, profileName);
       console.log("Generated unique profile name:", uniqueName);
 
@@ -95,19 +88,11 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Profile saved successfully",
-      });
+      console.log("Profile saved successfully");
       onOpenChange(false);
       setProfileName("");
     } catch (error) {
       console.error("Error saving profile:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save profile",
-        variant: "destructive",
-      });
     }
   };
 

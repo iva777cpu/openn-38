@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { Edit2, Trash2, ArrowLeft, Save } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { Input } from "./ui/input";
 
 interface SavedProfilesProps {
@@ -12,7 +11,6 @@ interface SavedProfilesProps {
 }
 
 export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, onBack }) => {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -44,7 +42,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         .select("id")
         .eq("user_id", userId)
         .eq("profile_name", finalName)
-        .neq("id", currentId) // Exclude current profile from check
+        .neq("id", currentId)
         .maybeSingle();
 
       if (!data) {
@@ -76,18 +74,10 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
-      toast({
-        title: "Success",
-        description: "Profile name updated successfully",
-      });
       setEditingId(null);
     },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update profile name",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      console.error("Failed to update profile name:", error);
     },
   });
 
@@ -100,17 +90,10 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Profile deleted successfully",
-      });
+      console.log("Profile deleted successfully");
       refetch();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete profile",
-        variant: "destructive",
-      });
+      console.error("Failed to delete profile:", error);
     }
   };
 
