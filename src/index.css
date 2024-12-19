@@ -41,3 +41,11 @@
     outline: none !important;
   }
 }
+
+.toast-viewport {
+  @apply fixed bottom-0 right-0 flex flex-col p-4 gap-2 w-full md:max-w-[420px] max-h-screen z-50 outline-none;
+}
+
+.toast {
+  @apply fixed inset-x-0 mx-auto max-w-md;
+}

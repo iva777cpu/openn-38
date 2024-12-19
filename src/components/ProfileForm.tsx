@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Input } from "./ui/input";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "./ui/checkbox";
-import { questions } from "@/utils/questions";
-import { BookmarkPlus } from "lucide-react";
+import { UserTraitsForm } from "./forms/UserTraitsForm";
+import { TargetTraitsForm } from "./forms/TargetTraitsForm";
+import { GeneralInfoForm } from "./forms/GeneralInfoForm";
+import { IcebreakersSection } from "./forms/IcebreakersSection";
 
 interface ProfileFormProps {
   userProfile: Record<string, string>;
@@ -58,6 +59,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         title: "Error",
         description: "Failed to generate icebreakers. Please try again.",
         variant: "destructive",
+        className: "fixed inset-x-0 mx-auto max-w-md"
       });
     } finally {
       setIsLoading(false);
@@ -78,6 +80,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
       toast({
         title: "Success",
         description: "Icebreaker saved successfully",
+        className: "fixed inset-x-0 mx-auto max-w-md"
       });
     } catch (error) {
       console.error('Error saving icebreaker:', error);
@@ -85,29 +88,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         title: "Error",
         description: "Failed to save icebreaker",
         variant: "destructive",
+        className: "fixed inset-x-0 mx-auto max-w-md"
       });
     }
   };
-
-  const renderInputs = (fields: typeof questions.userTraits, title: string) => (
-    <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
-      <h2 className="text-lg font-semibold mb-4 text-left">{title}</h2>
-      <div className="space-y-4">
-        {fields.map((field) => (
-          <div key={field.id}>
-            <label className="block text-[#EDEDDD] mb-1 text-left">{field.text}</label>
-            <Input
-              type="text"
-              value={userProfile[field.id] || ''}
-              onChange={(e) => onUpdate(field.id, e.target.value)}
-              className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]"
-              placeholder={`Enter ${field.text.toLowerCase()}`}
-            />
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -126,9 +110,20 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         </label>
       </div>
 
-      {renderInputs(questions.userTraits, "About You")}
-      {renderInputs(questions.targetTraits, "About Them")}
-      {renderInputs(questions.generalInfo, "General Information")}
+      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+        <h2 className="text-lg font-semibold mb-4 text-left">About You</h2>
+        <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
+      </Card>
+
+      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+        <h2 className="text-lg font-semibold mb-4 text-left">About Them</h2>
+        <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
+      </Card>
+
+      <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+        <h2 className="text-lg font-semibold mb-4 text-left">General Information</h2>
+        <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
+      </Card>
 
       <Card className="p-4 bg-[#303D24] text-[#EDEDDD] border-[#EDEDDD]">
         <h2 className="text-lg font-semibold mb-4 text-left">Ice Breakers</h2>
@@ -140,21 +135,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
           {isLoading ? "Generating..." : "Generate Ice Breakers"}
         </Button>
         {icebreakers.length > 0 && (
-          <div className="space-y-4">
-            {icebreakers.map((icebreaker, index) => (
-              <div key={index} className="p-4 bg-[#2D4531] rounded-md flex justify-between items-start">
-                <span>{icebreaker}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => saveIcebreaker(icebreaker)}
-                  className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
-                >
-                  <BookmarkPlus className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <IcebreakersSection icebreakers={icebreakers} onSave={saveIcebreaker} />
         )}
       </Card>
     </div>

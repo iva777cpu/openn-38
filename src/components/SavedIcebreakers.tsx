@@ -42,7 +42,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
       toast({
         title: "Success",
         description: "Message deleted successfully",
-        className: "flex flex-col items-center justify-center text-center",
+        className: "fixed inset-x-0 mx-auto max-w-md",
       });
       refetch();
     } catch (error) {
@@ -50,7 +50,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         title: "Error",
         description: "Failed to delete message",
         variant: "destructive",
-        className: "flex flex-col items-center justify-center text-center",
+        className: "fixed inset-x-0 mx-auto max-w-md",
       });
     }
   };
