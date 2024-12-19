@@ -4,9 +4,10 @@ import App from './App.tsx'
 import './index.css'
 
 const queryClient = new QueryClient()
-const root = document.getElementById("root")!;
+const container = document.createElement('div');
+document.body.appendChild(container);
 
-createRoot(root).render(
+createRoot(container).render(
   <QueryClientProvider client={queryClient}>
     <App />
   </QueryClientProvider>

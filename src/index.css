@@ -87,12 +87,12 @@
   }
 
   /* Save Profile Input Styles */
-  div[data-component-path="src/components/SaveProfileForm.tsx"] input {
+  input {
     @apply w-full focus:ring-0 focus:outline-none;
   }
 
   /* Save Profile Dialog Footer Styles */
-  div[data-component-path="src/components/SaveProfileDialog.tsx"] footer button {
+  footer button {
     @apply w-full;
   }
 }
