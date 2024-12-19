@@ -62,7 +62,7 @@
   
   /* Override root background only for auth pages */
   [data-component-path="src/pages/Login.tsx"] #root {
-    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD] h-screen;
+    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
   }
 
   /* Regular app root styling */
@@ -72,17 +72,11 @@
 
   /* Auth UI specific styles */
   div[data-component-path="src/pages/Login.tsx"] {
-    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD] h-screen flex items-center justify-center;
+    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
   }
 
   div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
     @apply !bg-[#2D4531];
-  }
-
-  /* Saved Icebreakers and Profiles container styles */
-  div[data-component-path="src/components/SavedIcebreakers.tsx"],
-  div[data-component-path="src/components/SavedProfiles.tsx"] {
-    @apply h-auto;
   }
 
   /* Override Auth UI styles for left alignment */
