@@ -47,5 +47,5 @@
 }
 
 .toast {
-  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6 mx-auto max-w-md;
+  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6 mx-auto max-w-[380px];
 }

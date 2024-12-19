@@ -18,6 +18,8 @@ interface ProfileManagerProps {
   setShowProfiles: (show: boolean) => void;
   setShowSavedIcebreakers: (show: boolean) => void;
   onSaveProfile: () => void;
+  hasChanges?: boolean;
+  selectedProfileName?: string;
 }
 
 export const ProfileManager: React.FC<ProfileManagerProps> = ({
@@ -33,6 +35,8 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   setShowProfiles,
   setShowSavedIcebreakers,
   onSaveProfile,
+  hasChanges,
+  selectedProfileName,
 }) => {
   return (
     <main className="container mx-auto px-4 pt-8 pb-8">
@@ -51,6 +55,8 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
             onSaveProfile={onSaveProfile}
             selectedProfileId={selectedProfileId}
             onSaveChanges={handleSaveChanges}
+            profileName={selectedProfileName}
+            hasChanges={hasChanges}
           />
           <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
         </>

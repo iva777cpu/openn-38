@@ -29,10 +29,12 @@ const emptyProfile = {
 
 const Index = () => {
   const [currentProfile, setCurrentProfile] = useState(emptyProfile);
+  const [originalProfile, setOriginalProfile] = useState(emptyProfile);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [selectedProfileName, setSelectedProfileName] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -56,6 +58,8 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const hasChanges = JSON.stringify(currentProfile) !== JSON.stringify(originalProfile);
+
   const handleUpdateProfile = (field: string, value: string) => {
     setCurrentProfile((prev) => ({
       ...prev,
@@ -65,9 +69,11 @@ const Index = () => {
 
   const handleNewProfile = () => {
     setCurrentProfile(emptyProfile);
+    setOriginalProfile(emptyProfile);
     setShowProfiles(false);
     setShowSavedIcebreakers(false);
     setSelectedProfileId(null);
+    setSelectedProfileName("");
     setMenuOpen(false);
     toast({
       title: "New Profile Created",
@@ -87,7 +93,7 @@ const Index = () => {
   };
 
   const handleSelectProfile = (profile: any) => {
-    setCurrentProfile({
+    const profileData = {
       userAge: profile.user_age || "",
       userGender: profile.user_gender || "",
       impression: profile.user_impression || "",
@@ -107,8 +113,11 @@ const Index = () => {
       style: profile.target_style || "",
       situation: profile.situation || "",
       previousTopics: profile.previous_topics || "",
-    });
+    };
+    setCurrentProfile(profileData);
+    setOriginalProfile(profileData);
     setSelectedProfileId(profile.id);
+    setSelectedProfileName(profile.profile_name);
     setShowProfiles(false);
     setShowSavedIcebreakers(false);
   };
@@ -144,6 +153,7 @@ const Index = () => {
 
       if (error) throw error;
 
+      setOriginalProfile(currentProfile);
       toast({
         title: "Success",
         description: "Profile updated successfully",
@@ -194,6 +204,8 @@ const Index = () => {
         setShowProfiles={setShowProfiles}
         setShowSavedIcebreakers={setShowSavedIcebreakers}
         onSaveProfile={handleSaveProfile}
+        hasChanges={hasChanges}
+        selectedProfileName={selectedProfileName}
       />
     </div>
   );
