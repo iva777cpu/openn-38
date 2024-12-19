@@ -57,6 +57,12 @@
 }
 
 /* Override Auth UI styles for left alignment */
-.supabase-auth-ui_ui-container form label {
-  @apply text-left block w-full;
+.supabase-auth-ui_ui-container form > div > label,
+.supabase-auth-ui_ui-container form > div > div > label {
+  @apply text-left !important;
+  text-align: left !important;
+}
+
+.supabase-auth-ui_ui-container form > div {
+  @apply text-left;
 }
