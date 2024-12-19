@@ -57,12 +57,12 @@
   }
   
   html.dark {
-    @apply bg-[#303D24] text-[#EDEDDD];
+    @apply bg-[#EDEDDD] text-[#EDEDDD];
   }
   
   /* Override root background only for auth pages - force specific color regardless of theme */
   [data-component-path="src/pages/Login.tsx"] #root {
-    @apply !bg-[#2D4531] !important;
+    @apply !bg-[#EDEDDD] !important;
     min-height: 100vh;
     height: auto;
     overflow: auto;
@@ -75,11 +75,16 @@
 
   /* Auth UI specific styles - force specific color regardless of theme */
   div[data-component-path="src/pages/Login.tsx"] {
-    @apply !bg-[#2D4531] !important;
+    @apply !bg-[#EDEDDD] !important;
+  }
+
+  div[data-component-path="src/pages/Login.tsx"] > div {
+    @apply !bg-[#EDEDDD] !important;
   }
 
   div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
     @apply !bg-[#2D4531] !important;
+    @apply rounded-lg shadow-lg !important;
   }
 
   /* Override Auth UI styles for left alignment */
