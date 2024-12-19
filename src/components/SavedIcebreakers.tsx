@@ -57,25 +57,27 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         <h1 className="text-xl font-bold text-[#EDEDDD]">Saved Icebreakers</h1>
       </div>
 
-      {messages?.map((message) => (
-        <Card key={message.id} className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
-          <div className="flex justify-between items-start">
-            <p className="flex-grow">{message.message_text}</p>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleDelete(message.id)}
-              className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        </Card>
-      ))}
+      <div className={`space-y-4 ${messages && messages.length > 0 ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
+        {messages?.map((message) => (
+          <Card key={message.id} className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
+            <div className="flex justify-between items-start">
+              <p className="flex-grow">{message.message_text}</p>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDelete(message.id)}
+                className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </Card>
+        ))}
 
-      {messages?.length === 0 && (
-        <p className="text-center text-[#EDEDDD]">No saved icebreakers yet.</p>
-      )}
+        {messages?.length === 0 && (
+          <p className="text-center text-[#EDEDDD]">No saved icebreakers yet.</p>
+        )}
+      </div>
     </div>
   );
 };
