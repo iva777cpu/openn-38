@@ -48,6 +48,7 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         user_impression: profileData.impression,
         target_age: profileData.targetAge,
         target_gender: profileData.targetGender,
+        target_personality: profileData.targetPersonality,
         target_mood: profileData.mood,
         target_origin: profileData.origin,
         target_loves: profileData.loves,

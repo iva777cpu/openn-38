@@ -51,6 +51,7 @@ export type Database = {
           target_mood: string | null
           target_music: string | null
           target_origin: string | null
+          target_personality: string | null
           target_style: string | null
           target_zodiac: string | null
           user_age: string | null
@@ -75,6 +76,7 @@ export type Database = {
           target_mood?: string | null
           target_music?: string | null
           target_origin?: string | null
+          target_personality?: string | null
           target_style?: string | null
           target_zodiac?: string | null
           user_age?: string | null
@@ -99,6 +101,7 @@ export type Database = {
           target_mood?: string | null
           target_music?: string | null
           target_origin?: string | null
+          target_personality?: string | null
           target_style?: string | null
           target_zodiac?: string | null
           user_age?: string | null
