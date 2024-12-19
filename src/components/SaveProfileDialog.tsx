@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -25,6 +26,22 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
   const [profileName, setProfileName] = useState("");
   const { toast } = useToast();
 
+  const checkDuplicateProfileName = async (userId: string, name: string) => {
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("profile_name", name)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 means no rows returned, which is what we want
+      throw error;
+    }
+
+    return !!data;
+  };
+
   const handleSaveProfile = async () => {
     try {
       const {
@@ -35,6 +52,17 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         toast({
           title: "Error",
           description: "You must be logged in to save profiles",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check for duplicate profile name
+      const isDuplicate = await checkDuplicateProfileName(user.id, profileName);
+      if (isDuplicate) {
+        toast({
+          title: "Error",
+          description: "A profile with this name already exists. Please choose a different name.",
           variant: "destructive",
         });
         return;
@@ -73,6 +101,7 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
       onOpenChange(false);
       setProfileName("");
     } catch (error) {
+      console.error("Error saving profile:", error);
       toast({
         title: "Error",
         description: "Failed to save profile",
@@ -86,6 +115,9 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
       <DialogContent className="bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
         <DialogHeader>
           <DialogTitle>Save Profile</DialogTitle>
+          <DialogDescription className="text-[#EDEDDD] opacity-90">
+            Enter a unique name for this profile.
+          </DialogDescription>
         </DialogHeader>
         <SaveProfileForm
           profileName={profileName}
