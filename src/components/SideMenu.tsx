@@ -28,26 +28,44 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   // Check system preference and stored preference on mount
   useEffect(() => {
     const checkThemePreference = async () => {
-      // First check if user has a stored preference
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: preferences } = await supabase
-          .from('user_preferences')
-          .select('theme')
-          .eq('user_id', user.id)
-          .single();
+      try {
+        // First check if user has a stored preference
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: preferences } = await supabase
+            .from('user_preferences')
+            .select('theme')
+            .eq('user_id', user.id)
+            .maybeSingle();
 
-        if (preferences) {
-          setIsDarkMode(preferences.theme === 'dark');
+          if (preferences) {
+            setIsDarkMode(preferences.theme === 'dark');
+            return;
+          }
+
+          // If no preferences exist, create default based on system preference
+          const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const defaultTheme = systemPrefersDark ? 'dark' : 'light';
+          
+          await supabase
+            .from('user_preferences')
+            .insert({ 
+              user_id: user.id, 
+              theme: defaultTheme 
+            });
+          
+          setIsDarkMode(systemPrefersDark);
           return;
         }
-      }
 
-      // If no stored preference, check system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setIsDarkMode(true);
-      } else {
-        setIsDarkMode(false);
+        // If no user, check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          setIsDarkMode(true);
+        } else {
+          setIsDarkMode(false);
+        }
+      } catch (error) {
+        console.error('Error checking theme preference:', error);
       }
     };
 
@@ -66,24 +84,34 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     }
 
     const updateThemePreference = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: existingPref } = await supabase
-          .from('user_preferences')
-          .select()
-          .eq('user_id', user.id)
-          .single();
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: existingPref } = await supabase
+            .from('user_preferences')
+            .select()
+            .eq('user_id', user.id)
+            .maybeSingle();
 
-        if (existingPref) {
-          await supabase
-            .from('user_preferences')
-            .update({ theme: isDarkMode ? 'dark' : 'light', updated_at: new Date().toISOString() })
-            .eq('user_id', user.id);
-        } else {
-          await supabase
-            .from('user_preferences')
-            .insert({ user_id: user.id, theme: isDarkMode ? 'dark' : 'light' });
+          if (existingPref) {
+            await supabase
+              .from('user_preferences')
+              .update({ 
+                theme: isDarkMode ? 'dark' : 'light', 
+                updated_at: new Date().toISOString() 
+              })
+              .eq('user_id', user.id);
+          } else {
+            await supabase
+              .from('user_preferences')
+              .insert({ 
+                user_id: user.id, 
+                theme: isDarkMode ? 'dark' : 'light' 
+              });
+          }
         }
+      } catch (error) {
+        console.error('Error updating theme preference:', error);
       }
     };
 
