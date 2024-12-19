@@ -7,9 +7,9 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SaveProfileForm } from "./SaveProfileForm";
 
 interface SaveProfileDialogProps {
   open: boolean;
@@ -87,14 +87,10 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Save Profile</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
-          <Input
-            placeholder="Enter profile name"
-            value={profileName}
-            onChange={(e) => setProfileName(e.target.value)}
-            className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
-          />
-        </div>
+        <SaveProfileForm
+          profileName={profileName}
+          onChange={(e) => setProfileName(e.target.value)}
+        />
         <DialogFooter>
           <Button
             onClick={handleSaveProfile}

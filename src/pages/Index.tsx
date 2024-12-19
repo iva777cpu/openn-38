@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { ProfileForm } from "@/components/ProfileForm";
 import { SideMenu } from "@/components/SideMenu";
-import { SaveProfileDialog } from "@/components/SaveProfileDialog";
-import { SavedProfiles } from "@/components/SavedProfiles";
-import { SavedIcebreakers } from "@/components/SavedIcebreakers";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { ProfileManager } from "@/components/ProfileManager";
 
 const emptyProfile = {
   userAge: "",
@@ -16,7 +11,7 @@ const emptyProfile = {
   impression: "",
   targetAge: "",
   targetGender: "",
-  targetPersonality: "", // Added this field
+  targetPersonality: "",
   mood: "",
   origin: "",
   loves: "",
@@ -98,7 +93,7 @@ const Index = () => {
       impression: profile.user_impression || "",
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
-      targetPersonality: profile.target_personality || "", // Added this line
+      targetPersonality: profile.target_personality || "",
       mood: profile.target_mood || "",
       origin: profile.target_origin || "",
       loves: profile.target_loves || "",
@@ -130,7 +125,7 @@ const Index = () => {
           user_impression: currentProfile.impression,
           target_age: currentProfile.targetAge,
           target_gender: currentProfile.targetGender,
-          target_personality: currentProfile.targetPersonality, // Added this line
+          target_personality: currentProfile.targetPersonality,
           target_mood: currentProfile.mood,
           target_origin: currentProfile.origin,
           target_loves: currentProfile.loves,
@@ -186,38 +181,19 @@ const Index = () => {
         open={menuOpen}
         onOpenChange={setMenuOpen}
       />
-      <main className="container mx-auto px-4 pt-8 pb-8">
-        {showProfiles ? (
-          <SavedProfiles 
-            onSelectProfile={handleSelectProfile} 
-            onBack={() => setShowProfiles(false)}
-          />
-        ) : showSavedIcebreakers ? (
-          <SavedIcebreakers 
-            onBack={() => setShowSavedIcebreakers(false)}
-          />
-        ) : (
-          <>
-            <h1 className="text-2xl font-bold text-center mb-8 text-[#EDEDDD]">Openera</h1>
-            <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
-            {selectedProfileId && (
-              <div className="flex justify-center mt-6">
-                <Button
-                  onClick={handleSaveChanges}
-                  className="w-full max-w-md bg-[#EDEDDD] text-[#1A2A1D] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Changes
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-      </main>
-      <SaveProfileDialog
-        open={saveDialogOpen}
-        onOpenChange={setSaveDialogOpen}
-        profileData={currentProfile}
+      <ProfileManager
+        currentProfile={currentProfile}
+        saveDialogOpen={saveDialogOpen}
+        setSaveDialogOpen={setSaveDialogOpen}
+        showProfiles={showProfiles}
+        showSavedIcebreakers={showSavedIcebreakers}
+        selectedProfileId={selectedProfileId}
+        handleUpdateProfile={handleUpdateProfile}
+        handleSelectProfile={handleSelectProfile}
+        handleSaveChanges={handleSaveChanges}
+        setShowProfiles={setShowProfiles}
+        setShowSavedIcebreakers={setShowSavedIcebreakers}
+        onSaveProfile={handleSaveProfile}
       />
     </div>
   );
