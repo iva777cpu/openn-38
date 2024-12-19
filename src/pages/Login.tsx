@@ -32,30 +32,28 @@ export default function Login() {
             variables: {
               default: {
                 colors: {
-                  brand: '#1A2A1D',
-                  brandAccent: '#2D4531',
-                  inputBackground: '#EDEDDD',
-                  inputText: '#1A2A1D',
-                  inputBorder: '#1A2A1D',
-                  inputBorderFocus: '#303D24',
-                  inputBorderHover: '#303D24',
-                  inputPlaceholder: '#1A2A1D',
+                  brand: '#47624B',
+                  brandAccent: '#47624B',
+                  brandButtonText: "#EDEDDD",
+                  defaultButtonBackground: "#47624B",
+                  defaultButtonBackgroundHover: "#47624B",
+                  defaultButtonBorder: "#EDEDDD",
+                  defaultButtonText: "#EDEDDD",
+                  inputBackground: '#47624B',
+                  inputBorder: '#EDEDDD',
+                  inputText: '#EDEDDD',
+                  inputPlaceholder: '#EDEDDD',
+                  messageText: '#EDEDDD',
+                  anchorTextColor: '#EDEDDD',
+                  dividerBackground: '#EDEDDD',
                 }
               }
             },
-            style: {
-              button: {
-                background: '#303D24',
-                color: '#EDEDDD',
-                borderRadius: '0.375rem',
-              },
-              anchor: {
-                color: '#EDEDDD',
-              },
-              label: {
-                color: '#EDEDDD',
-              },
-            },
+            className: {
+              container: 'auth-container',
+              button: 'auth-button',
+              input: 'auth-input',
+            }
           }}
           providers={[]}
         />

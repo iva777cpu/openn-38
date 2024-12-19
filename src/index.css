@@ -79,12 +79,17 @@
   }
 
   /* Auth UI Button Styles */
-  .supabase-auth-ui_ui-button {
+  .auth-button {
     @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] hover:!bg-[#47624B]/90 dark:!bg-[#47624B] dark:hover:!bg-[#47624B]/90 !important;
   }
 
   /* Auth UI Input Styles */
-  .supabase-auth-ui_ui-input {
+  .auth-input {
     @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] focus:!ring-0 focus:!outline-none !important;
+  }
+
+  /* Auth Container Styles */
+  .auth-container {
+    @apply space-y-4;
   }
 }
