@@ -53,7 +53,7 @@
 }
 
 .toast {
-  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6 mx-auto max-w-[380px];
+  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-2 pr-6 mx-auto max-w-[380px];
 }
 
 /* Override Auth UI styles for left alignment */
@@ -65,4 +65,9 @@
 
 .supabase-auth-ui_ui-container form > div {
   @apply text-left;
+}
+
+/* Override root text alignment */
+#root {
+  text-align: left !important;
 }
