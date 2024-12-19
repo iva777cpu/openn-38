@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthCheck = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -27,11 +25,6 @@ export const useAuthCheck = () => {
         console.log("Authentication successful");
       } catch (error) {
         console.error("Failed to check auth status:", error);
-        toast({
-          title: "Error",
-          description: "Failed to verify authentication status",
-          variant: "destructive",
-        });
         navigate("/login");
       }
     };
@@ -46,5 +39,5 @@ export const useAuthCheck = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate]);
 };

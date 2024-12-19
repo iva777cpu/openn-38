@@ -4,15 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Trash2, ArrowLeft } from "lucide-react";
-import { useToast } from "./ui/use-toast";
 
 interface SavedIcebreakersProps {
   onBack: () => void;
 }
 
 export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) => {
-  const { toast } = useToast();
-
   const { data: messages, refetch } = useQuery({
     queryKey: ["saved-messages"],
     queryFn: async () => {
@@ -39,19 +36,10 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Message deleted successfully",
-        className: "fixed inset-x-0 mx-auto max-w-md",
-      });
+      console.log("Message deleted successfully");
       refetch();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete message",
-        variant: "destructive",
-        className: "fixed inset-x-0 mx-auto max-w-md",
-      });
+      console.error("Failed to delete message:", error);
     }
   };
 
