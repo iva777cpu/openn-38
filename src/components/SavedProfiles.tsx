@@ -33,14 +33,46 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     },
   });
 
+  const getUniqueProfileName = async (userId: string, baseName: string, currentId: string) => {
+    let finalName = baseName;
+    let counter = 1;
+    let isUnique = false;
+
+    while (!isUnique) {
+      const { data } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("profile_name", finalName)
+        .neq("id", currentId) // Exclude current profile from check
+        .maybeSingle();
+
+      if (!data) {
+        isUnique = true;
+      } else {
+        finalName = `${baseName}_${counter}`;
+        counter++;
+      }
+    }
+
+    return finalName;
+  };
+
   const updateProfileMutation = useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      const uniqueName = await getUniqueProfileName(user.id, name, id);
+      console.log("Generated unique profile name for update:", uniqueName);
+
       const { error } = await supabase
         .from("user_profiles")
-        .update({ profile_name: name })
+        .update({ profile_name: uniqueName })
         .eq("id", id);
 
       if (error) throw error;
+      return uniqueName;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profiles"] });

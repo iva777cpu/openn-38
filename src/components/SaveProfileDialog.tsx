@@ -26,20 +26,28 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
   const [profileName, setProfileName] = useState("");
   const { toast } = useToast();
 
-  const checkDuplicateProfileName = async (userId: string, name: string) => {
-    const { data, error } = await supabase
-      .from("user_profiles")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("profile_name", name)
-      .single();
+  const getUniqueProfileName = async (userId: string, baseName: string) => {
+    let finalName = baseName;
+    let counter = 1;
+    let isUnique = false;
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 means no rows returned, which is what we want
-      throw error;
+    while (!isUnique) {
+      const { data } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("profile_name", finalName)
+        .maybeSingle();
+
+      if (!data) {
+        isUnique = true;
+      } else {
+        finalName = `${baseName}_${counter}`;
+        counter++;
+      }
     }
 
-    return !!data;
+    return finalName;
   };
 
   const handleSaveProfile = async () => {
@@ -57,20 +65,13 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         return;
       }
 
-      // Check for duplicate profile name
-      const isDuplicate = await checkDuplicateProfileName(user.id, profileName);
-      if (isDuplicate) {
-        toast({
-          title: "Error",
-          description: "A profile with this name already exists. Please choose a different name.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Get a unique name for the profile
+      const uniqueName = await getUniqueProfileName(user.id, profileName);
+      console.log("Generated unique profile name:", uniqueName);
 
       const { error } = await supabase.from("user_profiles").insert({
         user_id: user.id,
-        profile_name: profileName,
+        profile_name: uniqueName,
         user_age: profileData.userAge,
         user_gender: profileData.userGender,
         user_impression: profileData.impression,
@@ -116,7 +117,7 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Save Profile</DialogTitle>
           <DialogDescription className="text-[#EDEDDD] opacity-90">
-            Enter a unique name for this profile.
+            Enter a name for this profile.
           </DialogDescription>
         </DialogHeader>
         <SaveProfileForm
