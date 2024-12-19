@@ -61,9 +61,12 @@
   }
 
   /* Auth UI specific styles */
-  div[data-component-path="src/pages/Login.tsx"],
+  div[data-component-path="src/pages/Login.tsx"] {
+    @apply bg-[#2D4531] !important;
+  }
+
   div[data-component-path="src/pages/Login.tsx"] #root {
-    @apply !bg-[#EDEDDD] !important;
+    @apply bg-[#2D4531] !important;
   }
 
   /* Override Auth UI styles for left alignment */
