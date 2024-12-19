@@ -43,9 +43,9 @@
 }
 
 .toast-viewport {
-  @apply fixed bottom-0 right-0 flex flex-col p-4 gap-2 w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none;
+  @apply fixed bottom-0 right-0 flex flex-col p-4 gap-2 w-full md:max-w-[420px] max-h-screen z-[100] outline-none;
 }
 
 .toast {
-  @apply bg-background border rounded-md shadow-lg pointer-events-auto relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6;
+  @apply bg-background border rounded-md shadow-lg relative w-full items-center justify-between gap-4 overflow-hidden transition-all p-4 pr-6 mx-auto max-w-md;
 }
