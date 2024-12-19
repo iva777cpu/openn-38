@@ -59,41 +59,6 @@
   html.dark {
     @apply bg-[#303D24] text-[#EDEDDD];
   }
-  
-  /* Override root background only for auth pages */
-  [data-component-path="src/pages/Login.tsx"] #root {
-    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD] h-screen overflow-auto;
-  }
-
-  /* Regular app root styling */
-  #root:not([data-component-path="src/pages/Login.tsx"] #root) {
-    @apply min-h-screen bg-[#EDEDDD] dark:bg-[#303D24];
-  }
-
-  /* Auth UI specific styles */
-  div[data-component-path="src/pages/Login.tsx"] {
-    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
-  }
-
-  /* Keep the auth container dark */
-  div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
-    @apply !bg-[#2D4531];
-  }
-
-  /* Keep existing auth UI styles */
-  .supabase-auth-ui_ui-container form > div > label,
-  .supabase-auth-ui_ui-container form > div > div > label {
-    @apply text-left !important;
-    text-align: left !important;
-  }
-
-  .supabase-auth-ui_ui-container form > div {
-    @apply text-left;
-  }
-
-  #root {
-    text-align: left !important;
-  }
 
   /* Auth UI Button Styles */
   .auth-button {
@@ -108,6 +73,17 @@
   /* Auth Container Styles */
   .auth-container {
     @apply space-y-4;
+  }
+
+  /* Auth UI Label Styles */
+  .supabase-auth-ui_ui-container form > div > label,
+  .supabase-auth-ui_ui-container form > div > div > label {
+    @apply text-left !important;
+    text-align: left !important;
+  }
+
+  .supabase-auth-ui_ui-container form > div {
+    @apply text-left;
   }
 
   /* Save Profile Input Styles */
