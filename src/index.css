@@ -62,7 +62,7 @@
   
   /* Override root background only for auth pages */
   [data-component-path="src/pages/Login.tsx"] #root {
-    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
+    @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD] h-screen overflow-auto;
   }
 
   /* Regular app root styling */
