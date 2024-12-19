@@ -61,20 +61,30 @@
   #root {
     @apply min-h-screen bg-[#EDEDDD] dark:bg-[#303D24];
   }
-}
 
-/* Override Auth UI styles for left alignment */
-.supabase-auth-ui_ui-container form > div > label,
-.supabase-auth-ui_ui-container form > div > div > label {
-  @apply text-left !important;
-  text-align: left !important;
-}
+  /* Override Auth UI styles for left alignment */
+  .supabase-auth-ui_ui-container form > div > label,
+  .supabase-auth-ui_ui-container form > div > div > label {
+    @apply text-left !important;
+    text-align: left !important;
+  }
 
-.supabase-auth-ui_ui-container form > div {
-  @apply text-left;
-}
+  .supabase-auth-ui_ui-container form > div {
+    @apply text-left;
+  }
 
-/* Override root text alignment */
-#root {
-  text-align: left !important;
+  /* Override root text alignment */
+  #root {
+    text-align: left !important;
+  }
+
+  /* Auth UI Button Styles */
+  .supabase-auth-ui_ui-button {
+    @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] hover:!bg-[#47624B]/90 dark:!bg-[#47624B] dark:hover:!bg-[#47624B]/90 !important;
+  }
+
+  /* Auth UI Input Styles */
+  .supabase-auth-ui_ui-input {
+    @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] focus:!ring-0 focus:!outline-none !important;
+  }
 }
