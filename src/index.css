@@ -75,11 +75,12 @@
     @apply !bg-[#EDEDDD] dark:!bg-[#EDEDDD];
   }
 
+  /* Keep the auth container dark */
   div[data-component-path="src/pages/Login.tsx"] .w-full.max-w-md {
     @apply !bg-[#2D4531];
   }
 
-  /* Override Auth UI styles for left alignment */
+  /* Keep existing auth UI styles */
   .supabase-auth-ui_ui-container form > div > label,
   .supabase-auth-ui_ui-container form > div > div > label {
     @apply text-left !important;
@@ -90,7 +91,6 @@
     @apply text-left;
   }
 
-  /* Override root text alignment */
   #root {
     text-align: left !important;
   }
