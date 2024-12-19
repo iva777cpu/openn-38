@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { Menu, Plus, Save, BookmarkPlus, Users, LogOut, Sun, Moon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SideMenuProps {
   onNewProfile: () => void;
@@ -24,7 +25,37 @@ export const SideMenu: React.FC<SideMenuProps> = ({
 }) => {
   const [isDarkMode, setIsDarkMode] = React.useState(true);
 
-  React.useEffect(() => {
+  // Check system preference and stored preference on mount
+  useEffect(() => {
+    const checkThemePreference = async () => {
+      // First check if user has a stored preference
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: preferences } = await supabase
+          .from('user_preferences')
+          .select('theme')
+          .eq('user_id', user.id)
+          .single();
+
+        if (preferences) {
+          setIsDarkMode(preferences.theme === 'dark');
+          return;
+        }
+      }
+
+      // If no stored preference, check system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setIsDarkMode(true);
+      } else {
+        setIsDarkMode(false);
+      }
+    };
+
+    checkThemePreference();
+  }, []);
+
+  // Update theme in UI and persist to database
+  useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {
       root.classList.add("dark");
@@ -33,6 +64,30 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       root.classList.remove("dark");
       root.classList.add("light");
     }
+
+    const updateThemePreference = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: existingPref } = await supabase
+          .from('user_preferences')
+          .select()
+          .eq('user_id', user.id)
+          .single();
+
+        if (existingPref) {
+          await supabase
+            .from('user_preferences')
+            .update({ theme: isDarkMode ? 'dark' : 'light', updated_at: new Date().toISOString() })
+            .eq('user_id', user.id);
+        } else {
+          await supabase
+            .from('user_preferences')
+            .insert({ user_id: user.id, theme: isDarkMode ? 'dark' : 'light' });
+        }
+      }
+    };
+
+    updateThemePreference();
   }, [isDarkMode]);
 
   return (

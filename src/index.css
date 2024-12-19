@@ -43,9 +43,7 @@
     --input: 167 24% 13%;
     --ring: 60 14% 90%;
   }
-}
  
-@layer base {
   * {
     @apply border-border;
   }
@@ -60,6 +58,12 @@
   }
   #root {
     @apply min-h-screen bg-[#EDEDDD] dark:bg-[#303D24];
+  }
+
+  /* Auth UI specific styles */
+  div[data-component-path="src/pages/Login.tsx"],
+  div[data-component-path="src/pages/Login.tsx"] #root {
+    @apply !bg-[#EDEDDD] !important;
   }
 
   /* Override Auth UI styles for left alignment */
