@@ -25,6 +25,16 @@
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
   }
+
+  .dark {
+    --background: #303D24;
+    --foreground: #EDEDDD;
+  }
+
+  :root {
+    --background: #EDEDDD;
+    --foreground: #2D4531;
+  }
 }
  
 @layer base {
@@ -32,7 +42,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground dark:bg-background dark:text-foreground;
   }
   *:focus {
     outline: none !important;

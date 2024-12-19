@@ -1,7 +1,7 @@
 import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
-import { Menu, Plus, Save, BookmarkPlus, Users, LogOut } from "lucide-react";
+import { Menu, Plus, Save, BookmarkPlus, Users, LogOut, Sun, Moon } from "lucide-react";
 
 interface SideMenuProps {
   onNewProfile: () => void;
@@ -22,17 +22,38 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   open,
   onOpenChange,
 }) => {
+  const [isDarkMode, setIsDarkMode] = React.useState(true);
+
+  React.useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetTrigger asChild>
+      <div className="absolute top-4 right-4 flex items-center gap-4">
         <Button
           variant="ghost"
-          className="fixed top-4 right-4 p-2 text-[#EDEDDD] hover:bg-[#2D4531]"
+          size="icon"
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="text-[#EDEDDD] hover:bg-[#2D4531] dark:text-[#EDEDDD]"
         >
-          <Menu className="h-6 w-6" />
+          {isDarkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
         </Button>
-      </SheetTrigger>
-      <SheetContent className="bg-[#2D4531] border-[#1A2A1D]">
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            className="p-2 text-[#EDEDDD] hover:bg-[#2D4531] dark:text-[#EDEDDD]"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+      </div>
+      <SheetContent className="bg-[#2D4531] border-[#1A2A1D] dark:bg-[#2D4531]">
         <div className="space-y-4 mt-8">
           <Button
             variant="ghost"
