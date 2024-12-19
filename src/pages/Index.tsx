@@ -16,6 +16,7 @@ const emptyProfile = {
   impression: "",
   targetAge: "",
   targetGender: "",
+  targetPersonality: "", // Added this field
   mood: "",
   origin: "",
   loves: "",
@@ -97,6 +98,7 @@ const Index = () => {
       impression: profile.user_impression || "",
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
+      targetPersonality: profile.target_personality || "", // Added this line
       mood: profile.target_mood || "",
       origin: profile.target_origin || "",
       loves: profile.target_loves || "",
@@ -128,6 +130,7 @@ const Index = () => {
           user_impression: currentProfile.impression,
           target_age: currentProfile.targetAge,
           target_gender: currentProfile.targetGender,
+          target_personality: currentProfile.targetPersonality, // Added this line
           target_mood: currentProfile.mood,
           target_origin: currentProfile.origin,
           target_loves: currentProfile.loves,
