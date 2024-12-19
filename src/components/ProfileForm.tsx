@@ -8,6 +8,7 @@ import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
 import { GeneralInfoForm } from "./forms/GeneralInfoForm";
 import { IcebreakersSection } from "./forms/IcebreakersSection";
+import { questions } from "@/utils/questions";
 
 interface ProfileFormProps {
   userProfile: Record<string, string>;
