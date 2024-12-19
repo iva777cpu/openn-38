@@ -41,13 +41,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         <SheetTrigger asChild>
           <Button
             variant="ghost"
-            className="p-2 text-[#2D4531] dark:text-[#EDEDDD] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
+            className="p-2 text-[#47624B] dark:text-[#EDEDDD] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
           >
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
       </div>
-      <SheetContent className="bg-[#2D4531] border-[#1A2A1D]">
+      <SheetContent className="bg-[#47624B] dark:bg-[#2D4531] border-[#1A2A1D]">
         <div className="space-y-4 mt-8">
           <Button
             variant="ghost"

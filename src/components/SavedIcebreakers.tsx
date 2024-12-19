@@ -50,15 +50,15 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          className="text-[#47624B] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-xl font-bold text-[#EDEDDD]">Saved Icebreakers</h1>
+        <h1 className="text-xl font-bold text-[#47624B] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
       </div>
 
       {messages?.map((message) => (
-        <Card key={message.id} className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
+        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
           <div className="flex justify-between items-start">
             <p className="flex-grow">{message.message_text}</p>
             <Button
@@ -74,7 +74,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
       ))}
 
       {messages?.length === 0 && (
-        <p className="text-center text-[#EDEDDD]">No saved icebreakers yet.</p>
+        <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">No saved icebreakers yet.</p>
       )}
     </div>
   );

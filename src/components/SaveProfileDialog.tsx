@@ -98,10 +98,10 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
+      <DialogContent className="bg-[#EDEDDD] dark:bg-[#2D4531] text-[#47624B] dark:text-[#EDEDDD] border-[#1A2A1D]">
         <DialogHeader>
-          <DialogTitle>Save Profile</DialogTitle>
-          <DialogDescription className="text-[#EDEDDD] opacity-90">
+          <DialogTitle className="text-[#47624B] dark:text-[#EDEDDD]">Save Profile</DialogTitle>
+          <DialogDescription className="text-[#47624B] dark:text-[#EDEDDD] opacity-90">
             Enter a name for this profile.
           </DialogDescription>
         </DialogHeader>
@@ -113,7 +113,7 @@ export const SaveProfileDialog: React.FC<SaveProfileDialogProps> = ({
           <Button
             onClick={handleSaveProfile}
             disabled={!profileName}
-            className="bg-[#303D24] text-[#EDEDDD] hover:bg-[#1A2A1D]"
+            className="bg-[#1A2A1D] text-[#EDEDDD] hover:bg-[#2D4531]"
           >
             Save
           </Button>

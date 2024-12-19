@@ -25,22 +25,22 @@ export default {
         },
         foreground: {
           DEFAULT: "#EDEDDD",
-          light: "#2D4531",
+          light: "#47624B",
         },
         secondary: {
           DEFAULT: "#2D4531",
-          light: "#2D4531",
+          light: "#47624B",
         },
         accent: {
           DEFAULT: "#1A2A1D",
-          light: "#1A2A1D",
+          light: "#47624B",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         primary: {
           DEFAULT: "#EDEDDD",
-          foreground: "#303D24",
+          foreground: "#47624B",
         },
       },
       borderRadius: {

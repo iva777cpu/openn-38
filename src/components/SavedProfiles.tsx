@@ -118,24 +118,24 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          className="text-[#47624B] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-2xl font-bold text-[#EDEDDD]">Profiles</h1>
+        <h1 className="text-2xl font-bold text-[#47624B] dark:text-[#EDEDDD]">Profiles</h1>
       </div>
 
       {profiles?.map((profile) => (
         <div
           key={profile.id}
-          className="flex items-center justify-between p-3 bg-[#2D4531] rounded-lg"
+          className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg"
         >
           {editingId === profile.id ? (
             <div className="flex items-center gap-2 flex-grow">
               <Input
                 value={editingName}
                 onChange={(e) => setEditingName(e.target.value)}
-                className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
+                className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
               />
               <Button
                 variant="ghost"

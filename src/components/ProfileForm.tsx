@@ -83,32 +83,32 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
           id="firstTime" 
           checked={isFirstTime}
           onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
-          className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD]"
+          className="bg-[#EDEDDD] text-[#47624B] border-[#EDEDDD]"
         />
         <label 
           htmlFor="firstTime"
-          className="text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-[#47624B] dark:text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
           First time approaching this person?
         </label>
       </div>
 
-      <Card className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
         <h2 className="text-lg font-semibold mb-4 text-left">About You</h2>
         <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
         <h2 className="text-lg font-semibold mb-4 text-left">About Them</h2>
         <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
         <h2 className="text-lg font-semibold mb-4 text-left">General Information</h2>
         <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
         <h2 className="text-lg font-semibold mb-4 text-left">Ice Breakers</h2>
         <Button 
           onClick={generateIcebreakers} 
@@ -120,7 +120,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         {icebreakers.length > 0 && (
           <div className="space-y-4">
             {icebreakers.map((icebreaker, index) => (
-              <div key={index} className="p-4 bg-[#2D4531] rounded-md flex justify-between items-start">
+              <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start">
                 <span>{icebreaker}</span>
                 <Button
                   variant="ghost"
