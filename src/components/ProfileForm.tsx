@@ -7,7 +7,7 @@ import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
 import { GeneralInfoForm } from "./forms/GeneralInfoForm";
 import { questions } from "@/utils/questions";
-import { BookmarkPlus } from "lucide-react"; // Added missing import
+import { BookmarkPlus } from "lucide-react";
 
 interface ProfileFormProps {
   userProfile: Record<string, string>;
@@ -83,7 +83,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
           id="firstTime" 
           checked={isFirstTime}
           onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
-          className="bg-[#EDEDDD] text-[#47624B] border-[#EDEDDD]"
+          className="bg-[#47624B] text-[#EDEDDD] border-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD]"
         />
         <label 
           htmlFor="firstTime"
@@ -113,7 +113,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
         <Button 
           onClick={generateIcebreakers} 
           disabled={isLoading}
-          className="w-full mb-4 bg-[#1A2A1D] text-[#EDEDDD] hover:bg-[#2D4531]"
+          className="w-full mb-4 bg-[#2D4531] text-[#EDEDDD] hover:bg-[#2D4531] border border-[#EDEDDD]"
         >
           {isLoading ? "Generating..." : "Generate Ice Breakers"}
         </Button>

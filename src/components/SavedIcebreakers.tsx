@@ -50,11 +50,11 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="text-[#47624B] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-xl font-bold text-[#47624B] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
+        <h1 className="text-xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
       </div>
 
       {messages?.map((message) => (

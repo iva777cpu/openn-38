@@ -11,12 +11,12 @@ export const SaveProfileForm: React.FC<SaveProfileFormProps> = ({
   onChange,
 }) => {
   return (
-    <div className="py-4">
+    <div className="py-4 bg-[#47624B]">
       <Input
         placeholder="Enter profile name"
         value={profileName}
         onChange={onChange}
-        className="bg-[#303D24] text-[#EDEDDD] border-[#1A2A1D]"
+        className="bg-[#47624B] text-[#EDEDDD] border-[#1A2A1D] placeholder:text-[#EDEDDD]/70"
       />
     </div>
   );
