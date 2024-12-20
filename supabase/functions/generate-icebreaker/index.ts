@@ -7,17 +7,17 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { answers, isFirstTime } = await req.json();
-
-    // Check if OPENAI_API_KEY is set
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY is not set');
+    const cohereApiKey = Deno.env.get('COHERE_API_KEY');
+    
+    if (!cohereApiKey) {
+      throw new Error('COHERE_API_KEY is not set');
     }
 
     // Create context from filled answers and their prompts
@@ -30,10 +30,10 @@ serve(async (req) => {
     
     Important guidelines:
     - Mix between these formats with their specific tones:
-      * Casual questions (temperature: 0.5)
-      * Fun facts or observations (temperature: 0.8)
-      * Light-hearted statements (temperature: 0.5)
-      * Friendly banter when appropriate (temperature: 0.8)
+      * Casual questions
+      * Fun facts or observations
+      * Light-hearted statements
+      * Friendly banter when appropriate
       * Be charming and charismatic
       * Add a subtle touch of dark humor when appropriate
     - Keep responses under 30 words each
@@ -45,39 +45,38 @@ serve(async (req) => {
     - Consider the General Information provided
     ${isFirstTime ? '- These should be suitable for a first-time conversation icebreaker, so keep it approachable' : ''}`;
 
-    console.log('Sending prompt to OpenAI:', prompt);
+    console.log('Sending prompt to Cohere:', prompt);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.cohere.ai/v1/generate', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${cohereApiKey}`,
         'Content-Type': 'application/json',
+        'Cohere-Version': '2022-12-06'
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { 
-            role: 'system', 
-            content: 'You are a friendly conversation starter that mixes questions, statements, and fun facts to create engaging ice breakers.'
-          },
-          { role: 'user', content: prompt }
-        ],
+        model: 'command',
+        prompt: prompt,
+        max_tokens: 300,
         temperature: isFirstTime ? 0.9 : 0.7,
+        k: 0,
+        stop_sequences: [],
+        return_likelihoods: 'NONE'
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+      console.error('Cohere API error:', errorData);
+      throw new Error(`Cohere API error: ${errorData.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI response:', data);
+    console.log('Cohere response:', data);
 
     return new Response(
       JSON.stringify({ 
-        icebreakers: data.choices[0].message.content 
+        icebreakers: data.generations[0].text 
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
