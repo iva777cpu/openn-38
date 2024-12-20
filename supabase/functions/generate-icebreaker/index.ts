@@ -53,7 +53,8 @@ ${context}`;
       method: 'POST',
       headers: {
         'x-api-key': anthropicApiKey,
-        'anthropic-version': '2023-06-01',
+        'anthropic-version': '2024-03-15',
+        'anthropic-beta': 'messages-2024-03-15',
         'content-type': 'application/json',
       },
       body: JSON.stringify({
@@ -71,12 +72,17 @@ ${context}`;
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Claude API error:', errorData);
-      throw new Error(`Claude API error: ${errorData.message || 'Unknown error'}`);
+      console.error('Claude API error response:', errorData);
+      throw new Error(`Claude API error: ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
     console.log('Claude response:', data);
+
+    if (!data.content || !data.content[0] || !data.content[0].text) {
+      console.error('Unexpected Claude response structure:', data);
+      throw new Error('Invalid response structure from Claude API');
+    }
 
     return new Response(
       JSON.stringify({ 
