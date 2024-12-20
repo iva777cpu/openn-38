@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
+const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -17,8 +17,8 @@ serve(async (req) => {
   try {
     const { answers, isFirstTime } = await req.json();
     
-    if (!anthropicApiKey) {
-      throw new Error('ANTHROPIC_API_KEY is not set');
+    if (!geminiApiKey) {
+      throw new Error('GEMINI_API_KEY is not set');
     }
 
     // Create context from filled answers and their prompts
@@ -47,61 +47,47 @@ ${isFirstTime ? '- These should be suitable for a first-time conversation icebre
 Here is the context about both people:
 ${context}`;
 
-    console.log('Sending prompt to Claude:', systemPrompt);
+    console.log('Sending prompt to Gemini:', systemPrompt);
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
       method: 'POST',
       headers: {
-        'x-api-key': anthropicApiKey,
-        'anthropic-version': '2024-03-15',
-        'anthropic-beta': 'messages-2024-03-15',
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
+        'x-goog-api-key': geminiApiKey,
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 300,
-        temperature: isFirstTime ? 0.9 : 0.7,
-        messages: [
-          {
-            role: 'user',
-            content: systemPrompt,
-          },
-        ],
+        contents: [{
+          parts: [{
+            text: systemPrompt
+          }]
+        }],
+        generationConfig: {
+          temperature: isFirstTime ? 0.9 : 0.7,
+          maxOutputTokens: 300,
+        },
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Claude API error response:', errorData);
+      console.error('Gemini API error response:', errorData);
       
-      // Check if it's a credit balance error
-      if (errorData.error?.message?.includes('credit balance is too low')) {
-        return new Response(
-          JSON.stringify({ 
-            error: 'Insufficient Claude API credits. Please check your Anthropic account billing.',
-            details: 'Your Anthropic API account needs more credits to generate icebreakers.'
-          }),
-          { 
-            status: 402, // Payment Required
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
-      }
-      
-      throw new Error(`Claude API error: ${JSON.stringify(errorData)}`);
+      throw new Error(`Gemini API error: ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
-    console.log('Claude response:', data);
+    console.log('Gemini response:', data);
 
-    if (!data.content || !data.content[0] || !data.content[0].text) {
-      console.error('Unexpected Claude response structure:', data);
-      throw new Error('Invalid response structure from Claude API');
+    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      console.error('Unexpected Gemini response structure:', data);
+      throw new Error('Invalid response structure from Gemini API');
     }
+
+    const generatedText = data.candidates[0].content.parts[0].text;
 
     return new Response(
       JSON.stringify({ 
-        icebreakers: data.content[0].text 
+        icebreakers: generatedText 
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
