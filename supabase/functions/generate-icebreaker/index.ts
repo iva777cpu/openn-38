@@ -73,6 +73,21 @@ ${context}`;
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Claude API error response:', errorData);
+      
+      // Check if it's a credit balance error
+      if (errorData.error?.message?.includes('credit balance is too low')) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Insufficient Claude API credits. Please check your Anthropic account billing.',
+            details: 'Your Anthropic API account needs more credits to generate icebreakers.'
+          }),
+          { 
+            status: 402, // Payment Required
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+      
       throw new Error(`Claude API error: ${JSON.stringify(errorData)}`);
     }
 
