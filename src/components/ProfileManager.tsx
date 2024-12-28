@@ -97,11 +97,11 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
           id="firstTime" 
           checked={isFirstTime}
           onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
-          className="border-[#47624B] dark:border-[#EDEDDD] data-[state=checked]:bg-[#47624B] dark:data-[state=checked]:bg-[#2D4531]"
+          className="first-time-checkbox"
         />
         <label 
           htmlFor="firstTime"
-          className="text-sm text-[#47624B] dark:text-[#EDEDDD]"
+          className="text-sm font-semibold text-[#47624B] dark:text-[#EDEDDD]"
         >
           First time approaching this person?
         </label>
