@@ -1,13 +1,32 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check if Supabase is accessible
+    const checkSupabaseConnection = async () => {
+      try {
+        const { error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Supabase connection error:", error);
+          if (error.status === 503) {
+            setError("The authentication service is temporarily unavailable. Please try again in a few moments.");
+          }
+        }
+      } catch (err) {
+        console.error("Failed to connect to Supabase:", err);
+        setError("Unable to connect to the authentication service. Please try again later.");
+      }
+    };
+
+    checkSupabaseConnection();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session) {
@@ -26,6 +45,11 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-[#EDEDDD] text-center mb-8">
             Welcome to Openera
           </h1>
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/50 rounded-md p-4 mb-6">
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            </div>
+          )}
           <Auth
             supabaseClient={supabase}
             appearance={{
