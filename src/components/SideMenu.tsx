@@ -30,28 +30,50 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: preferences } = await supabase
+          console.log("Checking theme preferences for user:", user.id);
+          
+          // First try to get existing preferences
+          const { data: preferences, error: fetchError } = await supabase
             .from('user_preferences')
             .select('theme')
             .eq('user_id', user.id)
             .maybeSingle();
 
+          if (fetchError) {
+            console.error("Error fetching theme preferences:", fetchError);
+            return;
+          }
+
           if (preferences) {
+            console.log("Found existing preferences:", preferences);
             setIsDarkMode(preferences.theme === 'dark');
             return;
           }
 
+          // If no preferences exist, create new ones
+          console.log("No existing preferences found, creating new...");
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const defaultTheme = systemPrefersDark ? 'dark' : 'light';
           
-          await supabase
+          const { error: insertError } = await supabase
             .from('user_preferences')
-            .insert({ user_id: user.id, theme: defaultTheme });
-          
+            .insert({ 
+              user_id: user.id, 
+              theme: defaultTheme,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+
+          if (insertError) {
+            console.error("Error creating theme preferences:", insertError);
+            return;
+          }
+
           setIsDarkMode(systemPrefersDark);
           return;
         }
 
+        // If no user, just use system preferences
         setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
       } catch (error) {
         console.error('Error checking theme preference:', error);
@@ -75,13 +97,19 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          await supabase
+          console.log("Updating theme preference to:", isDarkMode ? 'dark' : 'light');
+          
+          const { error } = await supabase
             .from('user_preferences')
             .upsert({ 
               user_id: user.id, 
               theme: isDarkMode ? 'dark' : 'light',
               updated_at: new Date().toISOString()
             });
+
+          if (error) {
+            console.error('Error updating theme preference:', error);
+          }
         }
       } catch (error) {
         console.error('Error updating theme preference:', error);
