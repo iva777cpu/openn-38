@@ -62,15 +62,13 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     localStorage.setItem('persistedIcebreakers', JSON.stringify(icebreakers));
   };
 
-  // Scroll to form when showing it
+  // Reset scroll position when showing forms
   useEffect(() => {
-    if (!showProfiles && !showSavedIcebreakers && formRef.current) {
-      console.log("Attempting to scroll to form");
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+    if (!showProfiles && !showSavedIcebreakers) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      console.log("Reset scroll position");
     }
-  }, [showProfiles, showSavedIcebreakers, selectedProfileId]);
+  }, [showProfiles, showSavedIcebreakers]);
 
   if (showProfiles) {
     return (

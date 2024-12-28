@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "./ui/button";
-import { Edit2, ArrowLeft, Save } from "lucide-react";
-import { Input } from "./ui/input";
-import { Checkbox } from "./ui/checkbox";
+import { ProfileHeader } from "./profiles/ProfileHeader";
+import { ProfileListItem } from "./profiles/ProfileListItem";
 
 interface SavedProfilesProps {
   onSelectProfile: (profile: any) => void;
@@ -78,9 +76,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
       setEditingId(null);
     },
-    onError: (error) => {
-      console.error("Failed to update profile name:", error);
-    },
   });
 
   const handleDeleteSelected = async () => {
@@ -117,85 +112,31 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     }
   };
 
-  const startEditing = (profile: any) => {
-    setEditingId(profile.id);
-    setEditingName(profile.profile_name);
-  };
-
-  const handleProfileSelect = (profile: any) => {
-    console.log("Selecting profile:", profile.id);
-    onSelectProfile(profile);
-  };
-
   return (
     <section className="space-y-4">
-      <header className="flex items-center mb-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
-      </header>
-
-      {selectedProfiles.size > 0 && (
-        <Button
-          onClick={handleDeleteSelected}
-          className="delete-selected-button"
-        >
-          Delete Selected ({selectedProfiles.size})
-        </Button>
-      )}
+      <ProfileHeader
+        selectedCount={selectedProfiles.size}
+        onBack={onBack}
+        onDeleteSelected={handleDeleteSelected}
+      />
 
       <div className="space-y-2">
         {profiles?.map((profile) => (
-          <div
+          <ProfileListItem
             key={profile.id}
-            className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg profile-box"
-          >
-            <div className="flex items-center gap-3 flex-grow">
-              <Checkbox
-                checked={selectedProfiles.has(profile.id)}
-                onCheckedChange={() => toggleProfileSelection(profile.id)}
-                className="border-[#EDEDDD] bg-transparent"
-              />
-              {editingId === profile.id ? (
-                <div className="flex items-center gap-2 flex-grow">
-                  <Input
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleSaveProfileName}
-                    className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
-                  >
-                    <Save className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <span
-                  className="text-[#EDEDDD] cursor-pointer flex-grow"
-                  onClick={() => handleProfileSelect(profile)}
-                >
-                  {profile.profile_name}
-                </span>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => startEditing(profile)}
-              className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            >
-              <Edit2 className="h-4 w-4" />
-            </Button>
-          </div>
+            profile={profile}
+            editingId={editingId}
+            editingName={editingName}
+            selectedProfiles={selectedProfiles}
+            onEdit={(profile) => {
+              setEditingId(profile.id);
+              setEditingName(profile.profile_name);
+            }}
+            onSave={handleSaveProfileName}
+            onSelect={toggleProfileSelection}
+            onEditNameChange={setEditingName}
+            onProfileSelect={onSelectProfile}
+          />
         ))}
       </div>
     </section>

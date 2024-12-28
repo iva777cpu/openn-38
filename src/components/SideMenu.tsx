@@ -117,12 +117,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   const handleNewProfile = () => {
     onNewProfile();
     onOpenChange(false);
-    setTimeout(() => {
-      const formsSection = document.querySelector('.profile-form-section');
-      if (formsSection) {
-        formsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
