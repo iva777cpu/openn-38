@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Button } from "./ui/button";
-import { Menu, Plus, Save, BookmarkPlus, Users, LogOut, Sun, Moon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { MenuButton } from "./menu/MenuButton";
+import { MenuContent } from "./menu/MenuContent";
 
 interface SideMenuProps {
   onNewProfile: () => void;
@@ -25,11 +25,9 @@ export const SideMenu: React.FC<SideMenuProps> = ({
 }) => {
   const [isDarkMode, setIsDarkMode] = React.useState(true);
 
-  // Check system preference and stored preference on mount
   useEffect(() => {
     const checkThemePreference = async () => {
       try {
-        // First check if user has a stored preference
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: preferences } = await supabase
@@ -43,27 +41,18 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             return;
           }
 
-          // If no preferences exist, create default based on system preference
-          const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const defaultTheme = systemPrefersDark ? 'dark' : 'light';
           
           await supabase
             .from('user_preferences')
-            .insert({ 
-              user_id: user.id, 
-              theme: defaultTheme 
-            });
+            .insert({ user_id: user.id, theme: defaultTheme });
           
           setIsDarkMode(systemPrefersDark);
           return;
         }
 
-        // If no user, check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          setIsDarkMode(true);
-        } else {
-          setIsDarkMode(false);
-        }
+        setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
       } catch (error) {
         console.error('Error checking theme preference:', error);
       }
@@ -72,7 +61,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     checkThemePreference();
   }, []);
 
-  // Update theme in UI and persist to database
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {
@@ -87,28 +75,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: existingPref } = await supabase
+          await supabase
             .from('user_preferences')
-            .select()
-            .eq('user_id', user.id)
-            .maybeSingle();
-
-          if (existingPref) {
-            await supabase
-              .from('user_preferences')
-              .update({ 
-                theme: isDarkMode ? 'dark' : 'light', 
-                updated_at: new Date().toISOString() 
-              })
-              .eq('user_id', user.id);
-          } else {
-            await supabase
-              .from('user_preferences')
-              .insert({ 
-                user_id: user.id, 
-                theme: isDarkMode ? 'dark' : 'light' 
-              });
-          }
+            .upsert({ 
+              user_id: user.id, 
+              theme: isDarkMode ? 'dark' : 'light',
+              updated_at: new Date().toISOString()
+            });
         }
       } catch (error) {
         console.error('Error updating theme preference:', error);
@@ -121,85 +94,44 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   const handleNewProfile = () => {
     onNewProfile();
     onOpenChange(false);
-    // Scroll to the forms section
-    const formsSection = document.querySelector('.profile-form-section');
-    if (formsSection) {
-      formsSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Scroll to the forms section with a slight delay to ensure DOM is ready
+    setTimeout(() => {
+      const formsSection = document.querySelector('.profile-form-section');
+      if (formsSection) {
+        formsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <div className="absolute top-4 right-4">
         <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            className="p-2 text-[#47624B] dark:text-[#EDEDDD] hover:bg-[#2D4531] hover:text-[#EDEDDD]"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
+          <MenuButton onClick={() => {}} />
         </SheetTrigger>
       </div>
       <SheetContent className="bg-[#47624B] dark:bg-[#2D4531] border-[#1A2A1D]">
-        <div className="space-y-4 mt-8">
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={handleNewProfile}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            New Profile
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={onSaveProfile}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            Save Profile
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={onViewProfiles}
-          >
-            <Users className="mr-2 h-4 w-4" />
-            Profiles
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={onViewSavedMessages}
-          >
-            <BookmarkPlus className="mr-2 h-4 w-4" />
-            Saved Icebreakers
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={() => setIsDarkMode(!isDarkMode)}
-          >
-            {isDarkMode ? (
-              <>
-                <Sun className="mr-2 h-4 w-4" />
-                Light Mode
-              </>
-            ) : (
-              <>
-                <Moon className="mr-2 h-4 w-4" />
-                Dark Mode
-              </>
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={onLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
+        <MenuContent
+          isDarkMode={isDarkMode}
+          onNewProfile={handleNewProfile}
+          onSaveProfile={() => {
+            onSaveProfile();
+            onOpenChange(false);
+          }}
+          onViewProfiles={() => {
+            onViewProfiles();
+            onOpenChange(false);
+          }}
+          onViewSavedMessages={() => {
+            onViewSavedMessages();
+            onOpenChange(false);
+          }}
+          onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+          onLogout={() => {
+            onLogout();
+            onOpenChange(false);
+          }}
+        />
       </SheetContent>
     </Sheet>
   );

@@ -122,6 +122,18 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     setEditingName(profile.profile_name);
   };
 
+  const handleProfileSelect = (profile: any) => {
+    console.log("Selecting profile:", profile.id);
+    onSelectProfile(profile);
+    // Scroll to the forms section with a slight delay to ensure DOM is ready
+    setTimeout(() => {
+      const formsSection = document.querySelector('.profile-form-section');
+      if (formsSection) {
+        formsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
   return (
     <section className="space-y-4">
       <header className="flex items-center mb-2">
@@ -139,7 +151,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
       {selectedProfiles.size > 0 && (
         <Button
           onClick={handleDeleteSelected}
-          className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm"
+          className="delete-selected-button"
         >
           Delete Selected ({selectedProfiles.size})
         </Button>
@@ -149,13 +161,13 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         {profiles?.map((profile) => (
           <div
             key={profile.id}
-            className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg border border-transparent dark:border-[#EDEDDD]"
+            className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg profile-box"
           >
             <div className="flex items-center gap-3 flex-grow">
               <Checkbox
                 checked={selectedProfiles.has(profile.id)}
                 onCheckedChange={() => toggleProfileSelection(profile.id)}
-                className="border-[#EDEDDD]"
+                className="border-[#EDEDDD] bg-transparent"
               />
               {editingId === profile.id ? (
                 <div className="flex items-center gap-2 flex-grow">
@@ -176,7 +188,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
               ) : (
                 <span
                   className="text-[#EDEDDD] cursor-pointer flex-grow"
-                  onClick={() => onSelectProfile(profile)}
+                  onClick={() => handleProfileSelect(profile)}
                 >
                   {profile.profile_name}
                 </span>

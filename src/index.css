@@ -76,7 +76,7 @@
 
   /* Profile and Icebreaker Box Styles */
   .profile-box, .icebreaker-box {
-    @apply dark:border dark:border-[#EDEDDD];
+    @apply border border-transparent dark:border-[#EDEDDD] dark:border-2;
   }
 
   /* Delete Selected Button Styles */
