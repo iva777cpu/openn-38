@@ -30,24 +30,24 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-left">About You</h2>
+    <section className="max-w-2xl mx-auto space-y-6">
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-4">About You</h2>
         <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-left">About Them</h2>
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-4">About Them</h2>
         <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD] mb-6">
-        <h2 className="text-lg font-semibold mb-4 text-left">General Information</h2>
+      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-4">General Information</h2>
         <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
       <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4 text-left">Ice Breakers</h2>
+        <h2 className="text-lg font-semibold mb-4">Ice Breakers</h2>
         <IcebreakerGenerator 
           userProfile={userProfile}
           onIcebreakersGenerated={handleIcebreakersGenerated}
@@ -59,6 +59,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           onToggleSave={toggleIcebreaker}
         />
       </Card>
-    </div>
+    </section>
   );
 };

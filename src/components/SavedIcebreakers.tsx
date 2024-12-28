@@ -58,8 +58,8 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
   };
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex items-center mb-2">
+    <section className="space-y-4">
+      <header className="flex items-center mb-2">
         <Button
           variant="ghost"
           size="icon"
@@ -69,33 +69,35 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
-      </div>
+      </header>
 
       {selectedMessages.size > 0 && (
         <Button
           onClick={handleDeleteSelected}
-          className="delete-selected-button"
+          className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm"
         >
           Delete Selected ({selectedMessages.size})
         </Button>
       )}
 
-      {messages?.map((message) => (
-        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D] icebreaker-box">
-          <div className="flex items-start gap-3">
-            <Checkbox
-              checked={selectedMessages.has(message.id)}
-              onCheckedChange={() => toggleMessageSelection(message.id)}
-              className="mt-1 border-[#EDEDDD]"
-            />
-            <p className="flex-grow">{message.message_text}</p>
-          </div>
-        </Card>
-      ))}
+      <div className="space-y-2">
+        {messages?.map((message) => (
+          <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border border-transparent dark:border-[#EDEDDD]">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                checked={selectedMessages.has(message.id)}
+                onCheckedChange={() => toggleMessageSelection(message.id)}
+                className="mt-1 border-[#EDEDDD]"
+              />
+              <p className="flex-grow">{message.message_text}</p>
+            </div>
+          </Card>
+        ))}
 
-      {messages?.length === 0 && (
-        <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">No saved icebreakers yet.</p>
-      )}
-    </div>
+        {messages?.length === 0 && (
+          <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">No saved icebreakers yet.</p>
+        )}
+      </div>
+    </section>
   );
 };

@@ -123,8 +123,8 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
   };
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex items-center mb-2">
+    <section className="space-y-4">
+      <header className="flex items-center mb-2">
         <Button
           variant="ghost"
           size="icon"
@@ -134,54 +134,54 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
-      </div>
+      </header>
 
       {selectedProfiles.size > 0 && (
         <Button
           onClick={handleDeleteSelected}
-          className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm mb-4"
+          className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm"
         >
           Delete Selected ({selectedProfiles.size})
         </Button>
       )}
 
-      {profiles?.map((profile) => (
-        <div
-          key={profile.id}
-          className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg"
-        >
-          <div className="flex items-center gap-3 flex-grow">
-            <Checkbox
-              checked={selectedProfiles.has(profile.id)}
-              onCheckedChange={() => toggleProfileSelection(profile.id)}
-              className="border-[#EDEDDD]"
-            />
-            {editingId === profile.id ? (
-              <div className="flex items-center gap-2 flex-grow">
-                <Input
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleSaveProfileName}
-                  className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      <div className="space-y-2">
+        {profiles?.map((profile) => (
+          <div
+            key={profile.id}
+            className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg border border-transparent dark:border-[#EDEDDD]"
+          >
+            <div className="flex items-center gap-3 flex-grow">
+              <Checkbox
+                checked={selectedProfiles.has(profile.id)}
+                onCheckedChange={() => toggleProfileSelection(profile.id)}
+                className="border-[#EDEDDD]"
+              />
+              {editingId === profile.id ? (
+                <div className="flex items-center gap-2 flex-grow">
+                  <Input
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleSaveProfileName}
+                    className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                  >
+                    <Save className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <span
+                  className="text-[#EDEDDD] cursor-pointer flex-grow"
+                  onClick={() => onSelectProfile(profile)}
                 >
-                  <Save className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <span
-                className="text-[#EDEDDD] cursor-pointer flex-grow"
-                onClick={() => onSelectProfile(profile)}
-              >
-                {profile.profile_name}
-              </span>
-            )}
-          </div>
-          <div className="flex gap-2">
+                  {profile.profile_name}
+                </span>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="icon"
@@ -191,8 +191,8 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
               <Edit2 className="h-4 w-4" />
             </Button>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 };
