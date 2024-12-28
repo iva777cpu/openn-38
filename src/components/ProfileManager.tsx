@@ -91,7 +91,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }
 
   return (
-    <div className="pt-6" ref={formRef}>
+    <div className="pt-6 content-section" ref={formRef}>
       <ProfileHeader
         onSaveProfile={onSaveProfile}
         selectedProfileId={selectedProfileId}

@@ -122,7 +122,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="content-section space-y-2">
         {profiles?.map((profile) => (
           <ProfileListItem
             key={profile.id}
@@ -137,6 +137,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
             onSave={handleSaveProfileName}
             onSelect={toggleProfileSelection}
             onProfileSelect={onSelectProfile}
+            onEditNameChange={setEditingName}
           />
         ))}
       </div>

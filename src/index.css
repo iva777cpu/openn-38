@@ -67,7 +67,12 @@
 
   /* Section Header Spacing */
   .section-header {
-    @apply pt-8 pb-4;
+    @apply pt-8 pb-4 px-8;
+  }
+
+  /* Content Spacing */
+  .content-section {
+    @apply px-8;
   }
 
   /* First Time Checkbox Styles */

@@ -82,7 +82,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         )}
       </div>
 
-      <div className="space-y-2">
+      <div className="content-section space-y-2">
         {messages?.map((message) => (
           <Card key={message.id} className="icebreaker-box p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD]">
             <div className="flex items-start gap-3">
