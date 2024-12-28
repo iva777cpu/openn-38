@@ -125,13 +125,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
   const handleProfileSelect = (profile: any) => {
     console.log("Selecting profile:", profile.id);
     onSelectProfile(profile);
-    // Scroll to the forms section with a slight delay to ensure DOM is ready
-    setTimeout(() => {
-      const formsSection = document.querySelector('.profile-form-section');
-      if (formsSection) {
-        formsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
   };
 
   return (

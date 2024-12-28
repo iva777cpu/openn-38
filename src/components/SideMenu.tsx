@@ -32,7 +32,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
         if (user) {
           console.log("Checking theme preferences for user:", user.id);
           
-          // First try to get existing preferences
           const { data: preferences, error: fetchError } = await supabase
             .from('user_preferences')
             .select('theme')
@@ -44,19 +43,16 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             return;
           }
 
-          // If preferences exist, use them
           if (preferences) {
             console.log("Found existing preferences:", preferences);
             setIsDarkMode(preferences.theme === 'dark');
             return;
           }
 
-          // If no preferences exist, use system preference
           console.log("No existing preferences found, using system preference");
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           setIsDarkMode(systemPrefersDark);
 
-          // Create initial preferences using upsert to avoid conflicts
           const { error: upsertError } = await supabase
             .from('user_preferences')
             .upsert({ 
@@ -70,7 +66,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             console.error("Error creating initial theme preferences:", upsertError);
           }
         } else {
-          // If no user, just use system preferences
           setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
         }
       } catch (error) {
@@ -122,7 +117,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   const handleNewProfile = () => {
     onNewProfile();
     onOpenChange(false);
-    // Scroll to the forms section with a slight delay to ensure DOM is ready
     setTimeout(() => {
       const formsSection = document.querySelector('.profile-form-section');
       if (formsSection) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ProfileForm } from "./ProfileForm";
 import { SaveProfileDialog } from "./SaveProfileDialog";
 import { SavedProfiles } from "./SavedProfiles";
@@ -41,9 +41,9 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
 }) => {
   const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
   const [isFirstTime, setIsFirstTime] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load persisted form data on component mount
     const savedFormData = localStorage.getItem('currentFormData');
     if (savedFormData) {
       const parsedData = JSON.parse(savedFormData);
@@ -54,7 +54,6 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }, []);
 
   useEffect(() => {
-    // Save form data whenever it changes
     localStorage.setItem('currentFormData', JSON.stringify(currentProfile));
   }, [currentProfile]);
 
@@ -63,10 +62,23 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     localStorage.setItem('persistedIcebreakers', JSON.stringify(icebreakers));
   };
 
+  // Scroll to form when showing it
+  useEffect(() => {
+    if (!showProfiles && !showSavedIcebreakers && formRef.current) {
+      console.log("Attempting to scroll to form");
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [showProfiles, showSavedIcebreakers, selectedProfileId]);
+
   if (showProfiles) {
     return (
       <SavedProfiles 
-        onSelectProfile={handleSelectProfile} 
+        onSelectProfile={(profile) => {
+          handleSelectProfile(profile);
+          setShowProfiles(false);
+        }}
         onBack={() => setShowProfiles(false)}
       />
     );
@@ -81,7 +93,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }
 
   return (
-    <div className="pt-6">
+    <div className="pt-6" ref={formRef}>
       <ProfileHeader
         onSaveProfile={onSaveProfile}
         selectedProfileId={selectedProfileId}
