@@ -12,12 +12,15 @@ interface ProfileFormProps {
   onUpdate: (field: string, value: string) => void;
   persistedIcebreakers: string[];
   onIcebreakersUpdate: (icebreakers: string[]) => void;
+  isFirstTime: boolean;
 }
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({ 
   userProfile, 
   onUpdate,
-  onIcebreakersUpdate
+  onIcebreakersUpdate,
+  persistedIcebreakers,
+  isFirstTime
 }) => {
   const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker } = useIcebreakers();
 
@@ -48,6 +51,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         <IcebreakerGenerator 
           userProfile={userProfile}
           onIcebreakersGenerated={handleIcebreakersGenerated}
+          isFirstTime={isFirstTime}
         />
         <IcebreakerList 
           icebreakers={icebreakers}
