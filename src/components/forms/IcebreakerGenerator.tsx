@@ -7,14 +7,15 @@ import { questions } from "@/utils/questions";
 interface IcebreakerGeneratorProps {
   userProfile: Record<string, string>;
   onIcebreakersGenerated: (icebreakers: string[]) => void;
+  isFirstTime: boolean;
 }
 
 export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
   userProfile,
   onIcebreakersGenerated,
+  isFirstTime,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isFirstTime, setIsFirstTime] = useState(false);
 
   const generateIcebreakers = async () => {
     setIsLoading(true);
