@@ -12,17 +12,35 @@ import { BookmarkPlus } from "lucide-react";
 interface ProfileFormProps {
   userProfile: Record<string, string>;
   onUpdate: (field: string, value: string) => void;
+  persistedIcebreakers: string[];
+  onIcebreakersUpdate: (icebreakers: string[]) => void;
 }
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate }) => {
-  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+export const ProfileForm: React.FC<ProfileFormProps> = ({ 
+  userProfile, 
+  onUpdate,
+  persistedIcebreakers,
+  onIcebreakersUpdate
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
+  const [icebreakers, setIcebreakers] = useState<string[]>([]);
 
   useEffect(() => {
     loadSavedIcebreakers();
+    // Load persisted icebreakers if they exist
+    const savedIcebreakers = localStorage.getItem('persistedIcebreakers');
+    if (savedIcebreakers) {
+      setIcebreakers(JSON.parse(savedIcebreakers));
+    }
   }, []);
+
+  useEffect(() => {
+    if (icebreakers.length > 0) {
+      onIcebreakersUpdate(icebreakers);
+    }
+  }, [icebreakers]);
 
   const loadSavedIcebreakers = async () => {
     try {
@@ -74,7 +92,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
 
       if (error) throw error;
       
-      setIcebreakers(data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim()));
+      const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
+      setIcebreakers(newIcebreakers);
+      localStorage.setItem('persistedIcebreakers', JSON.stringify(newIcebreakers));
     } catch (error) {
       console.error('Error generating icebreakers:', error);
     } finally {
