@@ -118,11 +118,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     updateThemePreference();
   }, [isDarkMode]);
 
-  const handleNewProfile = () => {
-    onNewProfile();
-    onOpenChange(false);
-  };
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <div className="absolute top-4 right-4">
@@ -140,7 +135,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           <Button
             variant="ghost"
             className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            onClick={handleNewProfile}
+            onClick={onNewProfile}
           >
             <Plus className="mr-2 h-4 w-4" />
             New Profile

@@ -59,30 +59,31 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center mb-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onBack}
+            className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
+        </div>
+        {selectedMessages.size > 0 && (
+          <Button
+            variant="destructive"
+            onClick={handleDeleteSelected}
+            className="bg-red-500 hover:bg-red-600"
+          >
+            Delete Selected ({selectedMessages.size})
+          </Button>
+        )}
       </div>
 
-      {selectedMessages.size > 0 && (
-        <Button
-          variant="secondary"
-          onClick={handleDeleteSelected}
-          className="text-xs py-1 px-2 h-auto bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B]/90 dark:hover:bg-[#2D4531]/90 mb-4"
-        >
-          Delete Selected ({selectedMessages.size})
-        </Button>
-      )}
-
       {messages?.map((message) => (
-        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border dark:border-[#EDEDDD]">
+        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
           <div className="flex items-start gap-3">
             <Checkbox
               checked={selectedMessages.has(message.id)}
