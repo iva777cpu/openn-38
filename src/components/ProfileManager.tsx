@@ -4,6 +4,7 @@ import { SaveProfileDialog } from "./SaveProfileDialog";
 import { SavedProfiles } from "./SavedProfiles";
 import { SavedIcebreakers } from "./SavedIcebreakers";
 import { ProfileHeader } from "./ProfileHeader";
+import { Checkbox } from "./ui/checkbox";
 
 interface ProfileManagerProps {
   currentProfile: Record<string, string>;
@@ -39,6 +40,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   selectedProfileName,
 }) => {
   const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
+  const [isFirstTime, setIsFirstTime] = useState(false);
 
   useEffect(() => {
     // Load persisted form data on component mount
@@ -79,7 +81,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }
 
   return (
-    <>
+    <div className="pt-6">
       <ProfileHeader
         onSaveProfile={onSaveProfile}
         selectedProfileId={selectedProfileId}
@@ -90,17 +92,32 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
       <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] text-left mb-4">
         Share as much or as little as you'd like
       </div>
+      <div className="flex items-center space-x-2 mb-4 justify-start">
+        <Checkbox 
+          id="firstTime" 
+          checked={isFirstTime}
+          onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
+          className="border-[#47624B] dark:border-[#EDEDDD] data-[state=checked]:bg-[#47624B] dark:data-[state=checked]:bg-[#2D4531]"
+        />
+        <label 
+          htmlFor="firstTime"
+          className="text-sm text-[#47624B] dark:text-[#EDEDDD]"
+        >
+          First time approaching this person?
+        </label>
+      </div>
       <ProfileForm 
         userProfile={currentProfile} 
         onUpdate={handleUpdateProfile}
         persistedIcebreakers={persistedIcebreakers}
         onIcebreakersUpdate={handleIcebreakersUpdate}
+        isFirstTime={isFirstTime}
       />
       <SaveProfileDialog
         open={saveDialogOpen}
         onOpenChange={setSaveDialogOpen}
         profileData={currentProfile}
       />
-    </>
+    </div>
   );
 };

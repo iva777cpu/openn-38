@@ -140,9 +140,9 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         </div>
         {selectedProfiles.size > 0 && (
           <Button
-            variant="destructive"
+            variant="secondary"
             onClick={handleDeleteSelected}
-            className="bg-red-500 hover:bg-red-600"
+            className="text-xs py-1 px-2 h-auto bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B]/90 dark:hover:bg-[#2D4531]/90"
           >
             Delete Selected ({selectedProfiles.size})
           </Button>

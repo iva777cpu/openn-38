@@ -42,7 +42,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         body: { 
           answers: filledFields,
           isFirstTime,
-          temperature: 0.9
+          temperature: isFirstTime ? 0.8 : 0.7
         }
       });
 
@@ -60,20 +60,6 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
 
   return (
     <div>
-      <div className="flex items-center space-x-2 mb-4 justify-start">
-        <Checkbox 
-          id="firstTime" 
-          checked={isFirstTime}
-          onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
-          className="bg-[#47624B] text-[#EDEDDD] border-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD]"
-        />
-        <label 
-          htmlFor="firstTime"
-          className="text-[#47624B] dark:text-[#EDEDDD] text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          First time approaching this person?
-        </label>
-      </div>
       <Button 
         onClick={generateIcebreakers} 
         disabled={isLoading}

@@ -60,6 +60,11 @@
     @apply bg-[#303D24] text-[#EDEDDD];
   }
 
+  /* Header Spacing */
+  .openera-header {
+    @apply pt-4;
+  }
+
   /* Auth UI Button Styles */
   .auth-button {
     @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] hover:!bg-[#47624B]/90 dark:!bg-[#47624B] dark:hover:!bg-[#47624B]/90 !important;
