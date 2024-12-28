@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { Edit2, Trash2, ArrowLeft, Save } from "lucide-react";
 import { Input } from "./ui/input";
+import { Checkbox } from "./ui/checkbox";
 
 interface SavedProfilesProps {
   onSelectProfile: (profile: any) => void;
@@ -14,6 +15,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [selectedProfiles, setSelectedProfiles] = useState<Set<string>>(new Set());
 
   const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
@@ -81,25 +83,31 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     },
   });
 
-  const handleDeleteProfile = async (id: string) => {
+  const handleDeleteSelected = async () => {
     try {
       const { error } = await supabase
         .from("user_profiles")
         .delete()
-        .eq("id", id);
+        .in("id", Array.from(selectedProfiles));
 
       if (error) throw error;
 
-      console.log("Profile deleted successfully");
+      console.log("Selected profiles deleted successfully");
+      setSelectedProfiles(new Set());
       refetch();
     } catch (error) {
-      console.error("Failed to delete profile:", error);
+      console.error("Failed to delete profiles:", error);
     }
   };
 
-  const startEditing = (profile: any) => {
-    setEditingId(profile.id);
-    setEditingName(profile.profile_name);
+  const toggleProfileSelection = (id: string) => {
+    const newSelected = new Set(selectedProfiles);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedProfiles(newSelected);
   };
 
   const handleSaveProfileName = async () => {
@@ -111,18 +119,34 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     }
   };
 
+  const startEditing = (profile: any) => {
+    setEditingId(profile.id);
+    setEditingName(profile.profile_name);
+  };
+
   return (
     <div className="space-y-4 p-4">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onBack}
+            className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
+        </div>
+        {selectedProfiles.size > 0 && (
+          <Button
+            variant="destructive"
+            onClick={handleDeleteSelected}
+            className="bg-red-500 hover:bg-red-600"
+          >
+            Delete Selected ({selectedProfiles.size})
+          </Button>
+        )}
       </div>
 
       {profiles?.map((profile) => (
@@ -130,30 +154,37 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
           key={profile.id}
           className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg"
         >
-          {editingId === profile.id ? (
-            <div className="flex items-center gap-2 flex-grow">
-              <Input
-                value={editingName}
-                onChange={(e) => setEditingName(e.target.value)}
-                className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleSaveProfileName}
-                className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+          <div className="flex items-center gap-3 flex-grow">
+            <Checkbox
+              checked={selectedProfiles.has(profile.id)}
+              onCheckedChange={() => toggleProfileSelection(profile.id)}
+              className="border-[#EDEDDD]"
+            />
+            {editingId === profile.id ? (
+              <div className="flex items-center gap-2 flex-grow">
+                <Input
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleSaveProfileName}
+                  className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                >
+                  <Save className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <span
+                className="text-[#EDEDDD] cursor-pointer flex-grow"
+                onClick={() => onSelectProfile(profile)}
               >
-                <Save className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <span
-              className="text-[#EDEDDD] cursor-pointer flex-grow"
-              onClick={() => onSelectProfile(profile)}
-            >
-              {profile.profile_name}
-            </span>
-          )}
+                {profile.profile_name}
+              </span>
+            )}
+          </div>
           <div className="flex gap-2">
             <Button
               variant="ghost"
@@ -162,14 +193,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
               className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
             >
               <Edit2 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleDeleteProfile(profile.id)}
-              className="text-[#EDEDDD] hover:bg-[#1A2A1D]"
-            >
-              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>

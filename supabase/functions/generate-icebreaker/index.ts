@@ -9,7 +9,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -21,33 +20,36 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY is not set');
     }
 
-    // Create context from filled answers and their prompts
+    // Calculate average temperature from filled fields
+    const temperatures = Object.values(answers)
+      .map((data: any) => data.temperature)
+      .filter((temp: number) => temp !== undefined);
+    
+    const avgTemperature = temperatures.length > 0
+      ? temperatures.reduce((a: number, b: number) => a + b, 0) / temperatures.length
+      : 0.7;
+
+    // Create context only from filled answers
     const context = Object.entries(answers)
       .map(([key, data]: [string, any]) => `${key}: ${data.value} (${data.prompt})`)
       .join('\n');
 
-    const systemPrompt = `You are a helpful assistant that generates conversation ice breakers. Your task is to generate exactly 3 ice breakers based on the provided context about both the speaker and the target person.
+    const systemPrompt = `You are a sophisticated and witty conversation assistant. Generate exactly 3 engaging ice breakers based on the provided context about both the speaker and the target person.
 
-Important guidelines:
-- Mix between these formats:
-  * Casual questions
-  * Fun facts or observations
-  * Light-hearted statements
-  * Friendly banter when appropriate
-  * Be charming and charismatic
-  * Add a subtle touch of dark humor when appropriate
-- Keep responses under 30 words each
-- Be natural and conversational
-- Return exactly 3 ice breakers, numbered 1-3
-- No introductory text or explanations
-- No exclamation marks or emojis
-- Consider both the speaker's traits and the target's characteristics
-${isFirstTime ? '- These should be suitable for a first-time conversation icebreaker, so keep it approachable' : ''}
+Key guidelines:
+- Be charming and sophisticated, avoid clichés and cheesy lines
+- Use wit and subtle humor when appropriate
+- Show emotional intelligence and cultural awareness
+- Keep responses concise (under 30 words each)
+- Format as numbered list (1-3)
+- Consider both personalities and dynamics
+${isFirstTime ? '- Keep it approachable for first interactions' : ''}
 
-Here is the context about both people:
+Context about both people:
 ${context}`;
 
     console.log('Sending prompt to Gemini:', systemPrompt);
+    console.log('Using calculated temperature:', avgTemperature);
 
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
       method: 'POST',
@@ -62,7 +64,7 @@ ${context}`;
           }]
         }],
         generationConfig: {
-          temperature: isFirstTime ? 0.9 : 0.7,
+          temperature: avgTemperature,
           maxOutputTokens: 300,
         },
       }),
