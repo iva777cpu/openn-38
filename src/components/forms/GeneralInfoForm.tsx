@@ -17,8 +17,8 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ userProfile, o
             type="text"
             value={userProfile[field.id] || ''}
             onChange={(e) => onUpdate(field.id, e.target.value)}
-            className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]/50 text-xs"
-            placeholder={field.examples || `Enter ${field.text.toLowerCase()}`}
+            className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]/50 text-base placeholder:text-xs"
+            placeholder={field.examples}
           />
         </div>
       ))}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,28 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    loadSavedIcebreakers();
+  }, []);
+
+  const loadSavedIcebreakers = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('saved_messages')
+        .select('message_text')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setSavedIcebreakers(new Set(data.map(item => item.message_text)));
+    } catch (error) {
+      console.error('Error loading saved icebreakers:', error);
+    }
+  };
 
   const generateIcebreakers = async () => {
     setIsLoading(true);
@@ -60,21 +82,38 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
     }
   };
 
-  const saveIcebreaker = async (icebreaker: string) => {
+  const toggleIcebreaker = async (icebreaker: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase
-        .from('saved_messages')
-        .insert([{ user_id: user.id, message_text: icebreaker }]);
+      if (savedIcebreakers.has(icebreaker)) {
+        // Delete the icebreaker
+        const { error } = await supabase
+          .from('saved_messages')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('message_text', icebreaker);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
-      console.log('Icebreaker saved successfully');
+        setSavedIcebreakers(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(icebreaker);
+          return newSet;
+        });
+      } else {
+        // Save the icebreaker
+        const { error } = await supabase
+          .from('saved_messages')
+          .insert([{ user_id: user.id, message_text: icebreaker }]);
+
+        if (error) throw error;
+
+        setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
+      }
     } catch (error) {
-      console.error('Error saving icebreaker:', error);
+      console.error('Error toggling icebreaker:', error);
     }
   };
 
@@ -123,20 +162,20 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
           <div className="space-y-4">
             {icebreakers.map((icebreaker, index) => (
               <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start">
-                <span>{icebreaker}</span>
+                <span className="text-base">{icebreaker}</span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => saveIcebreaker(icebreaker)}
-                  className={`ml-2 hover:bg-[#1A2A1D] transition-all ${
-                    savedIcebreakers.has(icebreaker)
-                      ? 'bg-[#1A2A1D] text-[#EDEDDD] dark:bg-[#EDEDDD] dark:text-[#1A2A1D]'
-                      : 'text-[#EDEDDD]'
-                  }`}
+                  onClick={() => toggleIcebreaker(icebreaker)}
+                  className="ml-2 hover:bg-[#1A2A1D] transition-all"
                 >
-                  <BookmarkPlus className={`h-4 w-4 ${
-                    savedIcebreakers.has(icebreaker) ? 'fill-current' : ''
-                  }`} />
+                  <BookmarkPlus 
+                    className={`h-4 w-4 ${
+                      savedIcebreakers.has(icebreaker) 
+                        ? 'fill-[#EDEDDD] stroke-[#EDEDDD]' 
+                        : 'stroke-[#EDEDDD]'
+                    }`}
+                  />
                 </Button>
               </div>
             ))}
