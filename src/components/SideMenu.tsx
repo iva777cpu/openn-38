@@ -44,37 +44,35 @@ export const SideMenu: React.FC<SideMenuProps> = ({
             return;
           }
 
+          // If preferences exist, use them
           if (preferences) {
             console.log("Found existing preferences:", preferences);
             setIsDarkMode(preferences.theme === 'dark');
             return;
           }
 
-          // If no preferences exist, create new ones
-          console.log("No existing preferences found, creating new...");
+          // If no preferences exist, use system preference
+          console.log("No existing preferences found, using system preference");
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const defaultTheme = systemPrefersDark ? 'dark' : 'light';
-          
-          const { error: insertError } = await supabase
+          setIsDarkMode(systemPrefersDark);
+
+          // Create initial preferences using upsert to avoid conflicts
+          const { error: upsertError } = await supabase
             .from('user_preferences')
-            .insert({ 
+            .upsert({ 
               user_id: user.id, 
-              theme: defaultTheme,
+              theme: systemPrefersDark ? 'dark' : 'light',
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
             });
 
-          if (insertError) {
-            console.error("Error creating theme preferences:", insertError);
-            return;
+          if (upsertError) {
+            console.error("Error creating initial theme preferences:", upsertError);
           }
-
-          setIsDarkMode(systemPrefersDark);
-          return;
+        } else {
+          // If no user, just use system preferences
+          setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
         }
-
-        // If no user, just use system preferences
-        setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
       } catch (error) {
         console.error('Error checking theme preference:', error);
       }
@@ -105,6 +103,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({
               user_id: user.id, 
               theme: isDarkMode ? 'dark' : 'light',
               updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
             });
 
           if (error) {
