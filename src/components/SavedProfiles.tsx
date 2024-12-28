@@ -114,11 +114,13 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
 
   return (
     <section className="space-y-4">
-      <ProfileHeader
-        selectedCount={selectedProfiles.size}
-        onBack={onBack}
-        onDeleteSelected={handleDeleteSelected}
-      />
+      <div className="section-header">
+        <ProfileHeader
+          selectedCount={selectedProfiles.size}
+          onBack={onBack}
+          onDeleteSelected={handleDeleteSelected}
+        />
+      </div>
 
       <div className="space-y-2">
         {profiles?.map((profile) => (
@@ -134,7 +136,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
             }}
             onSave={handleSaveProfileName}
             onSelect={toggleProfileSelection}
-            onEditNameChange={setEditingName}
             onProfileSelect={onSelectProfile}
           />
         ))}

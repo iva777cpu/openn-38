@@ -59,26 +59,28 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
 
   return (
     <section className="space-y-4">
-      <header className="flex items-center mb-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
-      </header>
+      <div className="section-header">
+        <header className="flex items-center mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onBack}
+            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-[#303D24] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
+        </header>
 
-      {selectedMessages.size > 0 && (
-        <Button
-          onClick={handleDeleteSelected}
-          className="delete-selected-button"
-        >
-          Delete Selected ({selectedMessages.size})
-        </Button>
-      )}
+        {selectedMessages.size > 0 && (
+          <Button
+            onClick={handleDeleteSelected}
+            className="delete-selected-button"
+          >
+            Delete Selected ({selectedMessages.size})
+          </Button>
+        )}
+      </div>
 
       <div className="space-y-2">
         {messages?.map((message) => (

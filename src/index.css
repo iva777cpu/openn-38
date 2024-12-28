@@ -65,6 +65,11 @@
     @apply pt-4;
   }
 
+  /* Section Header Spacing */
+  .section-header {
+    @apply pt-8 pb-4;
+  }
+
   /* First Time Checkbox Styles */
   .first-time-checkbox {
     @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD] font-semibold;
