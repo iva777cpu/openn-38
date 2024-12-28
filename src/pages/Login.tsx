@@ -8,10 +8,25 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Clear any stale session data on login page load
+    const clearStaleSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        await supabase.auth.signOut();
+      }
+    };
+    
+    clearStaleSession();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log("Auth state changed in Login:", event);
         if (session) {
-          navigate("/");
+          // Verify the session is valid before redirecting
+          const { data: { user }, error } = await supabase.auth.getUser();
+          if (user && !error) {
+            navigate("/");
+          }
         }
       }
     );
