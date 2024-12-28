@@ -15,7 +15,7 @@ export const questions = {
     { id: "hobbies", text: "What are their hobbies?", prompt: "These are the target person's hobbies and activities", temperature: 0.5, examples: "Reading, Gaming, Hiking" },
     { id: "books", text: "What are their favorite books?", prompt: "These are the target person's favorite books", temperature: 0.5, examples: "Harry Potter, The Hobbit, 1984" },
     { id: "music", text: "What's their favorite music?", prompt: "This is the target person's music taste", temperature: 0.5, examples: "Pop, Rock, Classical" },
-    { id: "humor", text: "How would you describe their sense of humor?", prompt: "This is the target person's humor style", temperature: 0.5, examples: "Dark, Dry, Sarcastic" },
+    { id: "humor", text: "How is their sense of humor?", prompt: "This describes the target person's humor style", temperature: 0.5, examples: "Dark, Dry, Sarcastic" },
     { id: "zodiac", text: "What's their zodiac sign?", prompt: "This is the target person's zodiac sign", temperature: 0.5, examples: "Leo, Taurus, Scorpio" },
     { id: "mbti", text: "What's their MBTI type?", prompt: "This is the target person's MBTI personality type", temperature: 0.5, examples: "INTJ, ENFP, ISTP" },
     { id: "style", text: "What's their style?", prompt: "This describes the target person's fashion/aesthetic preferences", temperature: 0.2, examples: "Casual, Elegant, Sporty" }
