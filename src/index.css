@@ -67,11 +67,11 @@
 
   /* First Time Checkbox Styles */
   .first-time-checkbox {
-    @apply border-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD];
+    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD] font-semibold;
   }
 
   html.dark .first-time-checkbox {
-    @apply border-[#EDEDDD] bg-transparent data-[state=checked]:bg-[#EDEDDD] data-[state=checked]:text-[#2D4531];
+    @apply border-[#EDEDDD] bg-[#EDEDDD] data-[state=checked]:bg-[#EDEDDD] data-[state=checked]:text-[#2D4531];
   }
 
   /* Auth UI Button Styles */
@@ -108,5 +108,15 @@
   /* Save Profile Dialog Footer Styles */
   footer button {
     @apply w-full;
+  }
+
+  /* Profile and Icebreaker Box Styles */
+  .profile-box, .icebreaker-box {
+    @apply dark:border dark:border-[#EDEDDD];
+  }
+
+  /* Delete Selected Button Styles */
+  .delete-selected-button {
+    @apply bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm mb-4;
   }
 }

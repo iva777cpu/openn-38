@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
-import { Trash2, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 
 interface SavedIcebreakersProps {
@@ -38,8 +38,6 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         .in("id", Array.from(selectedMessages));
 
       if (error) throw error;
-
-      console.log("Selected messages deleted successfully");
       setSelectedMessages(new Set());
       refetch();
     } catch (error) {
@@ -47,43 +45,31 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
     }
   };
 
-  const toggleMessageSelection = (id: string) => {
-    const newSelected = new Set(selectedMessages);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedMessages(newSelected);
-  };
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
-        </div>
-        {selectedMessages.size > 0 && (
-          <Button
-            variant="destructive"
-            onClick={handleDeleteSelected}
-            className="bg-red-500 hover:bg-red-600"
-          >
-            Delete Selected ({selectedMessages.size})
-          </Button>
-        )}
+    <div className="space-y-4 p-4">
+      <div className="flex items-center mb-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
       </div>
 
+      {selectedMessages.size > 0 && (
+        <Button
+          onClick={handleDeleteSelected}
+          className="delete-selected-button"
+        >
+          Delete Selected ({selectedMessages.size})
+        </Button>
+      )}
+
       {messages?.map((message) => (
-        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D]">
+        <Card key={message.id} className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#1A2A1D] icebreaker-box">
           <div className="flex items-start gap-3">
             <Checkbox
               checked={selectedMessages.has(message.id)}

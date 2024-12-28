@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
-import { Edit2, Trash2, ArrowLeft, Save } from "lucide-react";
+import { Edit2, ArrowLeft, Save } from "lucide-react";
 import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
 
@@ -91,8 +91,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         .in("id", Array.from(selectedProfiles));
 
       if (error) throw error;
-
-      console.log("Selected profiles deleted successfully");
       setSelectedProfiles(new Set());
       refetch();
     } catch (error) {
@@ -126,28 +124,26 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
 
   return (
     <div className="space-y-4 p-4">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
-        </div>
-        {selectedProfiles.size > 0 && (
-          <Button
-            variant="secondary"
-            onClick={handleDeleteSelected}
-            className="text-xs py-1 px-2 h-auto bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B]/90 dark:hover:bg-[#2D4531]/90"
-          >
-            Delete Selected ({selectedProfiles.size})
-          </Button>
-        )}
+      <div className="flex items-center mb-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onBack}
+          className="text-[#1A2A1D] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+        <h1 className="text-2xl font-bold text-[#1A2A1D] dark:text-[#EDEDDD]">Profiles</h1>
       </div>
+
+      {selectedProfiles.size > 0 && (
+        <Button
+          onClick={handleDeleteSelected}
+          className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#47624B]/90 px-3 py-1.5 rounded-md text-sm mb-4"
+        >
+          Delete Selected ({selectedProfiles.size})
+        </Button>
+      )}
 
       {profiles?.map((profile) => (
         <div
