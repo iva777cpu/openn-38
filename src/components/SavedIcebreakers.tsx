@@ -75,7 +75,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         {selectedMessages.size > 0 && (
           <Button
             onClick={handleDeleteSelected}
-            className="delete-selected-button"
+            className="bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B] px-3 py-1.5 rounded-md text-sm"
           >
             Delete Selected ({selectedMessages.size})
           </Button>
