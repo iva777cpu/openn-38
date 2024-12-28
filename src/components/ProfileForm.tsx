@@ -18,6 +18,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
   const [icebreakers, setIcebreakers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
+  const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
 
   const generateIcebreakers = async () => {
     setIsLoading(true);
@@ -70,6 +71,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
 
       if (error) throw error;
 
+      setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
       console.log('Icebreaker saved successfully');
     } catch (error) {
       console.error('Error saving icebreaker:', error);
@@ -126,9 +128,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ userProfile, onUpdate 
                   variant="ghost"
                   size="icon"
                   onClick={() => saveIcebreaker(icebreaker)}
-                  className="ml-2 text-[#EDEDDD] hover:bg-[#1A2A1D]"
+                  className={`ml-2 hover:bg-[#1A2A1D] transition-all ${
+                    savedIcebreakers.has(icebreaker)
+                      ? 'bg-[#1A2A1D] text-[#EDEDDD] dark:bg-[#EDEDDD] dark:text-[#1A2A1D]'
+                      : 'text-[#EDEDDD]'
+                  }`}
                 >
-                  <BookmarkPlus className="h-4 w-4" />
+                  <BookmarkPlus className={`h-4 w-4 ${
+                    savedIcebreakers.has(icebreaker) ? 'fill-current' : ''
+                  }`} />
                 </Button>
               </div>
             ))}
