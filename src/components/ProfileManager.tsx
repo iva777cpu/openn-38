@@ -64,6 +64,11 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
         profileName={selectedProfileName}
         hasChanges={hasChanges}
       />
+      <div className="text-right mb-4">
+        <span className="text-xs text-[#47624B] dark:text-[#EDEDDD]">
+          Share as much or as little as you'd like
+        </span>
+      </div>
       <ProfileForm userProfile={currentProfile} onUpdate={handleUpdateProfile} />
       <SaveProfileDialog
         open={saveDialogOpen}
