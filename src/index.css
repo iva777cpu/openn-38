@@ -74,42 +74,6 @@
     @apply border-[#EDEDDD] bg-[#EDEDDD] data-[state=checked]:bg-[#EDEDDD] data-[state=checked]:text-[#2D4531];
   }
 
-  /* Auth UI Button Styles */
-  .auth-button {
-    @apply !bg-[#47624B] !text-[#EDEDDD] !border !border-[#EDEDDD] hover:!bg-[#47624B]/90 dark:!bg-[#47624B] dark:hover:!bg-[#47624B]/90 !important;
-  }
-
-  /* Auth UI Input Styles */
-  .auth-input {
-    @apply !bg-[#EDEDDD] !text-[#1A2A1D] !border !border-[#EDEDDD] focus:!ring-0 focus:!outline-none !important;
-  }
-
-  /* Auth Container Styles */
-  .auth-container {
-    @apply space-y-4;
-  }
-
-  /* Auth UI Label Styles */
-  .supabase-auth-ui_ui-container form > div > label,
-  .supabase-auth-ui_ui-container form > div > div > label {
-    @apply text-left !important;
-    text-align: left !important;
-  }
-
-  .supabase-auth-ui_ui-container form > div {
-    @apply text-left;
-  }
-
-  /* Save Profile Input Styles */
-  input {
-    @apply w-full focus:ring-0 focus:outline-none;
-  }
-
-  /* Save Profile Dialog Footer Styles */
-  footer button {
-    @apply w-full;
-  }
-
   /* Profile and Icebreaker Box Styles */
   .profile-box, .icebreaker-box {
     @apply dark:border dark:border-[#EDEDDD];
