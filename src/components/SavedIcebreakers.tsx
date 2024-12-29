@@ -60,22 +60,24 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
   return (
     <section className="space-y-4">
       <div className="section-header">
-        <header className="flex items-center mb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-2"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-2xl font-bold text-[#303D24] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
-        </header>
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onBack}
+              className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-2"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <h1 className="text-2xl font-bold text-[#303D24] dark:text-[#EDEDDD]">Saved Icebreakers</h1>
+          </div>
+        </div>
 
         {selectedMessages.size > 0 && (
           <Button
             onClick={handleDeleteSelected}
-            className="delete-selected-button mb-2"
+            className="delete-selected-button mb-4"
           >
             Delete Selected ({selectedMessages.size})
           </Button>

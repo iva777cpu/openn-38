@@ -91,6 +91,10 @@
 
   /* Delete Selected Button Styles */
   .delete-selected-button {
-    @apply bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B] px-3 py-1.5 rounded-md text-sm;
+    @apply bg-[#47624B] text-[#303D24] hover:bg-[#2D4531] hover:text-[#EDEDDD] px-3 py-1.5 rounded-md text-sm;
+  }
+
+  html.dark .delete-selected-button {
+    @apply bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B];
   }
 }
