@@ -10,7 +10,6 @@ const Index = () => {
   const [showProfiles, setShowProfiles] = useState(false);
   const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const {
     currentProfile,
@@ -48,15 +47,6 @@ const Index = () => {
     }
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    if (!isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD]">
       <SideMenu
@@ -71,8 +61,6 @@ const Index = () => {
         onLogout={handleLogout}
         open={menuOpen}
         onOpenChange={setMenuOpen}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
       />
       <ProfileManager
         currentProfile={currentProfile}

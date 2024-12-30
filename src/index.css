@@ -67,7 +67,7 @@
 
   /* Section Header Spacing */
   .section-header {
-    @apply pt-8 pb-2 px-8;
+    @apply pt-8 px-8;
   }
 
   /* Content Spacing */
@@ -91,6 +91,16 @@
 
   /* Delete Selected Button Styles */
   .delete-selected-button {
-    @apply bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B] px-3 py-1.5 rounded-md text-sm;
+    @apply bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-3 py-1.5 rounded-md text-sm mb-4;
+  }
+
+  /* Profile Form Spacing */
+  .content-section > section {
+    @apply space-y-4;
+  }
+
+  /* Section Header Alignment */
+  .section-header header {
+    @apply flex items-center gap-4;
   }
 }

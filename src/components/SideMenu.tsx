@@ -1,5 +1,6 @@
-import React from "react";
-import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import React, { useEffect } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { supabase } from "@/integrations/supabase/client";
 import { MenuButton } from "./menu/MenuButton";
 import { MenuContent } from "./menu/MenuContent";
 
@@ -11,8 +12,6 @@ interface SideMenuProps {
   onLogout: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  isDarkMode: boolean;
-  onToggleTheme: () => void;
 }
 
 export const SideMenu: React.FC<SideMenuProps> = ({
@@ -23,24 +22,136 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   onLogout,
   open,
   onOpenChange,
-  isDarkMode,
-  onToggleTheme,
 }) => {
+  const [isDarkMode, setIsDarkMode] = React.useState(true);
+
+  useEffect(() => {
+    const checkThemePreference = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          console.log("Checking theme preferences for user:", user.id);
+          
+          const { data: preferences, error: fetchError } = await supabase
+            .from('user_preferences')
+            .select('theme')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (fetchError) {
+            console.error("Error fetching theme preferences:", fetchError);
+            return;
+          }
+
+          if (preferences) {
+            console.log("Found existing preferences:", preferences);
+            setIsDarkMode(preferences.theme === 'dark');
+            return;
+          }
+
+          console.log("No existing preferences found, using system preference");
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          setIsDarkMode(systemPrefersDark);
+
+          const { error: upsertError } = await supabase
+            .from('user_preferences')
+            .upsert({ 
+              user_id: user.id, 
+              theme: systemPrefersDark ? 'dark' : 'light',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+
+          if (upsertError) {
+            console.error("Error creating initial theme preferences:", upsertError);
+          }
+        } else {
+          setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+      } catch (error) {
+        console.error('Error checking theme preference:', error);
+      }
+    };
+
+    checkThemePreference();
+  }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.classList.remove("dark");
+      root.classList.add("light");
+    }
+
+    const updateThemePreference = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          console.log("Updating theme preference to:", isDarkMode ? 'dark' : 'light');
+          
+          const { error } = await supabase
+            .from('user_preferences')
+            .upsert({ 
+              user_id: user.id, 
+              theme: isDarkMode ? 'dark' : 'light',
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
+            });
+
+          if (error) {
+            console.error('Error updating theme preference:', error);
+          }
+        }
+      } catch (error) {
+        console.error('Error updating theme preference:', error);
+      }
+    };
+
+    updateThemePreference();
+  }, [isDarkMode]);
+
+  const handleNewProfile = () => {
+    onNewProfile();
+    onOpenChange(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Force a reflow to ensure the scroll takes effect
+    document.body.offsetHeight;
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <MenuButton onClick={() => onOpenChange(true)} />
-      <DialogContent className="bg-[#EDEDDD] dark:bg-[#2D4531] text-[#2D4531] dark:text-[#EDEDDD] border-[#2D4531] dark:border-[#EDEDDD] p-0">
-        <DialogTitle className="sr-only">Menu</DialogTitle>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <div className="absolute top-4 right-4">
+        <SheetTrigger asChild>
+          <MenuButton onClick={() => {}} />
+        </SheetTrigger>
+      </div>
+      <SheetContent className="bg-[#47624B] dark:bg-[#2D4531] border-[#1A2A1D]">
         <MenuContent
-          onNewProfile={onNewProfile}
-          onSaveProfile={onSaveProfile}
-          onViewSavedMessages={onViewSavedMessages}
-          onViewProfiles={onViewProfiles}
-          onLogout={onLogout}
           isDarkMode={isDarkMode}
-          onToggleTheme={onToggleTheme}
+          onNewProfile={handleNewProfile}
+          onSaveProfile={() => {
+            onSaveProfile();
+            onOpenChange(false);
+          }}
+          onViewProfiles={() => {
+            onViewProfiles();
+            onOpenChange(false);
+          }}
+          onViewSavedMessages={() => {
+            onViewSavedMessages();
+            onOpenChange(false);
+          }}
+          onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+          onLogout={() => {
+            onLogout();
+            onOpenChange(false);
+          }}
         />
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };

@@ -40,7 +40,7 @@ export const ProfileListItem: React.FC<ProfileListItemProps> = ({
             <Input
               value={editingName}
               onChange={(e) => onEditNameChange(e.target.value)}
-              className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D]"
+              className="bg-[#EDEDDD] text-[#47624B] dark:bg-[#303D24] dark:text-[#EDEDDD] border-[#1A2A1D] text-[15px]"
             />
             <Button
               variant="ghost"
@@ -53,7 +53,7 @@ export const ProfileListItem: React.FC<ProfileListItemProps> = ({
           </div>
         ) : (
           <span
-            className="text-[#EDEDDD] cursor-pointer flex-grow"
+            className="text-[#EDEDDD] cursor-pointer flex-grow text-[15px]"
             onClick={() => onProfileSelect(profile)}
           >
             {profile.profile_name}
