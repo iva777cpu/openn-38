@@ -11,6 +11,8 @@ interface SideMenuProps {
   onLogout: () => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
 }
 
 export const SideMenu: React.FC<SideMenuProps> = ({
@@ -21,10 +23,12 @@ export const SideMenu: React.FC<SideMenuProps> = ({
   onLogout,
   open,
   onOpenChange,
+  isDarkMode,
+  onToggleTheme,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <MenuButton />
+      <MenuButton onClick={() => onOpenChange(true)} />
       <DialogContent className="bg-[#EDEDDD] dark:bg-[#2D4531] text-[#2D4531] dark:text-[#EDEDDD] border-[#2D4531] dark:border-[#EDEDDD] p-0">
         <DialogTitle className="sr-only">Menu</DialogTitle>
         <MenuContent
@@ -33,6 +37,8 @@ export const SideMenu: React.FC<SideMenuProps> = ({
           onViewSavedMessages={onViewSavedMessages}
           onViewProfiles={onViewProfiles}
           onLogout={onLogout}
+          isDarkMode={isDarkMode}
+          onToggleTheme={onToggleTheme}
         />
       </DialogContent>
     </Dialog>
