@@ -21,5 +21,13 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#2D4531",
-  "background_color": "#EDEDDD"
+  "background_color": "#EDEDDD",
+  "orientation": "portrait",
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.openera.icebreakers"
+    }
+  ]
 }
