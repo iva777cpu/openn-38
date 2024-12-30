@@ -2,6 +2,11 @@ import React from "react";
 import { Input } from "../ui/input";
 import { questions } from "@/utils/questions";
 
+interface UserTraitsFormProps {
+  userProfile: Record<string, string>;
+  onUpdate: (field: string, value: string) => void;
+}
+
 export const UserTraitsForm: React.FC<UserTraitsFormProps> = ({ userProfile, onUpdate }) => {
   return (
     <div className="space-y-4">

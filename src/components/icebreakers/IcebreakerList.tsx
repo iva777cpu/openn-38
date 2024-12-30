@@ -2,6 +2,12 @@ import React from "react";
 import { Button } from "../ui/button";
 import { BookmarkPlus } from "lucide-react";
 
+interface IcebreakerListProps {
+  icebreakers: string[];
+  savedIcebreakers: Set<string>;
+  onToggleSave: (icebreaker: string) => void;
+}
+
 export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   icebreakers,
   savedIcebreakers,
