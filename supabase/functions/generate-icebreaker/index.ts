@@ -15,48 +15,25 @@ serve(async (req) => {
     const { answers, temperature, isFirstTime } = await req.json()
     console.log('Received request with answers:', answers)
 
-    // Sanitize inputs to ensure they're more casual and friendly
-    const sanitizedAnswers = Object.entries(answers).reduce((acc, [key, value]: [string, any]) => {
-      let sanitizedValue = value.value;
-      
-      // Convert potentially problematic terms to more casual alternatives
-      if (key === 'mood' || key === 'targetPersonality') {
-        const moodMap: Record<string, string> = {
-          'cocky': 'confident',
-          'dark': 'mysterious',
-          'aggressive': 'assertive',
-          'bitter': 'reserved',
-        }
-        sanitizedValue = moodMap[value.value.toLowerCase()] || value.value
-      }
-      
-      return {
-        ...acc,
-        [key]: {
-          ...value,
-          value: sanitizedValue
-        }
-      }
-    }, {})
-
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
 
-    const systemPrompt = `You are a friendly conversation starter helping create engaging icebreakers. Generate 3 casual, light-hearted numbered conversation starters that are clever and fun. Include:
-
+    const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
+- Teasing or banter (if appropriate)
+- Experiences or hypotheticals
+- Fun facts or statements
 - Playful questions that invite storytelling
-- Interesting observations or gentle compliments
-- Fun hypotheticals or shared experiences
-- Light cultural references when relevant
+- Interesting observations or compliments
+- Other creative formats
 
-Keep everything casual and friendly. Each response should be under 25 words. If referencing specific content, add a brief, friendly explanation (max 15 words) in parentheses.
+Focus on the target's interests and experiences, keeping everything casual, friendly, and brief. Use humor appropriately and avoid generating too many questions, instead rely on other icebreaker formats. Each icebreaker must be under 25 words, and if referencing specific content (books, a poem, mythology, famous figures, etc.), include a brief explanation (max 15 words) in parentheses. Return exactly 3 responses. No introductory text or emojis.
 
 Context about the interaction:
-${Object.entries(sanitizedAnswers)
+${Object.entries(answers)
   .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
   .join('\n')}`
 
-    console.log('Using sanitized prompt:', systemPrompt)
+    console.log('Final prompt:', systemPrompt)
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
@@ -88,14 +65,9 @@ ${Object.entries(sanitizedAnswers)
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error)
     
-    // Provide more specific error message for safety filters
-    const errorMessage = error.message.includes('SAFETY') 
-      ? "Let's try again with different wording! The AI prefers keeping things light and friendly."
-      : 'Failed to generate icebreakers'
-    
     return new Response(
       JSON.stringify({ 
-        error: errorMessage,
+        error: 'Failed to generate icebreakers',
         details: error.message 
       }),
       { 
