@@ -48,6 +48,12 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     setPersistedIcebreakers(icebreakers);
   };
 
+  // Clear icebreakers when profile changes
+  useEffect(() => {
+    console.log('Profile changed, clearing icebreakers');
+    setPersistedIcebreakers([]);
+  }, [currentProfile]);
+
   // Reset scroll position when showing forms
   useEffect(() => {
     if (!showProfiles && !showSavedIcebreakers) {
