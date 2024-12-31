@@ -60,7 +60,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
   return (
     <section className="space-y-4">
       <div className="section-header">
-        <header className="flex items-center gap-2">
+        <header>
           <Button
             variant="ghost"
             size="icon"
