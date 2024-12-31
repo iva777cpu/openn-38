@@ -13,32 +13,33 @@ serve(async (req) => {
   }
 
   try {
-    const { answers, systemPrompt, temperature, isFirstTime } = await req.json()
+    const { answers, temperature, isFirstTime } = await req.json()
     console.log('Received request with answers:', answers)
-    console.log('System prompt:', systemPrompt)
 
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
     })
 
-    const safePrompt = `${systemPrompt}
+    const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
+- Teasing or banter (if appropriate)
+- Experiences or hypotheticals
+- Fun facts or statements
+- Playful questions that invite storytelling
+- Interesting observations or compliments
+- Other creative formats
 
-Remember to:
-- Keep everything casual and friendly
-- Focus on target's interests and experiences
-- Use humor appropriately
-- Keep responses brief and engaging
+Focus on the target's interests and experiences, keeping everything casual, friendly, and brief. Use humor appropriately and avoid generating too many questions, instead rely on other icebreaker formats. Each icebreaker must be under 25 words, and if referencing specific content (books, a poem, mythology, famous figures, etc.), include a brief explanation (max 15 words) in parentheses. Return exactly 3 responses. No introductory text or emojis.
 
 Context about the interaction:
 ${Object.entries(answers)
   .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
   .join('\n')}`
 
-    console.log('Final prompt:', safePrompt)
+    console.log('Final prompt:', systemPrompt)
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: safePrompt }] }],
+      contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
       generationConfig: {
         temperature: isFirstTime ? 0.9 : 0.5,
         topK: 40,

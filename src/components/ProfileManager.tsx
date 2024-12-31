@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ProfileForm } from "./ProfileForm";
-import { SaveProfileDialog } from "./SaveProfileDialog";
+import React, { useState, useEffect } from "react";
 import { SavedProfiles } from "./SavedProfiles";
 import { SavedIcebreakers } from "./SavedIcebreakers";
-import { ProfileHeader } from "./ProfileHeader";
-import { Checkbox } from "./ui/checkbox";
+import { ProfileContent } from "./profile/ProfileContent";
 import { useIcebreakers } from "@/hooks/useIcebreakers";
 
 interface ProfileManagerProps {
@@ -42,7 +39,6 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
 }) => {
   const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
   const [isFirstTime, setIsFirstTime] = useState(false);
-  const formRef = useRef<HTMLDivElement>(null);
   const { setIcebreakers } = useIcebreakers();
 
   const handleIcebreakersUpdate = (icebreakers: string[]) => {
@@ -50,7 +46,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     setPersistedIcebreakers(icebreakers);
   };
 
-  // Clear icebreakers when profile changes or when creating a new profile
+  // Clear icebreakers when profile changes, creating new profile, or showing forms
   useEffect(() => {
     console.log('Profile changed or new profile created, clearing icebreakers');
     setPersistedIcebreakers([]);
@@ -87,52 +83,20 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }
 
   return (
-    <div className="w-full pt-6 px-4" ref={formRef}>
-      <ProfileHeader
-        onSaveProfile={onSaveProfile}
-        selectedProfileId={selectedProfileId}
-        onSaveChanges={handleSaveChanges}
-        profileName={selectedProfileName}
-        hasChanges={hasChanges}
-      />
-      <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] text-left mb-4">
-        Share as much or as little as you'd like
-      </div>
-      <div className="flex items-center space-x-2 mb-4 justify-start w-full">
-        <Checkbox 
-          id="firstTime" 
-          checked={isFirstTime}
-          onCheckedChange={(checked) => {
-            console.log('First time checkbox changed:', checked);
-            setIsFirstTime(checked as boolean);
-          }}
-          className="first-time-checkbox"
-        />
-        <label 
-          htmlFor="firstTime"
-          className="text-[15px] font-semibold text-[#47624B] dark:text-[#EDEDDD]"
-        >
-          First time approaching this person?
-        </label>
-      </div>
-      <ProfileForm 
-        userProfile={currentProfile} 
-        onUpdate={handleUpdateProfile}
-        persistedIcebreakers={persistedIcebreakers}
-        onIcebreakersUpdate={handleIcebreakersUpdate}
-        isFirstTime={isFirstTime}
-      />
-      <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] mt-6 text-left">
-        hey its Edda, the developer :D I&apos;d really appreciate your thoughts on the app :3<br />
-        (pls give my app a good rating :D :3 )<br />
-        I&apos;ll be updating the app to improve it and add the extra features that I have in mind.<br />
-        my email in case you want to reach me: Novatica78@gmail.com
-      </div>
-      <SaveProfileDialog
-        open={saveDialogOpen}
-        onOpenChange={setSaveDialogOpen}
-        profileData={currentProfile}
-      />
-    </div>
+    <ProfileContent
+      currentProfile={currentProfile}
+      saveDialogOpen={saveDialogOpen}
+      setSaveDialogOpen={setSaveDialogOpen}
+      selectedProfileId={selectedProfileId}
+      handleUpdateProfile={handleUpdateProfile}
+      handleSaveChanges={handleSaveChanges}
+      onSaveProfile={onSaveProfile}
+      hasChanges={hasChanges}
+      selectedProfileName={selectedProfileName}
+      isFirstTime={isFirstTime}
+      setIsFirstTime={setIsFirstTime}
+      persistedIcebreakers={persistedIcebreakers}
+      handleIcebreakersUpdate={handleIcebreakersUpdate}
+    />
   );
 };

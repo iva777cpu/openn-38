@@ -46,32 +46,17 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
       console.log('Filtered filled fields:', filledFields);
       
       if (Object.keys(filledFields).length === 0) {
-        toast.error('hey! fill in some information first! xD');
+        toast.error('hey! fill in some information first! xD', {
+          position: 'bottom-center',
+        });
         setIsLoading(false);
         return;
       }
-
-      const systemPrompt = `You are a charming conversation expert. Generate engaging ice breakers that are clever, charming, witty and fun.
-Mix formats between different types of icebreakers with equal probability, such as:
-- Teasing or banter (if appropriate)
-- Playful questions that invite storytelling
-- Interesting observations or compliments
-- Shared experiences or hypotheticals
-- Fun facts or statements
-- other things...
-dont generate too many questions
-No introductory text or emojis.
-Keep each icebreaker under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses. so each of your responses can be a total of 40.
-Return exactly 3 numbered responses.
-${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Build on existing rapport.'}`
-
-      console.log('System prompt:', systemPrompt);
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
           answers: filledFields,
           isFirstTime,
-          systemPrompt,
           temperature: isFirstTime ? 0.9 : 0.5
         }
       });
