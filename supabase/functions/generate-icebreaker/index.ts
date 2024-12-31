@@ -20,21 +20,37 @@ serve(async (req) => {
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
-      // Remove safety settings as they're causing issues and rely on the prompt to ensure safe content
     })
 
-    const prompt = `${systemPrompt}\n\nContext about the interaction:\n${
-      Object.entries(answers)
-        .map(([key, value]: [string, any]) => `${key}: ${value.value} (${value.prompt})`)
-        .join('\n')
-    }\n\nIMPORTANT: Keep responses friendly, casual, and appropriate for all audiences. Avoid any controversial, offensive, or adult themes.`
+    // Modify the prompt to be more casual and friendly
+    const safePrompt = `You are a friendly conversation starter helping someone break the ice. 
+Keep the tone light, casual, and appropriate for all audiences.
 
-    console.log('Final prompt:', prompt)
+Your task is to generate 2 engaging conversation starters that are:
+1. Fun and lighthearted
+2. Appropriate for casual conversations
+3. Focused on shared interests or experiences
+
+Format: Return exactly 2 numbered responses, each under 20 words.
+
+Context about the interaction:
+${Object.entries(answers)
+  .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
+  .join('\n')}
+
+Remember to:
+- Keep everything casual and friendly
+- Avoid sensitive topics
+- Focus on common interests and experiences
+- Use humor appropriately
+- Keep responses brief and engaging`
+
+    console.log('Final prompt:', safePrompt)
 
     const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      contents: [{ role: 'user', parts: [{ text: safePrompt }] }],
       generationConfig: {
-        temperature,
+        temperature: Math.min(0.7, temperature), // Cap temperature to reduce risky outputs
         topK: 40,
         topP: 0.95,
       },
@@ -69,7 +85,7 @@ serve(async (req) => {
     // Provide more specific error messages
     let errorMessage = 'Failed to generate icebreakers'
     if (error.message?.includes('SAFETY')) {
-      errorMessage = 'Content was filtered for safety. Try adjusting your input to be more casual and friendly.'
+      errorMessage = 'Please try again with different input. Keep the tone casual and friendly.'
     }
     
     return new Response(
