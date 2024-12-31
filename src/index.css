@@ -67,12 +67,12 @@
 
   /* Section Header Spacing */
   .section-header {
-    @apply pt-6 px-2;
+    @apply pt-6 px-4;
   }
 
   /* Content Spacing */
   .content-section {
-    @apply px-2 max-w-2xl mx-auto;
+    @apply px-4;
   }
 
   /* First Time Checkbox Styles */
