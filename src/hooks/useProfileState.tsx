@@ -16,7 +16,7 @@ export const useProfileState = () => {
   };
 
   const handleNewProfile = () => {
-    console.log("Creating new profile");
+    console.log("Creating new profile - clearing all state");
     setCurrentProfile(emptyProfile);
     setOriginalProfile(emptyProfile);
     setSelectedProfileId(null);

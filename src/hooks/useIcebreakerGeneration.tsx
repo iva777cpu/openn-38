@@ -41,6 +41,7 @@ export const useIcebreakerGeneration = (
       if (Object.keys(filledFields).length === 0) {
         toast.error('hey! fill in some information first! xD', {
           position: 'bottom-center',
+          duration: 3000,
         });
         return;
       }
@@ -53,7 +54,10 @@ export const useIcebreakerGeneration = (
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error from Supabase function:', error);
+        throw error;
+      }
       
       console.log('Raw AI response:', data);
 
@@ -69,11 +73,15 @@ export const useIcebreakerGeneration = (
       }
 
       onIcebreakersGenerated(newIcebreakers);
-      toast.success('Generated new icebreakers!');
+      toast.success('Generated new icebreakers!', {
+        position: 'bottom-center',
+      });
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      toast.error('Failed to generate icebreakers. Please try again later.');
+      toast.error('Failed to generate icebreakers. Please try again later.', {
+        position: 'bottom-center',
+      });
     } finally {
       setIsLoading(false);
     }
