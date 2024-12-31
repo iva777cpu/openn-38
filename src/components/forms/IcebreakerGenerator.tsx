@@ -39,9 +39,11 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
           return acc;
         }, {});
 
-      const systemPrompt = isFirstTime 
-        ? "You are a witty and creative conversation starter. Generate unique, amusing, and playfully flirty first-time ice breakers that are memorable and fun. Consider the target's personality traits, interests, and the situation when crafting responses. Be creative and playful, avoiding clichés. Feel free to tease or make light-hearted jokes about their dislikes. Match your tone to their sense of humor when possible. Mix between casual questions (0.5), fun facts (0.8), light-hearted statements (0.5), and friendly banter (0.8). Keep responses under 30 words. Return exactly 3 numbered ice breakers. No introductory text or emojis."
-        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with personality. Consider all provided information about both people and the situation. Make responses interesting and fun, with playful teasing when appropriate. Avoid being cheesy or cliché. Reference previous topics naturally and adapt to their humor style. Mix formats and tones appropriately. Keep responses under 30 words. Return exactly 3 numbered ice breakers. No introductory text or emojis.";
+      const systemPrompt = `You are a witty conversation expert. Generate engaging ice breakers that are clever and fun.
+Mix formats: casual questions (0.5), fun facts (0.8), statements (0.5), friendly banter (0.8).
+Keep each response under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses.
+Return exactly 3 numbered responses. No introductory text or emojis.
+${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Build on existing rapport.'}`
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
