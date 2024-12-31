@@ -126,7 +126,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
       <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] mt-6 text-left">
         hey its Edda, the developer :D I&apos;d really appreciate your thoughts on the app :3<br />
         (pls give my app a good rating :D :3 )<br />
-        I&apos;ll be updating the app to improve it and add the extra functions that I have in mind.<br />
+        I&apos;ll be updating the app to improve it and add the extra features that I have in mind.<br />
         my email in case you want to reach me: Novatica78@gmail.com
       </div>
       <SaveProfileDialog

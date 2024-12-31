@@ -19,6 +19,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
   const generateIcebreakers = async () => {
     setIsLoading(true);
     try {
+      // Only include filled fields to reduce token usage
       const filledFields = Object.entries(userProfile)
         .filter(([_, value]) => value && value.toString().trim() !== '')
         .reduce((acc, [key, value]) => {
@@ -39,8 +40,8 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         }, {});
 
       const systemPrompt = isFirstTime 
-        ? "You are a witty and creative conversation starter. Generate unique, amusing, and playfully flirty first-time ice breakers that are memorable and fun. Consider the target's personality traits, interests, and the situation when crafting responses. Be creative and playful, avoiding clichés. Feel free to tease or make light-hearted jokes about their dislikes. Match your tone to their sense of humor when possible."
-        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with personality. Consider all provided information about both people and the situation. Make responses interesting and fun, with playful teasing when appropriate. Avoid being cheesy or cliché. Reference previous topics naturally and adapt to their humor style.";
+        ? "You are a witty and creative conversation starter. Generate unique, amusing, and playfully flirty first-time ice breakers that are memorable and fun. Consider the target's personality traits, interests, and the situation when crafting responses. Be creative and playful, avoiding clichés. Feel free to tease or make light-hearted jokes about their dislikes. Match your tone to their sense of humor when possible. Mix between casual questions (0.5), fun facts (0.8), light-hearted statements (0.5), and friendly banter (0.8). Keep responses under 30 words. Return exactly 3 numbered ice breakers. No introductory text or emojis."
+        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with personality. Consider all provided information about both people and the situation. Make responses interesting and fun, with playful teasing when appropriate. Avoid being cheesy or cliché. Reference previous topics naturally and adapt to their humor style. Mix formats and tones appropriately. Keep responses under 30 words. Return exactly 3 numbered ice breakers. No introductory text or emojis.";
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
