@@ -73,15 +73,9 @@ ${Object.entries(answers)
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error)
     
-    // Provide more specific error messages
-    let errorMessage = 'Failed to generate icebreakers'
-    if (error.message?.includes('SAFETY')) {
-      errorMessage = 'Content was filtered for safety. Try adjusting your input to be more casual and friendly.'
-    }
-    
     return new Response(
       JSON.stringify({ 
-        error: errorMessage,
+        error: 'Failed to generate icebreakers',
         details: error.message 
       }),
       { 
