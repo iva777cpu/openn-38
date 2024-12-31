@@ -31,7 +31,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
               [key]: {
                 value,
                 prompt: question.prompt,
-                temperature: isFirstTime ? Math.min(question.temperature + 0.2, 1) : question.temperature
+                temperature: isFirstTime ? Math.min(0.9, question.temperature + 0.2) : question.temperature
               }
             };
           }
@@ -39,15 +39,15 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         }, {});
 
       const systemPrompt = isFirstTime 
-        ? "You are a witty and creative conversation starter. Generate unique, amusing, and slightly flirty first-time ice breakers that are memorable and fun. Be creative and playful, but keep it tasteful."
-        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with a touch of humor. Make them memorable and interesting.";
+        ? "You are a witty and creative conversation starter. Generate unique, amusing, and playfully flirty first-time ice breakers that are memorable and fun. Consider the target's personality traits, interests, and the situation when crafting responses. Be creative and playful, avoiding clichés. Feel free to tease or make light-hearted jokes about their dislikes. Match your tone to their sense of humor when possible."
+        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with personality. Consider all provided information about both people and the situation. Make responses interesting and fun, with playful teasing when appropriate. Avoid being cheesy or cliché. Reference previous topics naturally and adapt to their humor style.";
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
           answers: filledFields,
           isFirstTime,
           systemPrompt,
-          temperature: isFirstTime ? 0.9 : 0.7
+          temperature: isFirstTime ? 0.9 : 0.5
         }
       });
 
