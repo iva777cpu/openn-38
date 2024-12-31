@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
@@ -6,7 +6,6 @@ export const useIcebreakers = () => {
   const [icebreakers, setIcebreakers] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log('Initializing useIcebreakers hook');
     loadSavedIcebreakers();
   }, []);
 
@@ -18,7 +17,6 @@ export const useIcebreakers = () => {
         return;
       }
 
-      console.log('Loading saved icebreakers for user:', user.id);
       const { data, error } = await supabase
         .from('saved_messages')
         .select('message_text')
@@ -26,18 +24,15 @@ export const useIcebreakers = () => {
 
       if (error) throw error;
 
-      console.log('Loaded saved icebreakers:', data);
       setSavedIcebreakers(new Set(data.map(item => item.message_text)));
     } catch (error) {
       console.error('Error loading saved icebreakers:', error);
     }
   };
 
-  const clearAllIcebreakers = () => {
-    console.log('Clearing all icebreakers');
+  const clearAllIcebreakers = useCallback(() => {
     setIcebreakers([]);
-    // Don't clear savedIcebreakers as those are persisted in the database
-  };
+  }, []);
 
   const toggleIcebreaker = async (icebreaker: string) => {
     try {

@@ -24,12 +24,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 }) => {
   const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
 
-  // Clear icebreakers when userProfile changes
+  // Only clear icebreakers on initial mount and when profile ID changes
   useEffect(() => {
-    console.log("ProfileForm: Clearing icebreakers due to profile change");
-    clearAllIcebreakers();
-    setIcebreakers([]);
-  }, [userProfile, clearAllIcebreakers, setIcebreakers]);
+    const profileId = userProfile.id; // Assuming profile has an id field
+    if (profileId) {
+      console.log("ProfileForm: New profile loaded, clearing icebreakers");
+      clearAllIcebreakers();
+      setIcebreakers([]);
+    }
+  }, [userProfile.id]); // Only depend on the profile ID
 
   const handleIcebreakersGenerated = (newIcebreakers: string[]) => {
     console.log("ProfileForm: New icebreakers generated", newIcebreakers);
