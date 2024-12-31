@@ -72,7 +72,7 @@
 
   /* Content Spacing */
   .content-section {
-    @apply px-4;
+    @apply px-4 w-full;
   }
 
   /* First Time Checkbox Styles */
@@ -86,7 +86,7 @@
 
   /* Profile and Icebreaker Box Styles */
   .profile-box, .icebreaker-box {
-    @apply border border-transparent dark:border-[#EDEDDD] dark:border-2;
+    @apply border border-transparent dark:border-[#EDEDDD] dark:border-2 w-full;
   }
 
   /* Delete Selected Button Styles */
@@ -96,7 +96,7 @@
 
   /* Profile Form Spacing */
   .content-section > section {
-    @apply space-y-4;
+    @apply space-y-4 w-full;
   }
 
   /* Section Header Alignment */
