@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "https://esm.sh/@google/generative-ai@0.1.3"
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,24 +20,7 @@ serve(async (req) => {
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
-      safetySettings: [
-        {
-          category: HarmCategory.HARASSMENT,
-          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.HATE_SPEECH,
-          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.SEXUALLY_EXPLICIT,
-          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
-        },
-        {
-          category: HarmCategory.DANGEROUS_CONTENT,
-          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
-        },
-      ],
+      // Remove safety settings as they're causing issues and rely on the prompt to ensure safe content
     })
 
     const prompt = `${systemPrompt}\n\nContext about the interaction:\n${
@@ -86,7 +69,7 @@ serve(async (req) => {
     // Provide more specific error messages
     let errorMessage = 'Failed to generate icebreakers'
     if (error.message?.includes('SAFETY')) {
-      errorMessage = 'Content was filtered for safety. Trying adjusting your input to be more casual and friendly.'
+      errorMessage = 'Content was filtered for safety. Try adjusting your input to be more casual and friendly.'
     }
     
     return new Response(
