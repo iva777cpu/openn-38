@@ -61,15 +61,11 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         }
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       console.log('Raw AI response:', data);
 
       if (!data?.icebreakers) {
-        console.error('Invalid response format:', data);
         throw new Error('Invalid response format from AI');
       }
 

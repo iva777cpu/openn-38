@@ -7,7 +7,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -17,9 +16,7 @@ serve(async (req) => {
     console.log('Received request with answers:', answers)
 
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
-    })
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or banter (if appropriate)
@@ -52,7 +49,6 @@ ${Object.entries(answers)
     
     console.log('Generated text:', text)
 
-    // Format the response to match expected structure
     const formattedText = text
       .split('\n')
       .filter(line => line.trim())
@@ -63,12 +59,8 @@ ${Object.entries(answers)
     }
 
     return new Response(
-      JSON.stringify({
-        icebreakers: formattedText
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
+      JSON.stringify({ icebreakers: formattedText }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error)

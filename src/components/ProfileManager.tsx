@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { SavedProfiles } from "./SavedProfiles";
-import { SavedIcebreakers } from "./SavedIcebreakers";
-import { ProfileContent } from "./profile/ProfileContent";
-import { useIcebreakers } from "@/hooks/useIcebreakers";
+import React, { useEffect } from "react";
+import { ProfileRouting } from "./profile/ProfileRouting";
+import { useIcebreakersState } from "./profile/useIcebreakersState";
 
 interface ProfileManagerProps {
   currentProfile: Record<string, string>;
@@ -37,22 +35,12 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   hasChanges,
   selectedProfileName,
 }) => {
-  const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
-  const [isFirstTime, setIsFirstTime] = useState(false);
-  const { setIcebreakers } = useIcebreakers();
-
-  const handleIcebreakersUpdate = (icebreakers: string[]) => {
-    console.log('Updating icebreakers in ProfileManager:', icebreakers);
-    setPersistedIcebreakers(icebreakers);
-  };
-
-  // Clear icebreakers when profile changes, creating new profile, or showing forms
-  useEffect(() => {
-    console.log('Profile changed or new profile created, clearing icebreakers');
-    setPersistedIcebreakers([]);
-    setIcebreakers([]); // Clear icebreakers in the global state
-    setIsFirstTime(false);
-  }, [currentProfile, setIcebreakers]);
+  const {
+    persistedIcebreakers,
+    isFirstTime,
+    setIsFirstTime,
+    handleIcebreakersUpdate,
+  } = useIcebreakersState(currentProfile);
 
   // Reset scroll position when showing forms
   useEffect(() => {
@@ -62,41 +50,30 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     }
   }, [showProfiles, showSavedIcebreakers]);
 
-  if (showProfiles) {
-    return (
-      <SavedProfiles 
-        onSelectProfile={(profile) => {
-          handleSelectProfile(profile);
-          setShowProfiles(false);
-        }}
-        onBack={() => setShowProfiles(false)}
-      />
-    );
-  }
-
-  if (showSavedIcebreakers) {
-    return (
-      <SavedIcebreakers 
-        onBack={() => setShowSavedIcebreakers(false)}
-      />
-    );
-  }
+  const contentProps = {
+    currentProfile,
+    saveDialogOpen,
+    setSaveDialogOpen,
+    selectedProfileId,
+    handleUpdateProfile,
+    handleSaveChanges,
+    onSaveProfile,
+    hasChanges,
+    selectedProfileName,
+    isFirstTime,
+    setIsFirstTime,
+    persistedIcebreakers,
+    handleIcebreakersUpdate,
+  };
 
   return (
-    <ProfileContent
-      currentProfile={currentProfile}
-      saveDialogOpen={saveDialogOpen}
-      setSaveDialogOpen={setSaveDialogOpen}
-      selectedProfileId={selectedProfileId}
-      handleUpdateProfile={handleUpdateProfile}
-      handleSaveChanges={handleSaveChanges}
-      onSaveProfile={onSaveProfile}
-      hasChanges={hasChanges}
-      selectedProfileName={selectedProfileName}
-      isFirstTime={isFirstTime}
-      setIsFirstTime={setIsFirstTime}
-      persistedIcebreakers={persistedIcebreakers}
-      handleIcebreakersUpdate={handleIcebreakersUpdate}
+    <ProfileRouting
+      showProfiles={showProfiles}
+      showSavedIcebreakers={showSavedIcebreakers}
+      setShowProfiles={setShowProfiles}
+      setShowSavedIcebreakers={setShowSavedIcebreakers}
+      handleSelectProfile={handleSelectProfile}
+      contentProps={contentProps}
     />
   );
 };
