@@ -3,28 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
-  const [icebreakers, setIcebreakers] = useState<string[]>(() => {
-    // Check local storage on initial load
-    const stored = localStorage.getItem('currentIcebreakers');
-    return stored ? JSON.parse(stored) : [];
-  });
-
-  // Sync with local storage whenever icebreakers change
-  useEffect(() => {
-    if (icebreakers.length > 0) {
-      localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
-    } else {
-      localStorage.removeItem('currentIcebreakers');
-    }
-  }, [icebreakers]);
+  const [icebreakers, setIcebreakers] = useState<string[]>([]);
 
   useEffect(() => {
     console.log('Initializing useIcebreakers hook');
     loadSavedIcebreakers();
-    return () => {
-      // Cleanup local storage on unmount
-      localStorage.removeItem('currentIcebreakers');
-    };
   }, []);
 
   const loadSavedIcebreakers = async () => {
@@ -51,9 +34,8 @@ export const useIcebreakers = () => {
   };
 
   const clearAllIcebreakers = () => {
-    console.log('Clearing all icebreakers and local storage');
+    console.log('Clearing all icebreakers');
     setIcebreakers([]);
-    localStorage.removeItem('currentIcebreakers');
   };
 
   const toggleIcebreaker = async (icebreaker: string) => {

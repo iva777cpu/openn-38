@@ -54,7 +54,6 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   useEffect(() => {
     console.log("Profile changed or new profile created in ProfileManager");
     clearIcebreakers();
-    localStorage.removeItem('currentIcebreakers'); // Ensure local storage is cleared
   }, [currentProfile, clearIcebreakers]);
 
   // Additional cleanup when component unmounts
@@ -62,7 +61,6 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     return () => {
       console.log("ProfileManager unmounting, clearing icebreakers");
       clearIcebreakers();
-      localStorage.removeItem('currentIcebreakers');
     };
   }, [clearIcebreakers]);
 
