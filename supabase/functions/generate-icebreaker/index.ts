@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3"
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "https://esm.sh/@google/generative-ai@0.1.3"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,17 +18,45 @@ serve(async (req) => {
     console.log('System prompt:', systemPrompt)
 
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-pro',
+      safetySettings: [
+        {
+          category: HarmCategory.HARASSMENT,
+          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HATE_SPEECH,
+          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.MEDIUM_AND_ABOVE,
+        },
+      ],
+    })
 
     const prompt = `${systemPrompt}\n\nContext about the interaction:\n${
       Object.entries(answers)
         .map(([key, value]: [string, any]) => `${key}: ${value.value} (${value.prompt})`)
         .join('\n')
-    }`
+    }\n\nIMPORTANT: Keep responses friendly, casual, and appropriate for all audiences. Avoid any controversial, offensive, or adult themes.`
 
     console.log('Final prompt:', prompt)
 
-    const result = await model.generateContent(prompt)
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature,
+        topK: 40,
+        topP: 0.95,
+      },
+    })
+    
     const response = await result.response
     const text = response.text()
     
@@ -40,6 +68,10 @@ serve(async (req) => {
       .filter(line => line.trim())
       .join('\n')
 
+    if (!formattedText) {
+      throw new Error('No valid text generated')
+    }
+
     return new Response(
       JSON.stringify({
         icebreakers: formattedText
@@ -50,9 +82,16 @@ serve(async (req) => {
     )
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error)
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to generate icebreakers'
+    if (error.message?.includes('SAFETY')) {
+      errorMessage = 'Content was filtered for safety. Trying adjusting your input to be more casual and friendly.'
+    }
+    
     return new Response(
       JSON.stringify({ 
-        error: 'Failed to generate icebreakers',
+        error: errorMessage,
         details: error.message 
       }),
       { 
