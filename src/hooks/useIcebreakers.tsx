@@ -3,11 +3,28 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
-  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [icebreakers, setIcebreakers] = useState<string[]>(() => {
+    // Check local storage on initial load
+    const stored = localStorage.getItem('currentIcebreakers');
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  // Sync with local storage whenever icebreakers change
+  useEffect(() => {
+    if (icebreakers.length > 0) {
+      localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
+    } else {
+      localStorage.removeItem('currentIcebreakers');
+    }
+  }, [icebreakers]);
 
   useEffect(() => {
     console.log('Initializing useIcebreakers hook');
     loadSavedIcebreakers();
+    return () => {
+      // Cleanup local storage on unmount
+      localStorage.removeItem('currentIcebreakers');
+    };
   }, []);
 
   const loadSavedIcebreakers = async () => {
@@ -34,17 +51,15 @@ export const useIcebreakers = () => {
   };
 
   const clearAllIcebreakers = () => {
-    console.log('Clearing all icebreakers in useIcebreakers hook');
+    console.log('Clearing all icebreakers and local storage');
     setIcebreakers([]);
+    localStorage.removeItem('currentIcebreakers');
   };
 
   const toggleIcebreaker = async (icebreaker: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-
-      console.log('Toggling icebreaker:', icebreaker);
-      console.log('Current user:', user.id);
 
       if (savedIcebreakers.has(icebreaker)) {
         const { error } = await supabase
@@ -55,7 +70,6 @@ export const useIcebreakers = () => {
 
         if (error) throw error;
 
-        console.log('Removed icebreaker from saved list');
         setSavedIcebreakers(prev => {
           const newSet = new Set(prev);
           newSet.delete(icebreaker);
@@ -68,7 +82,6 @@ export const useIcebreakers = () => {
 
         if (error) throw error;
 
-        console.log('Added icebreaker to saved list');
         setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
       }
     } catch (error) {
