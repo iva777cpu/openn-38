@@ -36,6 +36,7 @@ export const useIcebreakers = () => {
   const clearAllIcebreakers = () => {
     console.log('Clearing all icebreakers');
     setIcebreakers([]);
+    // Don't clear savedIcebreakers as those are persisted in the database
   };
 
   const toggleIcebreaker = async (icebreaker: string) => {

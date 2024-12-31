@@ -54,7 +54,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   useEffect(() => {
     console.log("Profile changed or new profile created in ProfileManager");
     clearIcebreakers();
-  }, [currentProfile, clearIcebreakers]);
+  }, [currentProfile, clearIcebreakers, selectedProfileId]); // Add selectedProfileId dependency
 
   // Additional cleanup when component unmounts
   useEffect(() => {
