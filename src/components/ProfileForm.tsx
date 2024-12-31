@@ -30,7 +30,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   return (
-    <section className="content-section w-full max-w-2xl mx-auto space-y-3">
+    <section className="w-full space-y-3">
       <Card className="w-full p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
         <h2 className="text-lg font-semibold mb-3">About You</h2>
         <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />

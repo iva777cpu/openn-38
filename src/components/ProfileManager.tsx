@@ -91,7 +91,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   }
 
   return (
-    <div className="pt-6 content-section" ref={formRef}>
+    <div className="w-full pt-6 px-4" ref={formRef}>
       <ProfileHeader
         onSaveProfile={onSaveProfile}
         selectedProfileId={selectedProfileId}
@@ -102,7 +102,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
       <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] text-left mb-4">
         Share as much or as little as you'd like
       </div>
-      <div className="flex items-center space-x-2 mb-4 justify-start">
+      <div className="flex items-center space-x-2 mb-4 justify-start w-full">
         <Checkbox 
           id="firstTime" 
           checked={isFirstTime}

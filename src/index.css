@@ -72,7 +72,7 @@
 
   /* Content Spacing */
   .content-section {
-    @apply px-4 w-full;
+    @apply w-full;
   }
 
   /* First Time Checkbox Styles */
