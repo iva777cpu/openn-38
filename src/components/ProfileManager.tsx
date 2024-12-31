@@ -53,9 +53,17 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
 
   // Clear icebreakers when profile changes or new profile is created
   useEffect(() => {
-    console.log("Profile changed or new profile created, clearing icebreakers");
+    console.log("Profile changed or new profile created in ProfileManager");
     clearIcebreakers();
   }, [currentProfile, clearIcebreakers]);
+
+  // Additional cleanup when component unmounts
+  useEffect(() => {
+    return () => {
+      console.log("ProfileManager unmounting, clearing icebreakers");
+      clearIcebreakers();
+    };
+  }, [clearIcebreakers]);
 
   const contentProps = {
     currentProfile,

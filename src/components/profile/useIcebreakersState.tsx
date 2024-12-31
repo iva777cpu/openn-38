@@ -4,7 +4,7 @@ import { useIcebreakers } from "@/hooks/useIcebreakers";
 export const useIcebreakersState = (currentProfile: Record<string, string>) => {
   const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
   const [isFirstTime, setIsFirstTime] = useState(false);
-  const { setIcebreakers } = useIcebreakers();
+  const { setIcebreakers, clearAllIcebreakers } = useIcebreakers();
 
   const handleIcebreakersUpdate = (icebreakers: string[]) => {
     console.log('Updating icebreakers in useIcebreakersState:', icebreakers);
@@ -12,10 +12,10 @@ export const useIcebreakersState = (currentProfile: Record<string, string>) => {
   };
 
   const clearIcebreakers = useCallback(() => {
-    console.log('Clearing icebreakers state');
+    console.log('Clearing icebreakers state in useIcebreakersState');
     setPersistedIcebreakers([]);
-    setIcebreakers([]); // Clear icebreakers in the global state
-  }, [setIcebreakers]);
+    clearAllIcebreakers(); // Use the new clearAllIcebreakers function
+  }, [clearAllIcebreakers]);
 
   // Clear icebreakers when profile changes
   useEffect(() => {

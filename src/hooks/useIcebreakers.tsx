@@ -33,6 +33,11 @@ export const useIcebreakers = () => {
     }
   };
 
+  const clearAllIcebreakers = () => {
+    console.log('Clearing all icebreakers in useIcebreakers hook');
+    setIcebreakers([]);
+  };
+
   const toggleIcebreaker = async (icebreaker: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -75,6 +80,7 @@ export const useIcebreakers = () => {
     savedIcebreakers,
     icebreakers,
     setIcebreakers,
+    clearAllIcebreakers,
     toggleIcebreaker
   };
 };
