@@ -66,7 +66,6 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
       const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
       console.log('Generated icebreakers:', newIcebreakers);
       onIcebreakersGenerated(newIcebreakers);
-      localStorage.setItem('persistedIcebreakers', JSON.stringify(newIcebreakers));
     } catch (error) {
       console.error('Error generating icebreakers:', error);
     } finally {
