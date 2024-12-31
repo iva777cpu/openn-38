@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card } from "./ui/card";
 import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
@@ -22,9 +22,17 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   persistedIcebreakers,
   isFirstTime
 }) => {
-  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker } = useIcebreakers();
+  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
+
+  // Clear icebreakers when userProfile changes
+  useEffect(() => {
+    console.log("ProfileForm: Clearing icebreakers due to profile change");
+    clearAllIcebreakers();
+    setIcebreakers([]);
+  }, [userProfile, clearAllIcebreakers, setIcebreakers]);
 
   const handleIcebreakersGenerated = (newIcebreakers: string[]) => {
+    console.log("ProfileForm: New icebreakers generated", newIcebreakers);
     setIcebreakers(newIcebreakers);
     onIcebreakersUpdate(newIcebreakers);
   };
