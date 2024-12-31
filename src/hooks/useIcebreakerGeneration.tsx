@@ -39,9 +39,10 @@ export const useIcebreakerGeneration = (
       console.log('Filtered filled fields:', filledFields);
       
       if (Object.keys(filledFields).length === 0) {
-        toast.error('hey! fill in some information first! xD', {
-          position: 'bottom-center',
+        toast.error("hey! fill in some information first! xD", {
+          position: "bottom-center",
           duration: 3000,
+          className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
         });
         setIsLoading(false);
         return;
@@ -75,13 +76,15 @@ export const useIcebreakerGeneration = (
 
       onIcebreakersGenerated(newIcebreakers);
       toast.success('Generated new icebreakers!', {
-        position: 'bottom-center',
+        position: "bottom-center",
+        className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
       });
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
       toast.error('Failed to generate icebreakers. Please try again later.', {
-        position: 'bottom-center',
+        position: "bottom-center",
+        className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
       });
     } finally {
       setIsLoading(false);
