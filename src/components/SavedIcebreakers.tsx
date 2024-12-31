@@ -60,12 +60,12 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
   return (
     <section className="space-y-4">
       <div className="section-header">
-        <header className="flex items-center mb-2 justify-start">
+        <header className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-[#2D4531] mr-4"
+            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-[#2D4531]"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -73,21 +73,19 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         </header>
 
         {selectedMessages.size > 0 && (
-          <div className="flex mb-4">
-            <Button
-              onClick={handleDeleteSelected}
-              className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] text-xs py-1 h-7 px-2"
-            >
-              Delete Selected ({selectedMessages.size})
-            </Button>
-          </div>
+          <Button
+            onClick={handleDeleteSelected}
+            className="delete-selected-button"
+          >
+            Delete Selected ({selectedMessages.size})
+          </Button>
         )}
       </div>
 
-      <div className="content-section space-y-3">
+      <div className="content-section space-y-2">
         {messages?.map((message) => (
-          <Card key={message.id} className="icebreaker-box p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD]">
-            <div className="flex items-start gap-3">
+          <Card key={message.id} className="icebreaker-box p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD]">
+            <div className="flex items-start gap-2">
               <Checkbox
                 checked={selectedMessages.has(message.id)}
                 onCheckedChange={() => toggleMessageSelection(message.id)}

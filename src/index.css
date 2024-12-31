@@ -67,12 +67,12 @@
 
   /* Section Header Spacing */
   .section-header {
-    @apply pt-8 px-8;
+    @apply pt-6 px-4;
   }
 
   /* Content Spacing */
   .content-section {
-    @apply px-8;
+    @apply px-4;
   }
 
   /* First Time Checkbox Styles */
@@ -91,7 +91,7 @@
 
   /* Delete Selected Button Styles */
   .delete-selected-button {
-    @apply bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-3 py-1.5 rounded-md text-sm mb-4;
+    @apply bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs mb-2;
   }
 
   /* Profile Form Spacing */
@@ -101,6 +101,6 @@
 
   /* Section Header Alignment */
   .section-header header {
-    @apply flex items-center gap-4;
+    @apply flex items-center gap-2;
   }
 }
