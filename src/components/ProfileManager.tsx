@@ -48,10 +48,11 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     setPersistedIcebreakers(icebreakers);
   };
 
-  // Clear icebreakers when profile changes
+  // Clear icebreakers when profile changes or when creating a new profile
   useEffect(() => {
-    console.log('Profile changed, clearing icebreakers');
+    console.log('Profile changed or new profile created, clearing icebreakers');
     setPersistedIcebreakers([]);
+    setIsFirstTime(false);
   }, [currentProfile]);
 
   // Reset scroll position when showing forms

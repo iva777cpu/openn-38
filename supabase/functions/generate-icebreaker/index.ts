@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { answers, systemPrompt, temperature } = await req.json()
+    const { answers, systemPrompt, temperature, isFirstTime } = await req.json()
     console.log('Received request with answers:', answers)
     console.log('System prompt:', systemPrompt)
 
@@ -22,35 +22,30 @@ serve(async (req) => {
       model: 'gemini-pro',
     })
 
-    // Modify the prompt to be more casual and friendly
-    const safePrompt = `You are a friendly conversation starter helping someone break the ice. 
-Keep the tone light, casual, and appropriate for all audiences.
-
-Your task is to generate 2 engaging conversation starters that are:
-1. Fun and lighthearted
-2. Appropriate for casual conversations
-3. Focused on shared interests or experiences
-
-Format: Return exactly 2 numbered responses, each under 20 words.
+    const safePrompt = `You are a charming conversation expert. Generate engaging ice breakers that are clever, charming, witty and fun.
+Mix formats such as: Mix formats between different types of icebreakers with equal probability, such as:
+- Teasing or banter (if appropriate)
+- Playful questions that invite storytelling
+- Interesting observations or compliments
+- Shared experiences or hypotheticals
+- Fun facts or statements
+- other things...
+dont generate too many questions
+No introductory text or emojis.
+Keep each icebreaker under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses. so each of your responses can be a total of 40.
+Return exactly 3 numbered responses.
 
 Context about the interaction:
 ${Object.entries(answers)
   .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
-  .join('\n')}
-
-Remember to:
-- Keep everything casual and friendly
-- Avoid sensitive topics
-- Focus on common interests and experiences
-- Use humor appropriately
-- Keep responses brief and engaging`
+  .join('\n')}`
 
     console.log('Final prompt:', safePrompt)
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: safePrompt }] }],
       generationConfig: {
-        temperature: Math.min(0.7, temperature), // Cap temperature to reduce risky outputs
+        temperature: isFirstTime ? 0.9 : 0.5,
         topK: 40,
         topP: 0.95,
       },

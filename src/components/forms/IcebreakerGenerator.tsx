@@ -54,14 +54,18 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         return;
       }
 
-      const systemPrompt = `You are a witty conversation expert. Generate engaging ice breakers that are clever and fun.
-Mix formats between these types with equal probability:
+      const systemPrompt = `You are a charming conversation expert. Generate engaging ice breakers that are clever, charming, witty and fun.
+Mix formats such as: Mix formats between different types of icebreakers with equal probability, such as:
+- Teasing or banter (if appropriate)
 - Playful questions that invite storytelling
 - Interesting observations or compliments
 - Shared experiences or hypotheticals
-- Light teasing or banter (if appropriate)
-Keep each response under 20 words. If referencing specific content, add brief context in parentheses.
-Return exactly 2 numbered responses. No introductory text or emojis.
+- Fun facts or statements
+- other things...
+dont generate too many questions
+No introductory text or emojis.
+Keep each icebreaker under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses. so each of your responses can be a total of 40.
+Return exactly 3 numbered responses.
 ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Build on existing rapport.'}`
 
       console.log('System prompt:', systemPrompt);
@@ -69,7 +73,7 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
         answers: filledFields,
         isFirstTime,
         systemPrompt,
-        temperature: isFirstTime ? 0.9 : 0.7
+        temperature: isFirstTime ? 0.9 : 0.5
       });
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
@@ -77,7 +81,7 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
           answers: filledFields,
           isFirstTime,
           systemPrompt,
-          temperature: isFirstTime ? 0.9 : 0.7
+          temperature: isFirstTime ? 0.9 : 0.5
         }
       });
 
