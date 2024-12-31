@@ -30,24 +30,24 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   };
 
   return (
-    <section className="content-section space-y-4">
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4">About You</h2>
+    <section className="content-section max-w-2xl mx-auto space-y-3">
+      <Card className="p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-3">About You</h2>
         <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4">About Them</h2>
+      <Card className="p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-3">About Them</h2>
         <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4">General Information</h2>
+      <Card className="p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-3">General Information</h2>
         <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
       </Card>
 
-      <Card className="p-4 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-4">Ice Breakers</h2>
+      <Card className="p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
+        <h2 className="text-lg font-semibold mb-3">Ice Breakers</h2>
         <IcebreakerGenerator 
           userProfile={userProfile}
           onIcebreakersGenerated={handleIcebreakersGenerated}
