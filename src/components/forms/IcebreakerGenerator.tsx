@@ -17,6 +17,9 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const generateIcebreakers = async () => {
+    console.log('Starting icebreaker generation with profile:', userProfile);
+    console.log('Is first time?:', isFirstTime);
+    
     setIsLoading(true);
     try {
       // Only include filled fields to reduce token usage
@@ -39,18 +42,16 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
           return acc;
         }, {});
 
-      // Log the data being sent to AI
-      console.log('Data being sent to AI:', {
-        filledFields,
-        isFirstTime,
-        currentProfile: userProfile
-      });
+      console.log('Filtered filled fields:', filledFields);
+      console.log('Number of filled fields:', Object.keys(filledFields).length);
 
       const systemPrompt = `You are a witty conversation expert. Generate engaging ice breakers that are clever and fun.
 Mix formats: casual questions (0.5), fun facts (0.8), statements (0.5), friendly banter (0.8).
 Keep each response under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses.
 Return exactly 3 numbered responses. No introductory text or emojis.
 ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Build on existing rapport.'}`
+
+      console.log('System prompt:', systemPrompt);
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
@@ -61,10 +62,14 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
       
+      console.log('Raw AI response:', data);
       const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
-      console.log('Generated icebreakers:', newIcebreakers);
+      console.log('Processed icebreakers:', newIcebreakers);
       onIcebreakersGenerated(newIcebreakers);
     } catch (error) {
       console.error('Error generating icebreakers:', error);

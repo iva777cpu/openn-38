@@ -6,18 +6,19 @@ export const useIcebreakers = () => {
   const [icebreakers, setIcebreakers] = useState<string[]>([]);
 
   useEffect(() => {
+    console.log('Initializing useIcebreakers hook');
     loadSavedIcebreakers();
-    const savedIcebreakersData = localStorage.getItem('persistedIcebreakers');
-    if (savedIcebreakersData) {
-      setIcebreakers(JSON.parse(savedIcebreakersData));
-    }
   }, []);
 
   const loadSavedIcebreakers = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('No user found, skipping saved icebreakers load');
+        return;
+      }
 
+      console.log('Loading saved icebreakers for user:', user.id);
       const { data, error } = await supabase
         .from('saved_messages')
         .select('message_text')
@@ -25,6 +26,7 @@ export const useIcebreakers = () => {
 
       if (error) throw error;
 
+      console.log('Loaded saved icebreakers:', data);
       setSavedIcebreakers(new Set(data.map(item => item.message_text)));
     } catch (error) {
       console.error('Error loading saved icebreakers:', error);
@@ -36,6 +38,9 @@ export const useIcebreakers = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      console.log('Toggling icebreaker:', icebreaker);
+      console.log('Current user:', user.id);
+
       if (savedIcebreakers.has(icebreaker)) {
         const { error } = await supabase
           .from('saved_messages')
@@ -45,6 +50,7 @@ export const useIcebreakers = () => {
 
         if (error) throw error;
 
+        console.log('Removed icebreaker from saved list');
         setSavedIcebreakers(prev => {
           const newSet = new Set(prev);
           newSet.delete(icebreaker);
@@ -57,6 +63,7 @@ export const useIcebreakers = () => {
 
         if (error) throw error;
 
+        console.log('Added icebreaker to saved list');
         setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
       }
     } catch (error) {

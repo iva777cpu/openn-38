@@ -43,23 +43,9 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   const [isFirstTime, setIsFirstTime] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const savedFormData = localStorage.getItem('currentFormData');
-    if (savedFormData) {
-      const parsedData = JSON.parse(savedFormData);
-      Object.entries(parsedData).forEach(([field, value]) => {
-        handleUpdateProfile(field, value as string);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('currentFormData', JSON.stringify(currentProfile));
-  }, [currentProfile]);
-
   const handleIcebreakersUpdate = (icebreakers: string[]) => {
+    console.log('Updating icebreakers in ProfileManager:', icebreakers);
     setPersistedIcebreakers(icebreakers);
-    localStorage.setItem('persistedIcebreakers', JSON.stringify(icebreakers));
   };
 
   // Reset scroll position when showing forms
@@ -106,7 +92,10 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
         <Checkbox 
           id="firstTime" 
           checked={isFirstTime}
-          onCheckedChange={(checked) => setIsFirstTime(checked as boolean)}
+          onCheckedChange={(checked) => {
+            console.log('First time checkbox changed:', checked);
+            setIsFirstTime(checked as boolean);
+          }}
           className="first-time-checkbox"
         />
         <label 
