@@ -18,7 +18,11 @@ export const UserTraitsForm: React.FC<UserTraitsFormProps> = ({ userProfile, onU
             value={userProfile[field.id] || ''}
             onChange={(e) => onUpdate(field.id, e.target.value)}
             className="bg-[#EDEDDD] text-[#1A2A1D] border-[#EDEDDD] placeholder-[#1A2A1D]/50 placeholder:text-xs [&:not(:placeholder-shown)]:text-[14px]"
-            placeholder={field.examples}
+            placeholder={
+              field.id === 'userAge' ? 'Enter age' :
+              field.id === 'userGender' ? 'Enter gender' :
+              field.examples
+            }
           />
         </div>
       ))}
