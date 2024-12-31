@@ -5,7 +5,7 @@ import "./App.css";
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD] p-4 overflow-auto">
+    <main className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD] p-2 overflow-auto">
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />

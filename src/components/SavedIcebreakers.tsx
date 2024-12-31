@@ -75,14 +75,14 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         {selectedMessages.size > 0 && (
           <Button
             onClick={handleDeleteSelected}
-            className="delete-selected-button"
+            className="text-xs px-2 py-1 h-6 bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] rounded-md"
           >
             Delete Selected ({selectedMessages.size})
           </Button>
         )}
       </div>
 
-      <div className="content-section space-y-2">
+      <div className="content-section space-y-2 max-w-2xl mx-auto">
         {messages?.map((message) => (
           <Card key={message.id} className="icebreaker-box p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD]">
             <div className="flex items-start gap-2">
