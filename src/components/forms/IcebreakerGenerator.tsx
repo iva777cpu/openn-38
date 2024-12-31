@@ -39,6 +39,13 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
           return acc;
         }, {});
 
+      // Log the data being sent to AI
+      console.log('Data being sent to AI:', {
+        filledFields,
+        isFirstTime,
+        currentProfile: userProfile
+      });
+
       const systemPrompt = `You are a witty conversation expert. Generate engaging ice breakers that are clever and fun.
 Mix formats: casual questions (0.5), fun facts (0.8), statements (0.5), friendly banter (0.8).
 Keep each response under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses.
@@ -57,6 +64,7 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
       if (error) throw error;
       
       const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
+      console.log('Generated icebreakers:', newIcebreakers);
       onIcebreakersGenerated(newIcebreakers);
       localStorage.setItem('persistedIcebreakers', JSON.stringify(newIcebreakers));
     } catch (error) {
