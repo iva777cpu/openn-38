@@ -5,6 +5,7 @@ import { SavedProfiles } from "./SavedProfiles";
 import { SavedIcebreakers } from "./SavedIcebreakers";
 import { ProfileHeader } from "./ProfileHeader";
 import { Checkbox } from "./ui/checkbox";
+import { useIcebreakers } from "@/hooks/useIcebreakers";
 
 interface ProfileManagerProps {
   currentProfile: Record<string, string>;
@@ -42,6 +43,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   const [persistedIcebreakers, setPersistedIcebreakers] = useState<string[]>([]);
   const [isFirstTime, setIsFirstTime] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
+  const { setIcebreakers } = useIcebreakers();
 
   const handleIcebreakersUpdate = (icebreakers: string[]) => {
     console.log('Updating icebreakers in ProfileManager:', icebreakers);
@@ -52,8 +54,9 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   useEffect(() => {
     console.log('Profile changed or new profile created, clearing icebreakers');
     setPersistedIcebreakers([]);
+    setIcebreakers([]); // Clear icebreakers in the global state
     setIsFirstTime(false);
-  }, [currentProfile]);
+  }, [currentProfile, setIcebreakers]);
 
   // Reset scroll position when showing forms
   useEffect(() => {

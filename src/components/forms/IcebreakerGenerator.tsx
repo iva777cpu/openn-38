@@ -16,13 +16,10 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
   isFirstTime,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const MAX_RETRIES = 3;
 
   const generateIcebreakers = async () => {
     console.log('Starting icebreaker generation with profile:', userProfile);
     console.log('Is first time?:', isFirstTime);
-    console.log('Retry count:', retryCount);
     
     setIsLoading(true);
     try {
@@ -49,13 +46,13 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
       console.log('Filtered filled fields:', filledFields);
       
       if (Object.keys(filledFields).length === 0) {
-        toast.error('Please fill in some information first!');
+        toast.error('hey! fill in some information first! xD');
         setIsLoading(false);
         return;
       }
 
       const systemPrompt = `You are a charming conversation expert. Generate engaging ice breakers that are clever, charming, witty and fun.
-Mix formats such as: Mix formats between different types of icebreakers with equal probability, such as:
+Mix formats between different types of icebreakers with equal probability, such as:
 - Teasing or banter (if appropriate)
 - Playful questions that invite storytelling
 - Interesting observations or compliments
@@ -69,12 +66,6 @@ Return exactly 3 numbered responses.
 ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Build on existing rapport.'}`
 
       console.log('System prompt:', systemPrompt);
-      console.log('Sending request to Supabase function with payload:', {
-        answers: filledFields,
-        isFirstTime,
-        systemPrompt,
-        temperature: isFirstTime ? 0.9 : 0.5
-      });
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
@@ -105,21 +96,11 @@ ${isFirstTime ? 'Keep responses approachable for first-time interaction.' : 'Bui
       }
 
       onIcebreakersGenerated(newIcebreakers);
-      setRetryCount(0); // Reset retry count on success
       toast.success('Generated new icebreakers!');
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      
-      if (retryCount < MAX_RETRIES) {
-        console.log(`Retrying... Attempt ${retryCount + 1} of ${MAX_RETRIES}`);
-        setRetryCount(prev => prev + 1);
-        toast.error(`Failed to generate icebreakers. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
-        setTimeout(() => generateIcebreakers(), 1000); // Retry after 1 second
-      } else {
-        toast.error('Failed to generate icebreakers. Please try again later.');
-        setRetryCount(0); // Reset retry count
-      }
+      toast.error('Failed to generate icebreakers. Please try again later.');
     } finally {
       setIsLoading(false);
     }

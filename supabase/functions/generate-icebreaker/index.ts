@@ -22,18 +22,13 @@ serve(async (req) => {
       model: 'gemini-pro',
     })
 
-    const safePrompt = `You are a charming conversation expert. Generate engaging ice breakers that are clever, charming, witty and fun.
-Mix formats such as: Mix formats between different types of icebreakers with equal probability, such as:
-- Teasing or banter (if appropriate)
-- Playful questions that invite storytelling
-- Interesting observations or compliments
-- Shared experiences or hypotheticals
-- Fun facts or statements
-- other things...
-dont generate too many questions
-No introductory text or emojis.
-Keep each icebreaker under 25 words. If referencing specific content (books, mythology, celebrities, etc), add brief explanation (max 15 words) in parentheses. so each of your responses can be a total of 40.
-Return exactly 3 numbered responses.
+    const safePrompt = `${systemPrompt}
+
+Remember to:
+- Keep everything casual and friendly
+- Focus on target's interests and experiences
+- Use humor appropriately
+- Keep responses brief and engaging
 
 Context about the interaction:
 ${Object.entries(answers)
@@ -80,7 +75,7 @@ ${Object.entries(answers)
     // Provide more specific error messages
     let errorMessage = 'Failed to generate icebreakers'
     if (error.message?.includes('SAFETY')) {
-      errorMessage = 'Please try again with different input. Keep the tone casual and friendly.'
+      errorMessage = 'Content was filtered for safety. Try adjusting your input to be more casual and friendly.'
     }
     
     return new Response(
