@@ -40,9 +40,7 @@ export const useIcebreakerGeneration = (
       
       if (Object.keys(filledFields).length === 0) {
         toast.error("hey! fill in some information first! xD", {
-          position: "bottom-center",
           duration: 3000,
-          className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
         });
         setIsLoading(false);
         return;
@@ -75,17 +73,11 @@ export const useIcebreakerGeneration = (
       }
 
       onIcebreakersGenerated(newIcebreakers);
-      toast.success('Generated new icebreakers!', {
-        position: "bottom-center",
-        className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
-      });
+      toast.success('Generated new icebreakers!');
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      toast.error('Failed to generate icebreakers. Please try again later.', {
-        position: "bottom-center",
-        className: "z-[9999] fixed bottom-4 left-1/2 transform -translate-x-1/2",
-      });
+      toast.error('Failed to generate icebreakers. Please try again later.');
     } finally {
       setIsLoading(false);
     }

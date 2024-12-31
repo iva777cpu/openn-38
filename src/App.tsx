@@ -7,7 +7,18 @@ import "./App.css";
 function App() {
   return (
     <main className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD] p-2 overflow-auto relative">
-      <Toaster richColors closeButton position="bottom-center" />
+      <Toaster 
+        richColors 
+        closeButton 
+        position="bottom-center"
+        toastOptions={{
+          className: "!bg-background-light dark:!bg-secondary !text-foreground-light dark:!text-foreground",
+          descriptionClassName: "!text-foreground-light dark:!text-foreground",
+          style: {
+            bottom: '4rem',
+          }
+        }}
+      />
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />
