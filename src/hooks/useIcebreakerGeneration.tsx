@@ -43,6 +43,7 @@ export const useIcebreakerGeneration = (
           position: 'bottom-center',
           duration: 3000,
         });
+        setIsLoading(false);
         return;
       }
 
