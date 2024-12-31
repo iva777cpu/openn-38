@@ -31,18 +31,23 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
               [key]: {
                 value,
                 prompt: question.prompt,
-                temperature: question.temperature
+                temperature: isFirstTime ? Math.min(question.temperature + 0.2, 1) : question.temperature
               }
             };
           }
           return acc;
         }, {});
 
+      const systemPrompt = isFirstTime 
+        ? "You are a witty and creative conversation starter. Generate unique, amusing, and slightly flirty first-time ice breakers that are memorable and fun. Be creative and playful, but keep it tasteful."
+        : "You are a charming and witty conversation expert. Generate unique, clever, and engaging ice breakers with a touch of humor. Make them memorable and interesting.";
+
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
           answers: filledFields,
           isFirstTime,
-          temperature: isFirstTime ? 0.8 : 0.7
+          systemPrompt,
+          temperature: isFirstTime ? 0.9 : 0.7
         }
       });
 

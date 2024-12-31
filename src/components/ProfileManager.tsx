@@ -123,6 +123,10 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
         onIcebreakersUpdate={handleIcebreakersUpdate}
         isFirstTime={isFirstTime}
       />
+      <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] mt-6 text-center">
+        hey its Edda, the developer of this app. I&apos;d really appreciate your feedback :3 I don&apos;t have many users and I want to know how you feel about my app so please leave a review and let me know! (pls give my app a good rating :D :3 )<br />
+        my email in case you want to reach me: Novatica78@gmail.com
+      </div>
       <SaveProfileDialog
         open={saveDialogOpen}
         onOpenChange={setSaveDialogOpen}
