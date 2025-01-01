@@ -103,4 +103,13 @@
   .section-header header {
     @apply flex items-center gap-2;
   }
+
+  /* Loading Dots Override */
+  .loading-dots {
+    @apply !h-2 !w-2;
+  }
+  
+  .loading-dots > span {
+    @apply !h-2 !w-2;
+  }
 }

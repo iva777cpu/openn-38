@@ -39,7 +39,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   return (
     <section className="w-full space-y-3">
       <FormSection title="About You">
-        <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
+        <UserTraitsForm 
+          userProfile={userProfile} 
+          onUpdate={onUpdate}
+          includeRelationship={true} // Add this prop
+        />
       </FormSection>
 
       <FormSection title="About Them">
