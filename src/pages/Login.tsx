@@ -31,25 +31,19 @@ export default function Login() {
       async (event, session) => {
         if (session) {
           // Get user preferences or create default ones
-          const { data: preferences, error: fetchError } = await supabase
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const { error: upsertError } = await supabase
             .from('user_preferences')
-            .select('theme')
-            .eq('user_id', session.user.id)
-            .maybeSingle();
+            .upsert({ 
+              user_id: session.user.id, 
+              theme: systemPrefersDark ? 'dark' : 'light',
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
+            });
 
-          if (!preferences && !fetchError) {
-            // If no preferences exist, create default ones based on system preference
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const { error: insertError } = await supabase
-              .from('user_preferences')
-              .insert({ 
-                user_id: session.user.id, 
-                theme: systemPrefersDark ? 'dark' : 'light'
-              });
-
-            if (insertError) {
-              console.error("Error creating initial theme preferences:", insertError);
-            }
+          if (upsertError) {
+            console.error("Error upserting theme preferences:", upsertError);
           }
 
           navigate("/");
