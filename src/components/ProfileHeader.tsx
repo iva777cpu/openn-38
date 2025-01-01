@@ -29,7 +29,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {selectedProfileId && hasChanges && (
           <Button
             onClick={onSaveChanges}
-            className="bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B] h-7 px-2 text-xs dark:bg-[#EDEDDD] dark:text-[#2D4531] dark:hover:bg-[#EDEDDD]/90 [&_svg]:dark:text-[#2D4531]"
+            className="bg-[#2D4531] text-[#EDEDDD] hover:bg-[#47624B] h-7 px-2 text-xs"
           >
             <Save className="h-3 w-3 mr-1" />
             Save Changes
