@@ -118,8 +118,6 @@ export const SideMenu: React.FC<SideMenuProps> = ({
     onNewProfile();
     onOpenChange(false);
     window.scrollTo({ top: 0, behavior: 'instant' });
-    // Force a reflow to ensure the scroll takes effect
-    document.body.offsetHeight;
   };
 
   return (
