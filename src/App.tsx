@@ -12,12 +12,14 @@ function App() {
         closeButton
         position="bottom-center"
         toastOptions={{
-          className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light !text-xs max-w-[280px] mx-auto",
+          className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light !text-xs !w-fit mx-auto",
           descriptionClassName: "!text-foreground dark:!text-foreground-light !text-xs",
           style: {
             bottom: '4rem',
             padding: '0.5rem',
-            minHeight: '2.5rem'
+            minHeight: '2.5rem',
+            maxWidth: '280px',
+            margin: '0 auto'
           }
         }}
       />

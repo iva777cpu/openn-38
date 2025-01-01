@@ -18,7 +18,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
   } = useIcebreakersList();
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 max-w-2xl mx-auto px-4 md:px-6">
       <div className="section-header">
         <header className="flex items-center gap-2">
           <Button
@@ -44,7 +44,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         )}
       </div>
 
-      <div className="content-section max-w-2xl mx-auto space-y-2">
+      <div className="content-section space-y-2">
         {messages?.map((message) => (
           <IcebreakerListItem
             key={message.id}

@@ -31,7 +31,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 max-w-2xl mx-auto px-4 md:px-6">
       <div className="section-header">
         <ProfileHeader
           selectedCount={selectedProfiles.size}
