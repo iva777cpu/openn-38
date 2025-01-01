@@ -2,7 +2,6 @@ import React from "react";
 import { ProfileHeader } from "./profiles/ProfileHeader";
 import { ProfileList } from "./profiles/ProfileList";
 import { useProfileActions } from "./profiles/useProfileActions";
-import { LoadingDots } from "./ui/loading-dots";
 
 interface SavedProfilesProps {
   onSelectProfile: (profile: any) => void;
@@ -31,10 +30,6 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     }
   };
 
-  if (!profiles) {
-    return <LoadingDots />;
-  }
-
   return (
     <section className="space-y-4 max-w-2xl mx-auto px-4 md:px-6">
       <div className="section-header">
@@ -47,7 +42,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
 
       <div className="px-2">
         <ProfileList
-          profiles={profiles}
+          profiles={profiles || []}
           editingId={editingId}
           editingName={editingName}
           selectedProfiles={selectedProfiles}

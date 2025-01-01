@@ -1,9 +1,8 @@
 export interface ProfileState {
-  [key: string]: string;
+  [key: string]: string; // Add index signature
   userAge: string;
   userGender: string;
   impression: string;
-  relationship: string;
   targetAge: string;
   targetGender: string;
   targetPersonality: string;
@@ -26,7 +25,6 @@ export const emptyProfile: ProfileState = {
   userAge: "",
   userGender: "",
   impression: "",
-  relationship: "",
   targetAge: "",
   targetGender: "",
   targetPersonality: "",
