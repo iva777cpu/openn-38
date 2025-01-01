@@ -3,18 +3,25 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
-  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [icebreakers, setIcebreakers] = useState<string[]>(() => {
+    const saved = localStorage.getItem('currentIcebreakers');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     loadSavedIcebreakers();
   }, []);
 
+  useEffect(() => {
+    if (icebreakers.length > 0) {
+      localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
+    }
+  }, [icebreakers]);
+
   const loadSavedIcebreakers = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return;
-      }
+      if (!user) return;
 
       const { data, error } = await supabase
         .from('saved_messages')
@@ -22,7 +29,6 @@ export const useIcebreakers = () => {
         .eq('user_id', user.id);
 
       if (error) throw error;
-
       setSavedIcebreakers(new Set(data.map(item => item.message_text)));
     } catch (error) {
       console.error('Error loading saved icebreakers:', error);
@@ -31,6 +37,7 @@ export const useIcebreakers = () => {
 
   const clearAllIcebreakers = useCallback(() => {
     setIcebreakers([]);
+    localStorage.removeItem('currentIcebreakers');
   }, []);
 
   const toggleIcebreaker = async (icebreaker: string) => {
