@@ -28,8 +28,30 @@ export default function Login() {
     checkSupabaseConnection();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (session) {
+          // Get user preferences or create default ones
+          const { data: preferences, error: fetchError } = await supabase
+            .from('user_preferences')
+            .select('theme')
+            .eq('user_id', session.user.id)
+            .maybeSingle();
+
+          if (!preferences && !fetchError) {
+            // If no preferences exist, create default ones based on system preference
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const { error: insertError } = await supabase
+              .from('user_preferences')
+              .insert({ 
+                user_id: session.user.id, 
+                theme: systemPrefersDark ? 'dark' : 'light'
+              });
+
+            if (insertError) {
+              console.error("Error creating initial theme preferences:", insertError);
+            }
+          }
+
           navigate("/");
         }
       }
