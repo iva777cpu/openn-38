@@ -1,39 +1,48 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3"
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { answers, temperature, isFirstTime } = await req.json()
-    console.log('Received request with answers:', answers)
+    const { answers, temperature, isFirstTime } = await req.json();
+    console.log('Received request with answers:', answers);
 
-    const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '');
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
-- Teasing or banter (if appropriate)
-- Experiences or hypotheticals
-- Fun facts or statements
-- Playful questions that invite storytelling
-- Interesting observations or compliments
-- Other creative formats
+- Teasing or playful banter (if appropriate for the relationship)
+- Shared experiences or hypothetical scenarios
+- Fun facts or interesting statements
+- Playful observations or genuine compliments
+- Creative metaphors or analogies
+- References to their interests (with brief explanations if needed)
 
-Focus on the target's interests and experiences, keeping everything casual, friendly, and brief. Use humor appropriately and avoid generating too many questions, instead rely on other icebreaker formats. Each icebreaker must be under 25 words, and if referencing specific content (books, a poem, mythology, famous figures, etc.), include a brief explanation (max 15 words) in parentheses. Return exactly 3 responses. No introductory text or emojis.
+Guidelines:
+- Focus on their interests and experiences from the context
+- Keep everything casual, friendly, and brief
+- Use humor appropriately for the relationship type
+- Generate NO MORE than ONE question-based icebreaker
+- Each icebreaker must be under 25 words
+- If referencing specific content (books, mythology, etc.), include a brief explanation (max 15 words) in parentheses
+- Return exactly 3 responses, numbered 1-3
+- No introductory text or emojis
 
 Context about the interaction:
 ${Object.entries(answers)
   .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
-  .join('\n')}`
+  .join('\n')}`;
 
-    console.log('Final prompt:', systemPrompt)
+    console.log('Using prompt:', systemPrompt);
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
@@ -42,28 +51,28 @@ ${Object.entries(answers)
         topK: 40,
         topP: 0.95,
       },
-    })
+    });
     
-    const response = await result.response
-    const text = response.text()
+    const response = await result.response;
+    const text = response.text();
     
-    console.log('Generated text:', text)
+    console.log('Generated icebreakers:', text);
 
     const formattedText = text
       .split('\n')
       .filter(line => line.trim())
-      .join('\n')
+      .join('\n');
 
     if (!formattedText) {
-      throw new Error('No valid text generated')
+      throw new Error('No valid text generated');
     }
 
     return new Response(
       JSON.stringify({ icebreakers: formattedText }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    );
   } catch (error) {
-    console.error('Error in generate-icebreaker function:', error)
+    console.error('Error in generate-icebreaker function:', error);
     
     return new Response(
       JSON.stringify({ 
@@ -74,6 +83,6 @@ ${Object.entries(answers)
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
-    )
+    );
   }
-})
+});
