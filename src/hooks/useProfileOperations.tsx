@@ -6,12 +6,15 @@ export const useProfileOperations = () => {
 
     try {
       console.log("Saving profile changes for ID:", selectedProfileId);
+      console.log("Current profile data:", currentProfile);
+      
       const { error } = await supabase
         .from("user_profiles")
         .update({
           user_age: currentProfile.userAge,
           user_gender: currentProfile.userGender,
           user_impression: currentProfile.impression,
+          relationship: currentProfile.relationship, // Added this line to save the relationship field
           target_age: currentProfile.targetAge,
           target_gender: currentProfile.targetGender,
           target_personality: currentProfile.targetPersonality,
@@ -50,6 +53,7 @@ export const useProfileOperations = () => {
       userAge: profile.user_age || "",
       userGender: profile.user_gender || "",
       impression: profile.user_impression || "",
+      relationship: profile.relationship || "", // Added this line to load the relationship field
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
       targetPersonality: profile.target_personality || "",
