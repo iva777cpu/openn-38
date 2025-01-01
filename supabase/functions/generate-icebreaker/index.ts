@@ -16,8 +16,10 @@ serve(async (req) => {
     const { answers, temperature, isFirstTime } = await req.json();
     console.log('Received request with answers:', answers);
 
-    const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '');
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
+    }
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
@@ -44,17 +46,30 @@ ${Object.entries(answers)
 
     console.log('Using prompt:', systemPrompt);
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-      generationConfig: {
-        temperature: isFirstTime ? 0.9 : 0.5,
-        topK: 40,
-        topP: 0.95,
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt }
+        ],
+        temperature: isFirstTime ? 0.9 : 0.5,
+        top_p: 0.95,
+      }),
     });
-    
-    const response = await result.response;
-    const text = response.text();
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('OpenAI API error:', error);
+      throw new Error('Failed to generate response from OpenAI');
+    }
+
+    const data = await response.json();
+    const text = data.choices[0].message.content;
     
     console.log('Generated icebreakers:', text);
 
