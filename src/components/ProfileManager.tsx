@@ -64,7 +64,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     }
   }, [persistedIcebreakers]);
 
-  // Clear data only when explicitly requested (new profile or loading existing)
+  // Clear data only when explicitly requested
   useEffect(() => {
     if (selectedProfileId === null && Object.keys(currentProfile).length === 0) {
       localStorage.removeItem('currentProfile');

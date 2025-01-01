@@ -63,6 +63,7 @@ export type Database = {
           id: string
           previous_topics: string | null
           profile_name: string
+          relationship: string | null
           situation: string | null
           target_age: string | null
           target_books: string | null
@@ -88,6 +89,7 @@ export type Database = {
           id?: string
           previous_topics?: string | null
           profile_name: string
+          relationship?: string | null
           situation?: string | null
           target_age?: string | null
           target_books?: string | null
@@ -113,6 +115,7 @@ export type Database = {
           id?: string
           previous_topics?: string | null
           profile_name?: string
+          relationship?: string | null
           situation?: string | null
           target_age?: string | null
           target_books?: string | null

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { questions } from "@/utils/questions";
-import { toast } from "sonner";
 
 export const useIcebreakerGeneration = (
   userProfile: Record<string, string>,
@@ -37,14 +36,6 @@ export const useIcebreakerGeneration = (
         }, {});
 
       console.log('Filtered filled fields:', filledFields);
-      
-      if (Object.keys(filledFields).length === 0) {
-        toast.error("hey! fill in some information first! xD", {
-          duration: 3000,
-        });
-        setIsLoading(false);
-        return;
-      }
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
@@ -73,11 +64,9 @@ export const useIcebreakerGeneration = (
       }
 
       onIcebreakersGenerated(newIcebreakers);
-      toast.success('Generated new icebreakers!');
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      toast.error('Failed to generate icebreakers. Please try again later.');
     } finally {
       setIsLoading(false);
     }
