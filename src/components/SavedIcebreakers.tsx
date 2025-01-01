@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
 import { IcebreakerListItem } from "./icebreakers/IcebreakerListItem";
 import { useIcebreakersList } from "./icebreakers/useIcebreakersList";
-import { LoadingDots } from "./ui/loading-dots";
 
 interface SavedIcebreakersProps {
   onBack: () => void;
@@ -16,7 +15,6 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
     selectedMessages,
     handleDeleteSelected,
     toggleMessageSelection,
-    isLoading,
   } = useIcebreakersList();
 
   return (
@@ -49,25 +47,19 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
       </div>
 
       <div className="content-section space-y-2 px-4">
-        {isLoading ? (
-          <LoadingDots />
-        ) : (
-          <>
-            {messages?.map((message) => (
-              <IcebreakerListItem
-                key={message.id}
-                message={message}
-                isSelected={selectedMessages.has(message.id)}
-                onToggleSelection={toggleMessageSelection}
-              />
-            ))}
+        {messages?.map((message) => (
+          <IcebreakerListItem
+            key={message.id}
+            message={message}
+            isSelected={selectedMessages.has(message.id)}
+            onToggleSelection={toggleMessageSelection}
+          />
+        ))}
 
-            {messages?.length === 0 && (
-              <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">
-                No saved icebreakers yet.
-              </p>
-            )}
-          </>
+        {messages?.length === 0 && (
+          <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">
+            No saved icebreakers yet.
+          </p>
         )}
       </div>
     </section>
