@@ -50,19 +50,28 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     }
   }, [showProfiles, showSavedIcebreakers]);
 
-  // Clear icebreakers when profile changes or new profile is created
+  // Save form data to localStorage
   useEffect(() => {
-    console.log("Profile changed or new profile created in ProfileManager");
-    clearIcebreakers();
-  }, [currentProfile, clearIcebreakers, selectedProfileId]); // Add selectedProfileId dependency
+    if (currentProfile && Object.keys(currentProfile).length > 0) {
+      localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
+    }
+  }, [currentProfile]);
 
-  // Additional cleanup when component unmounts
+  // Save icebreakers to localStorage
   useEffect(() => {
-    return () => {
-      console.log("ProfileManager unmounting, clearing icebreakers");
+    if (persistedIcebreakers.length > 0) {
+      localStorage.setItem('currentIcebreakers', JSON.stringify(persistedIcebreakers));
+    }
+  }, [persistedIcebreakers]);
+
+  // Clear data only when explicitly requested (new profile or loading existing)
+  useEffect(() => {
+    if (selectedProfileId === null && Object.keys(currentProfile).length === 0) {
+      localStorage.removeItem('currentProfile');
+      localStorage.removeItem('currentIcebreakers');
       clearIcebreakers();
-    };
-  }, [clearIcebreakers]);
+    }
+  }, [selectedProfileId, currentProfile, clearIcebreakers]);
 
   const contentProps = {
     currentProfile,

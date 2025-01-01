@@ -25,7 +25,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-transparent"
+            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-transparent hover:text-[#303D24] dark:hover:text-[#EDEDDD]"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -35,7 +35,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         </header>
 
         {selectedMessages.size > 0 && (
-          <div className="px-2">
+          <div className="px-4">
             <Button
               onClick={handleDeleteSelected}
               className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs h-6 text-[11px]"
@@ -46,7 +46,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
         )}
       </div>
 
-      <div className="content-section space-y-2 px-2">
+      <div className="content-section space-y-2 px-4">
         {messages?.map((message) => (
           <IcebreakerListItem
             key={message.id}
