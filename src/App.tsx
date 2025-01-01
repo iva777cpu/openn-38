@@ -9,15 +9,13 @@ function App() {
     <main className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD] p-2 overflow-auto relative">
       <Toaster 
         richColors 
-        closeButton={true}
+        closeButton 
         position="bottom-center"
         toastOptions={{
-          className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light max-w-[280px] !text-xs",
-          descriptionClassName: "!text-foreground dark:!text-foreground-light !text-xs",
+          className: "!bg-background-light dark:!bg-secondary !text-foreground-light dark:!text-foreground",
+          descriptionClassName: "!text-foreground-light dark:!text-foreground",
           style: {
             bottom: '4rem',
-            padding: '8px 12px',
-            minHeight: '40px',
           }
         }}
       />
