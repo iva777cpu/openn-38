@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,10 +17,13 @@ serve(async (req) => {
     const { answers, temperature, isFirstTime } = await req.json();
     console.log('Received request with answers:', answers);
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiApiKey) {
+      throw new Error('Gemini API key not configured');
     }
+
+    const genAI = new GoogleGenerativeAI(geminiApiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
@@ -46,30 +50,17 @@ ${Object.entries(answers)
 
     console.log('Using prompt:', systemPrompt);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt }
-        ],
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
+      generationConfig: {
         temperature: isFirstTime ? 0.9 : 0.5,
-        top_p: 0.95,
-      }),
+        topK: 40,
+        topP: 0.95,
+      },
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('OpenAI API error:', error);
-      throw new Error('Failed to generate response from OpenAI');
-    }
-
-    const data = await response.json();
-    const text = data.choices[0].message.content;
+    
+    const response = await result.response;
+    const text = response.text();
     
     console.log('Generated icebreakers:', text);
 
