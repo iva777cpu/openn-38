@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useIcebreakersState } from "./useIcebreakersState";
 
+// Base props for the ProfileStateManager
 interface ProfileStateManagerProps {
   currentProfile: Record<string, string>;
   children: React.ReactNode;
@@ -8,8 +9,8 @@ interface ProfileStateManagerProps {
   showSavedIcebreakers: boolean;
 }
 
-// Define the extended props that will be passed to children
-interface ExtendedChildProps {
+// Props that will be passed to children
+export interface ProfileStateExtendedProps {
   isFirstTime: boolean;
   setIsFirstTime: (value: boolean) => void;
   persistedIcebreakers: string[];
@@ -61,7 +62,7 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
         persistedIcebreakers,
         handleIcebreakersUpdate,
         clearIcebreakers,
-      } as ExtendedChildProps);
+      } as React.PropsWithChildren<ProfileStateExtendedProps>);
     }
     return child;
   });

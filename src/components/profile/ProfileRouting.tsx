@@ -1,15 +1,26 @@
 import React from "react";
-import { SavedProfiles } from "../SavedProfiles";
 import { SavedIcebreakers } from "../SavedIcebreakers";
+import { SavedProfiles } from "../SavedProfiles";
 import { ProfileContent } from "./ProfileContent";
+import { ProfileStateExtendedProps } from "./ProfileStateManager";
 
-interface ProfileRoutingProps {
+interface ProfileRoutingProps extends ProfileStateExtendedProps {
   showProfiles: boolean;
   showSavedIcebreakers: boolean;
   setShowProfiles: (show: boolean) => void;
   setShowSavedIcebreakers: (show: boolean) => void;
   handleSelectProfile: (profile: any) => void;
-  contentProps: any; // We'll type this properly in the next iteration
+  contentProps: {
+    currentProfile: Record<string, string>;
+    saveDialogOpen: boolean;
+    setSaveDialogOpen: (open: boolean) => void;
+    selectedProfileId: string | null;
+    handleUpdateProfile: (field: string, value: string) => void;
+    handleSaveChanges: () => void;
+    onSaveProfile: () => void;
+    hasChanges?: boolean;
+    selectedProfileName?: string;
+  };
 }
 
 export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
@@ -19,26 +30,32 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   setShowSavedIcebreakers,
   handleSelectProfile,
   contentProps,
+  isFirstTime,
+  setIsFirstTime,
+  persistedIcebreakers,
+  handleIcebreakersUpdate,
+  clearIcebreakers,
 }) => {
   if (showProfiles) {
     return (
-      <SavedProfiles 
-        onSelectProfile={(profile) => {
-          handleSelectProfile(profile);
-          setShowProfiles(false);
-        }}
-        onBack={() => setShowProfiles(false)}
+      <SavedProfiles
+        onSelectProfile={handleSelectProfile}
+        setShowProfiles={setShowProfiles}
       />
     );
   }
 
   if (showSavedIcebreakers) {
-    return (
-      <SavedIcebreakers 
-        onBack={() => setShowSavedIcebreakers(false)}
-      />
-    );
+    return <SavedIcebreakers setShowSavedIcebreakers={setShowSavedIcebreakers} />;
   }
 
-  return <ProfileContent {...contentProps} />;
+  return (
+    <ProfileContent
+      {...contentProps}
+      isFirstTime={isFirstTime}
+      setIsFirstTime={setIsFirstTime}
+      persistedIcebreakers={persistedIcebreakers}
+      handleIcebreakersUpdate={handleIcebreakersUpdate}
+    />
+  );
 };
