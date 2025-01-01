@@ -8,6 +8,15 @@ interface ProfileStateManagerProps {
   showSavedIcebreakers: boolean;
 }
 
+// Define the extended props that will be passed to children
+interface ExtendedChildProps {
+  isFirstTime: boolean;
+  setIsFirstTime: (value: boolean) => void;
+  persistedIcebreakers: string[];
+  handleIcebreakersUpdate: (icebreakers: string[]) => void;
+  clearIcebreakers: () => void;
+}
+
 export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
   currentProfile,
   children,
@@ -46,12 +55,13 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
   const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
+        ...child.props,
         isFirstTime,
         setIsFirstTime,
         persistedIcebreakers,
         handleIcebreakersUpdate,
         clearIcebreakers,
-      });
+      } as ExtendedChildProps);
     }
     return child;
   });
