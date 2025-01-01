@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
 import { IcebreakerListItem } from "./icebreakers/IcebreakerListItem";
 import { useIcebreakersList } from "./icebreakers/useIcebreakersList";
+import { LoadingDots } from "./ui/loading-dots";
 
 interface SavedIcebreakersProps {
   onBack: () => void;
@@ -16,6 +17,10 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
     handleDeleteSelected,
     toggleMessageSelection,
   } = useIcebreakersList();
+
+  if (!messages) {
+    return <LoadingDots />;
+  }
 
   return (
     <section className="space-y-4 max-w-2xl mx-auto px-4 md:px-6">
