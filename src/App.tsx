@@ -19,7 +19,8 @@ function App() {
             padding: '0.5rem',
             minHeight: '2.5rem',
             maxWidth: '280px',
-            margin: '0 auto'
+            margin: '0 auto',
+            transform: 'translateX(1rem)'
           }
         }}
       />

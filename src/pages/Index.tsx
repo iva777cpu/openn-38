@@ -47,6 +47,12 @@ const Index = () => {
     }
   };
 
+  const handleNewProfile = () => {
+    setShowProfiles(false);
+    setShowSavedIcebreakers(false);
+    setMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#EDEDDD] dark:bg-[#303D24] text-[#2D4531] dark:text-[#EDEDDD]">
       <SideMenu

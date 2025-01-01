@@ -40,20 +40,22 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
         />
       </div>
 
-      <ProfileList
-        profiles={profiles || []}
-        editingId={editingId}
-        editingName={editingName}
-        selectedProfiles={selectedProfiles}
-        onEdit={(profile) => {
-          setEditingId(profile.id);
-          setEditingName(profile.profile_name);
-        }}
-        onSave={handleSaveProfileName}
-        onSelect={toggleProfileSelection}
-        onProfileSelect={onSelectProfile}
-        onEditNameChange={setEditingName}
-      />
+      <div className="px-2">
+        <ProfileList
+          profiles={profiles || []}
+          editingId={editingId}
+          editingName={editingName}
+          selectedProfiles={selectedProfiles}
+          onEdit={(profile) => {
+            setEditingId(profile.id);
+            setEditingName(profile.profile_name);
+          }}
+          onSave={handleSaveProfileName}
+          onSelect={toggleProfileSelection}
+          onProfileSelect={onSelectProfile}
+          onEditNameChange={setEditingName}
+        />
+      </div>
     </section>
   );
 };
