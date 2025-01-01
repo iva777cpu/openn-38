@@ -14,6 +14,7 @@ export const useIcebreakers = () => {
 
   useEffect(() => {
     if (icebreakers.length > 0) {
+      console.log("useIcebreakers: Saving icebreakers to localStorage", icebreakers);
       localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
     }
   }, [icebreakers]);
