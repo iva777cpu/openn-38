@@ -24,12 +24,15 @@ export const useThemePreference = () => {
 
           if (preferences) {
             console.log("Found user theme preference:", preferences.theme);
-            setIsDarkMode(preferences.theme === 'dark');
+            const shouldBeDark = preferences.theme === 'dark';
+            setIsDarkMode(shouldBeDark);
+            document.documentElement.classList.toggle('dark', shouldBeDark);
           } else {
             // If no preference exists, use system preference
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             console.log("Using system theme preference:", systemPrefersDark ? 'dark' : 'light');
             setIsDarkMode(systemPrefersDark);
+            document.documentElement.classList.toggle('dark', systemPrefersDark);
             
             // Save the system preference
             const { error: upsertError } = await supabase
@@ -51,6 +54,7 @@ export const useThemePreference = () => {
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           console.log("No user logged in, using system theme:", systemPrefersDark ? 'dark' : 'light');
           setIsDarkMode(systemPrefersDark);
+          document.documentElement.classList.toggle('dark', systemPrefersDark);
         }
       } catch (error) {
         console.error('Error initializing theme:', error);
@@ -84,6 +88,7 @@ export const useThemePreference = () => {
       }
 
       setIsDarkMode(newTheme);
+      document.documentElement.classList.toggle('dark', newTheme);
     } catch (error) {
       console.error('Error toggling theme:', error);
     }
