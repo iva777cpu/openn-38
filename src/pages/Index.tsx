@@ -17,7 +17,7 @@ const Index = () => {
     selectedProfileName,
     hasChanges,
     handleUpdateProfile,
-    handleNewProfile,
+    handleNewProfile: handleNewProfileFromHook,
     handleSelectProfile,
     handleSaveChanges,
   } = useProfileManagement();
@@ -48,6 +48,7 @@ const Index = () => {
   };
 
   const handleNewProfile = () => {
+    handleNewProfileFromHook();
     setShowProfiles(false);
     setShowSavedIcebreakers(false);
     setMenuOpen(false);
