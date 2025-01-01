@@ -22,13 +22,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   persistedIcebreakers,
   isFirstTime
 }) => {
-  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
+  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker } = useIcebreakers();
 
-  // Clear icebreakers on mount and when profile changes
+  // Load persisted icebreakers when component mounts
   useEffect(() => {
-    clearAllIcebreakers();
-    setIcebreakers([]);
-  }, [userProfile, clearAllIcebreakers, setIcebreakers]);
+    if (persistedIcebreakers.length > 0) {
+      setIcebreakers(persistedIcebreakers);
+    }
+  }, []);
 
   const handleIcebreakersGenerated = (newIcebreakers: string[]) => {
     console.log("ProfileForm: New icebreakers generated", newIcebreakers);
