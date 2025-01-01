@@ -2,6 +2,7 @@ import React from "react";
 import { ProfileHeader } from "./profiles/ProfileHeader";
 import { ProfileList } from "./profiles/ProfileList";
 import { useProfileActions } from "./profiles/useProfileActions";
+import { LoadingDots } from "./ui/loading-dots";
 
 interface SavedProfilesProps {
   onSelectProfile: (profile: any) => void;
@@ -19,6 +20,7 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
     handleDeleteSelected,
     toggleProfileSelection,
     updateProfileMutation,
+    isLoading,
   } = useProfileActions();
 
   const handleSaveProfileName = async () => {
@@ -41,20 +43,24 @@ export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, o
       </div>
 
       <div className="px-2">
-        <ProfileList
-          profiles={profiles || []}
-          editingId={editingId}
-          editingName={editingName}
-          selectedProfiles={selectedProfiles}
-          onEdit={(profile) => {
-            setEditingId(profile.id);
-            setEditingName(profile.profile_name);
-          }}
-          onSave={handleSaveProfileName}
-          onSelect={toggleProfileSelection}
-          onProfileSelect={onSelectProfile}
-          onEditNameChange={setEditingName}
-        />
+        {isLoading ? (
+          <LoadingDots />
+        ) : (
+          <ProfileList
+            profiles={profiles || []}
+            editingId={editingId}
+            editingName={editingName}
+            selectedProfiles={selectedProfiles}
+            onEdit={(profile) => {
+              setEditingId(profile.id);
+              setEditingName(profile.profile_name);
+            }}
+            onSave={handleSaveProfileName}
+            onSelect={toggleProfileSelection}
+            onProfileSelect={onSelectProfile}
+            onEditNameChange={setEditingName}
+          />
+        )}
       </div>
     </section>
   );

@@ -2,7 +2,8 @@ export const placeholders = {
   userTraits: [
     { id: "userAge", examples: "Enter age" },
     { id: "userGender", examples: "Enter gender" },
-    { id: "impression", examples: "Funny, Charming, Flirty" }
+    { id: "impression", examples: "Funny, Charming, Flirty" },
+    { id: "relationship", examples: "Friend, Stranger, Colleague" }
   ],
   targetTraits: [
     { id: "targetAge", examples: "Enter age" },
