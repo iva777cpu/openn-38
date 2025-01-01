@@ -2,8 +2,7 @@ export const questions = {
   userTraits: [
     { id: "userAge", text: "How old are you?", prompt: "Consider age", temperature: 0.5 },
     { id: "userGender", text: "What's your gender?", prompt: "Consider gender", temperature: 0.5 },
-    { id: "impression", text: "How would you like to come across?", prompt: "Match this tone in responses", temperature: 0.8 },
-    { id: "relationship", text: "Who is this person to you?", prompt: "Consider relationship context", temperature: 0.6 }
+    { id: "impression", text: "How would you like to come across?", prompt: "Match this tone in responses", temperature: 0.8 }
   ],
   targetTraits: [
     { id: "targetAge", text: "How old are they?", prompt: "Consider age", temperature: 0.5 },
