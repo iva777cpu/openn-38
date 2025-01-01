@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const useIcebreakersList = () => {
   const [selectedMessages, setSelectedMessages] = useState<Set<string>>(new Set());
 
-  const { data: messages, refetch } = useQuery({
+  const { data: messages, isLoading, refetch } = useQuery({
     queryKey: ["saved-messages"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -54,5 +54,6 @@ export const useIcebreakersList = () => {
     selectedMessages,
     handleDeleteSelected,
     toggleMessageSelection,
+    isLoading,
   };
 };

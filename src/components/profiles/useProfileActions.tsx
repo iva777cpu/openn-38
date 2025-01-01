@@ -8,7 +8,7 @@ export const useProfileActions = () => {
   const [editingName, setEditingName] = useState("");
   const [selectedProfiles, setSelectedProfiles] = useState<Set<string>>(new Set());
 
-  const { data: profiles, refetch } = useQuery({
+  const { data: profiles, isLoading, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -81,6 +81,7 @@ export const useProfileActions = () => {
     handleDeleteSelected,
     toggleProfileSelection,
     updateProfileMutation,
+    isLoading,
   };
 };
 
