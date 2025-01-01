@@ -7,6 +7,7 @@ export const useProfileOperations = () => {
     try {
       console.log("Saving profile changes for ID:", selectedProfileId);
       console.log("Current profile data:", currentProfile);
+      console.log("Relationship value being saved:", currentProfile.relationship);
       
       const { error } = await supabase
         .from("user_profiles")
@@ -14,7 +15,7 @@ export const useProfileOperations = () => {
           user_age: currentProfile.userAge,
           user_gender: currentProfile.userGender,
           user_impression: currentProfile.impression,
-          relationship: currentProfile.relationship, // Added this line to save the relationship field
+          relationship: currentProfile.relationship,
           target_age: currentProfile.targetAge,
           target_gender: currentProfile.targetGender,
           target_personality: currentProfile.targetPersonality,
@@ -48,12 +49,14 @@ export const useProfileOperations = () => {
     setSelectedProfileId: (id: string) => void,
     setSelectedProfileName: (name: string) => void
   ) => {
-    console.log("Selecting profile:", profile.id);
+    console.log("Selecting profile:", profile);
+    console.log("Profile relationship value:", profile.relationship);
+    
     const profileData = {
       userAge: profile.user_age || "",
       userGender: profile.user_gender || "",
       impression: profile.user_impression || "",
-      relationship: profile.relationship || "", // Added this line to load the relationship field
+      relationship: profile.relationship || "",
       targetAge: profile.target_age || "",
       targetGender: profile.target_gender || "",
       targetPersonality: profile.target_personality || "",
@@ -71,6 +74,8 @@ export const useProfileOperations = () => {
       situation: profile.situation || "",
       previousTopics: profile.previous_topics || "",
     };
+    
+    console.log("Transformed profile data:", profileData);
     setCurrentProfile(profileData);
     setOriginalProfile(profileData);
     setSelectedProfileId(profile.id);
