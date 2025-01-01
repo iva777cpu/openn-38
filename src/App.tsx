@@ -11,7 +11,6 @@ function App() {
         richColors 
         closeButton={true}
         position="bottom-center"
-        swipeDirection={["up", "left", "right"]}
         toastOptions={{
           className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light max-w-[280px] !text-xs",
           descriptionClassName: "!text-foreground dark:!text-foreground-light !text-xs",
