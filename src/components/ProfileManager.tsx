@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ProfileRouting } from "./profile/ProfileRouting";
-import { useIcebreakersState } from "./profile/useIcebreakersState";
+import { ProfileStateManager } from "./profile/ProfileStateManager";
 
 interface ProfileManagerProps {
   currentProfile: Record<string, string>;
@@ -19,59 +19,23 @@ interface ProfileManagerProps {
   selectedProfileName?: string;
 }
 
-export const ProfileManager: React.FC<ProfileManagerProps> = ({
-  currentProfile,
-  saveDialogOpen,
-  setSaveDialogOpen,
-  showProfiles,
-  showSavedIcebreakers,
-  selectedProfileId,
-  handleUpdateProfile,
-  handleSelectProfile,
-  handleSaveChanges,
-  setShowProfiles,
-  setShowSavedIcebreakers,
-  onSaveProfile,
-  hasChanges,
-  selectedProfileName,
-}) => {
+export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
   const {
-    persistedIcebreakers,
-    isFirstTime,
-    setIsFirstTime,
-    handleIcebreakersUpdate,
-    clearIcebreakers,
-  } = useIcebreakersState(currentProfile);
-
-  // Reset scroll position when showing forms
-  useEffect(() => {
-    if (!showProfiles && !showSavedIcebreakers) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-  }, [showProfiles, showSavedIcebreakers]);
-
-  // Save form data to localStorage
-  useEffect(() => {
-    if (currentProfile && Object.keys(currentProfile).length > 0) {
-      localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
-    }
-  }, [currentProfile]);
-
-  // Save icebreakers to localStorage
-  useEffect(() => {
-    if (persistedIcebreakers.length > 0) {
-      localStorage.setItem('currentIcebreakers', JSON.stringify(persistedIcebreakers));
-    }
-  }, [persistedIcebreakers]);
-
-  // Clear data only when explicitly requested
-  useEffect(() => {
-    if (selectedProfileId === null && Object.keys(currentProfile).length === 0) {
-      localStorage.removeItem('currentProfile');
-      localStorage.removeItem('currentIcebreakers');
-      clearIcebreakers();
-    }
-  }, [selectedProfileId, currentProfile, clearIcebreakers]);
+    currentProfile,
+    saveDialogOpen,
+    setSaveDialogOpen,
+    showProfiles,
+    showSavedIcebreakers,
+    selectedProfileId,
+    handleUpdateProfile,
+    handleSelectProfile,
+    handleSaveChanges,
+    setShowProfiles,
+    setShowSavedIcebreakers,
+    onSaveProfile,
+    hasChanges,
+    selectedProfileName,
+  } = props;
 
   const contentProps = {
     currentProfile,
@@ -83,20 +47,22 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     onSaveProfile,
     hasChanges,
     selectedProfileName,
-    isFirstTime,
-    setIsFirstTime,
-    persistedIcebreakers,
-    handleIcebreakersUpdate,
   };
 
   return (
-    <ProfileRouting
+    <ProfileStateManager
+      currentProfile={currentProfile}
       showProfiles={showProfiles}
       showSavedIcebreakers={showSavedIcebreakers}
-      setShowProfiles={setShowProfiles}
-      setShowSavedIcebreakers={setShowSavedIcebreakers}
-      handleSelectProfile={handleSelectProfile}
-      contentProps={contentProps}
-    />
+    >
+      <ProfileRouting
+        showProfiles={showProfiles}
+        showSavedIcebreakers={showSavedIcebreakers}
+        setShowProfiles={setShowProfiles}
+        setShowSavedIcebreakers={setShowSavedIcebreakers}
+        handleSelectProfile={handleSelectProfile}
+        contentProps={contentProps}
+      />
+    </ProfileStateManager>
   );
 };

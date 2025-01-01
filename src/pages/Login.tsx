@@ -9,7 +9,6 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if Supabase is accessible
     const checkSupabaseConnection = async () => {
       try {
         const { error } = await supabase.auth.getSession();
@@ -30,20 +29,31 @@ export default function Login() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session) {
-          // Get user preferences or create default ones
+          // Get system preference
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const { error: upsertError } = await supabase
+          
+          // Try to get existing preference or create new one
+          const { data: existingPref } = await supabase
             .from('user_preferences')
-            .upsert({ 
-              user_id: session.user.id, 
-              theme: systemPrefersDark ? 'dark' : 'light',
-              updated_at: new Date().toISOString()
-            }, {
-              onConflict: 'user_id'
-            });
+            .select('theme')
+            .eq('user_id', session.user.id)
+            .maybeSingle();
 
-          if (upsertError) {
-            console.error("Error upserting theme preferences:", upsertError);
+          if (!existingPref) {
+            console.log("Creating initial theme preference:", systemPrefersDark ? 'dark' : 'light');
+            const { error: upsertError } = await supabase
+              .from('user_preferences')
+              .upsert({ 
+                user_id: session.user.id, 
+                theme: systemPrefersDark ? 'dark' : 'light',
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'user_id'
+              });
+
+            if (upsertError) {
+              console.error("Error upserting theme preferences:", upsertError);
+            }
           }
 
           navigate("/");
