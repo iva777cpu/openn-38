@@ -12,7 +12,7 @@ function App() {
         closeButton
         position="bottom-center"
         toastOptions={{
-          className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light !text-xs max-w-[280px]",
+          className: "!bg-secondary dark:!bg-background-light !text-foreground dark:!text-foreground-light !text-xs max-w-[280px] mx-auto",
           descriptionClassName: "!text-foreground dark:!text-foreground-light !text-xs",
           style: {
             bottom: '4rem',
