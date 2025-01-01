@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Card } from "./ui/card";
+import { FormSection } from "./forms/FormSection";
 import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
 import { GeneralInfoForm } from "./forms/GeneralInfoForm";
@@ -38,23 +38,19 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
 
   return (
     <section className="w-full space-y-3">
-      <Card className="w-full p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-3">About You</h2>
+      <FormSection title="About You">
         <UserTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
-      </Card>
+      </FormSection>
 
-      <Card className="w-full p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-3">About Them</h2>
+      <FormSection title="About Them">
         <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
-      </Card>
+      </FormSection>
 
-      <Card className="w-full p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-3">General Information</h2>
+      <FormSection title="General Information">
         <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
-      </Card>
+      </FormSection>
 
-      <Card className="w-full p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#EDEDDD] border-[#EDEDDD]">
-        <h2 className="text-lg font-semibold mb-3">Ice Breakers</h2>
+      <FormSection title="Ice Breakers">
         <IcebreakerGenerator 
           userProfile={userProfile}
           onIcebreakersGenerated={handleIcebreakersGenerated}
@@ -65,7 +61,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           savedIcebreakers={savedIcebreakers}
           onToggleSave={toggleIcebreaker}
         />
-      </Card>
+      </FormSection>
     </section>
   );
 };

@@ -46,9 +46,9 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
   const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
-        persistedIcebreakers,
         isFirstTime,
         setIsFirstTime,
+        persistedIcebreakers,
         handleIcebreakersUpdate,
         clearIcebreakers,
       });
