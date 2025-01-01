@@ -39,14 +39,21 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   if (showProfiles) {
     return (
       <SavedProfiles
-        onSelectProfile={handleSelectProfile}
-        setShowProfiles={setShowProfiles}
+        onSelectProfile={(profile) => {
+          handleSelectProfile(profile);
+          setShowProfiles(false);
+        }}
+        onBack={() => setShowProfiles(false)}
       />
     );
   }
 
   if (showSavedIcebreakers) {
-    return <SavedIcebreakers setShowSavedIcebreakers={setShowSavedIcebreakers} />;
+    return (
+      <SavedIcebreakers
+        onBack={() => setShowSavedIcebreakers(false)}
+      />
+    );
   }
 
   return (

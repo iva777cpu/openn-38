@@ -1,6 +1,7 @@
 import React from "react";
 import { ProfileRouting } from "./profile/ProfileRouting";
 import { ProfileStateManager } from "./profile/ProfileStateManager";
+import { useIcebreakersState } from "./profile/useIcebreakersState";
 
 interface ProfileManagerProps {
   currentProfile: Record<string, string>;
@@ -37,6 +38,14 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     selectedProfileName,
   } = props;
 
+  const {
+    persistedIcebreakers,
+    isFirstTime,
+    setIsFirstTime,
+    handleIcebreakersUpdate,
+    clearIcebreakers,
+  } = useIcebreakersState(currentProfile);
+
   const contentProps = {
     currentProfile,
     saveDialogOpen,
@@ -62,6 +71,11 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
         setShowSavedIcebreakers={setShowSavedIcebreakers}
         handleSelectProfile={handleSelectProfile}
         contentProps={contentProps}
+        isFirstTime={isFirstTime}
+        setIsFirstTime={setIsFirstTime}
+        persistedIcebreakers={persistedIcebreakers}
+        handleIcebreakersUpdate={handleIcebreakersUpdate}
+        clearIcebreakers={clearIcebreakers}
       />
     </ProfileStateManager>
   );
