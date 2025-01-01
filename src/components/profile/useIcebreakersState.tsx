@@ -22,6 +22,14 @@ export const useIcebreakersState = (currentProfile: Record<string, string>) => {
     localStorage.removeItem('currentIcebreakers');
   }, [clearAllIcebreakers]);
 
+  // Clear icebreakers when currentProfile is empty (new profile)
+  useEffect(() => {
+    if (Object.keys(currentProfile).length === 0) {
+      console.log('Current profile is empty, clearing icebreakers');
+      clearIcebreakers();
+    }
+  }, [currentProfile, clearIcebreakers]);
+
   return {
     persistedIcebreakers,
     isFirstTime,

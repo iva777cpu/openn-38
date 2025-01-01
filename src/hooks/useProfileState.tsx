@@ -23,7 +23,8 @@ export const useProfileState = () => {
     setOriginalProfile(emptyProfile);
     setSelectedProfileId(null);
     setSelectedProfileName("");
-    clearAllIcebreakers(); // Add this line to ensure icebreakers are cleared
+    clearAllIcebreakers();
+    localStorage.removeItem('currentIcebreakers'); // Add explicit localStorage cleanup
   };
 
   return {

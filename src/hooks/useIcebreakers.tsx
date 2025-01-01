@@ -36,6 +36,7 @@ export const useIcebreakers = () => {
   };
 
   const clearAllIcebreakers = useCallback(() => {
+    console.log('Clearing all icebreakers in useIcebreakers hook');
     setIcebreakers([]);
     localStorage.removeItem('currentIcebreakers');
   }, []);
