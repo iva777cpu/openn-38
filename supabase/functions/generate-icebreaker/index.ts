@@ -60,7 +60,15 @@ serve(async (req) => {
     }
 
     const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-pro',
+      generationConfig: {
+        temperature: isFirstTime ? 0.9 : 0.5,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 200,
+      },
+    });
 
     // Build context only from non-empty fields
     const contextString = Object.entries(filteredAnswers)
@@ -69,25 +77,26 @@ serve(async (req) => {
 
     console.log('Final context string being sent to AI:', contextString);
 
-    const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
+    const systemPrompt = `IMPORTANT: Generate ONLY based on the context provided below. DO NOT reference any topics, interests, or information not explicitly provided in the context.
+
+You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
 - Shared experiences or hypothetical scenarios
 - Fun facts or interesting statements
 - Playful observations or genuine compliments
 - Creative metaphors or analogies
-- References to their interests (with brief explanations if needed)
 
 Guidelines:
-- Focus ONLY on their current interests and experiences from the context provided
+- Focus ONLY on information explicitly provided in the context below
+- DO NOT reference any topics not mentioned in the context (no assumptions about interests)
 - Keep everything casual, friendly, and brief
 - Use humor appropriately for the relationship type
 - Generate NO MORE than ONE question-based icebreaker
 - Each icebreaker must be under 25 words
-- If referencing specific content (books, mythology, etc.), include a brief explanation (max 15 words) in parentheses
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
 
-Context about the interaction:
+Context (USE ONLY THIS INFORMATION):
 ${contextString}`;
 
     console.log('Full prompt being sent to AI:', systemPrompt);
