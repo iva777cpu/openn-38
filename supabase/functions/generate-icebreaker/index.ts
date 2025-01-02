@@ -16,14 +16,38 @@ serve(async (req) => {
   try {
     const { answers, temperature, isFirstTime } = await req.json();
     
-    // Filter out empty fields before logging
-    const filteredAnswers = Object.fromEntries(
-      Object.entries(answers).filter(([_, value]) => 
-        value && value.value && value.value.toString().trim() !== ''
-      )
-    );
+    // Strictly filter out empty fields
+    const filteredAnswers = Object.entries(answers)
+      .filter(([_, value]: [string, any]) => {
+        // Check if value exists and has a non-empty value property
+        return value && 
+               value.value && 
+               typeof value.value === 'string' && 
+               value.value.trim() !== '';
+      })
+      .reduce((acc, [key, value]) => ({
+        ...acc,
+        [key]: value
+      }), {});
     
-    console.log('Received request with filtered answers:', filteredAnswers);
+    console.log('Received request with strictly filtered answers:', filteredAnswers);
+
+    // Check if there are any non-empty fields
+    if (Object.keys(filteredAnswers).length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'No valid input provided',
+          details: 'All fields are empty or contain only whitespace'
+        }),
+        { 
+          status: 400,
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
 
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     if (!geminiApiKey) {
@@ -33,10 +57,12 @@ serve(async (req) => {
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-    // Only include non-empty fields in the context
+    // Build context only from non-empty fields
     const contextString = Object.entries(filteredAnswers)
       .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
       .join('\n');
+
+    console.log('Using context string:', contextString);
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
@@ -47,7 +73,7 @@ serve(async (req) => {
 - References to their interests (with brief explanations if needed)
 
 Guidelines:
-- Focus on their interests and experiences from the context
+- Focus ONLY on their current interests and experiences from the context provided
 - Keep everything casual, friendly, and brief
 - Use humor appropriately for the relationship type
 - Generate NO MORE than ONE question-based icebreaker
