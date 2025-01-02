@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { answers, temperature, isFirstTime } = await req.json();
+    const { answers, isFirstTime } = await req.json();
     
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
@@ -63,7 +63,7 @@ serve(async (req) => {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
       generationConfig: {
-        temperature: isFirstTime ? 0.9 : 0.5,
+        temperature: isFirstTime ? 0.7 : 0.5, // Reduced from 0.9 to 0.7 for safety
         topK: 40,
         topP: 0.95,
         maxOutputTokens: 200,
@@ -79,22 +79,24 @@ serve(async (req) => {
 
     const systemPrompt = `IMPORTANT: Generate ONLY based on the context provided below. DO NOT reference any topics, interests, or information not explicitly provided in the context.
 
-You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
-- Teasing or playful banter (if appropriate for the relationship)
+You are a friendly and respectful conversation expert. Generate 3 engaging, numbered icebreakers that are polite, appropriate, and fun. Mix different types of icebreakers with equal probability, such as:
+- Light and friendly conversation starters
 - Shared experiences or hypothetical scenarios
-- Fun facts or interesting statements
-- Playful observations or genuine compliments
-- Creative metaphors or analogies
+- Interesting observations or genuine compliments
+- Creative and appropriate metaphors
+- Safe and casual topics
 
 Guidelines:
 - Focus ONLY on information explicitly provided in the context below
-- DO NOT reference any topics not mentioned in the context (no assumptions about interests)
-- Keep everything casual, friendly, and brief
-- Use humor appropriately for the relationship type
+- DO NOT reference any topics not mentioned in the context
+- Keep everything casual, friendly, and appropriate
+- Use light humor when suitable
 - Generate NO MORE than ONE question-based icebreaker
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
+- Avoid any controversial, personal, or sensitive topics
+- Keep all suggestions appropriate for a general audience
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}`;
@@ -103,11 +105,6 @@ ${contextString}`;
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-      generationConfig: {
-        temperature: isFirstTime ? 0.9 : 0.5,
-        topK: 40,
-        topP: 0.95,
-      },
     });
     
     const response = await result.response;
@@ -131,6 +128,20 @@ ${contextString}`;
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
     
+    // Special handling for safety blocks
+    if (error.message?.includes('SAFETY')) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Content safety error',
+          details: 'The AI model blocked the response for safety reasons. Please try again with different input.'
+        }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to generate icebreakers',
@@ -138,7 +149,7 @@ ${contextString}`;
       }),
       { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   }
