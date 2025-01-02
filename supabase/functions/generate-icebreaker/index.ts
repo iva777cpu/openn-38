@@ -16,24 +16,29 @@ serve(async (req) => {
   try {
     const { answers, temperature, isFirstTime } = await req.json();
     
+    console.log('Raw answers received:', JSON.stringify(answers, null, 2));
+    
     // Strictly filter out empty fields
     const filteredAnswers = Object.entries(answers)
-      .filter(([_, value]: [string, any]) => {
-        // Check if value exists and has a non-empty value property
-        return value && 
+      .filter(([key, value]: [string, any]) => {
+        const isValid = value && 
                value.value && 
                typeof value.value === 'string' && 
                value.value.trim() !== '';
+        
+        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid}`);
+        return isValid;
       })
       .reduce((acc, [key, value]) => ({
         ...acc,
         [key]: value
       }), {});
     
-    console.log('Received request with strictly filtered answers:', filteredAnswers);
+    console.log('Strictly filtered answers:', JSON.stringify(filteredAnswers, null, 2));
 
     // Check if there are any non-empty fields
     if (Object.keys(filteredAnswers).length === 0) {
+      console.log('No valid fields found after filtering');
       return new Response(
         JSON.stringify({ 
           error: 'No valid input provided',
@@ -62,7 +67,7 @@ serve(async (req) => {
       .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
       .join('\n');
 
-    console.log('Using context string:', contextString);
+    console.log('Final context string being sent to AI:', contextString);
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
@@ -85,7 +90,7 @@ Guidelines:
 Context about the interaction:
 ${contextString}`;
 
-    console.log('Using prompt:', systemPrompt);
+    console.log('Full prompt being sent to AI:', systemPrompt);
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
@@ -99,7 +104,7 @@ ${contextString}`;
     const response = await result.response;
     const text = response.text();
     
-    console.log('Generated icebreakers:', text);
+    console.log('Raw AI response:', text);
 
     const formattedText = text
       .split('\n')
