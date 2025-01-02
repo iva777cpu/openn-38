@@ -8,7 +8,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,27 +17,27 @@ serve(async (req) => {
     
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
-    // Strictly filter out empty fields
+    // Strictly filter out empty fields and ensure values are strings
     const filteredAnswers = Object.entries(answers)
       .filter(([key, value]: [string, any]) => {
         const isValid = value && 
-               value.value && 
                typeof value.value === 'string' && 
-               value.value.trim() !== '';
+               value.value.trim().length > 0;
         
         console.log(`Field ${key}: ${value?.value} - Valid: ${isValid}`);
         return isValid;
       })
       .reduce((acc, [key, value]) => ({
         ...acc,
-        [key]: value
+        [key]: {
+          ...value,
+          value: value.value.trim() // Ensure no whitespace
+        }
       }), {});
     
     console.log('Strictly filtered answers:', JSON.stringify(filteredAnswers, null, 2));
 
-    // Check if there are any non-empty fields
     if (Object.keys(filteredAnswers).length === 0) {
-      console.log('No valid fields found after filtering');
       return new Response(
         JSON.stringify({ 
           error: 'No valid input provided',
@@ -63,35 +62,27 @@ serve(async (req) => {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
       generationConfig: {
-        temperature: isFirstTime ? 0.9 : 0.5,
+        temperature: isFirstTime ? 0.7 : 0.5,
         topK: 40,
         topP: 0.95,
         maxOutputTokens: 200,
       },
     });
 
-    // Build context only from non-empty fields
+    // Build context only from filtered fields
     const contextString = Object.entries(filteredAnswers)
       .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
       .join('\n');
 
     console.log('Final context string being sent to AI:', contextString);
 
-    const systemPrompt = `IMPORTANT: Generate ONLY based on the context provided below. DO NOT reference any topics, interests, or information not explicitly provided in the context.
-
-You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
-- Teasing or playful banter (if appropriate for the relationship)
-- Shared experiences or hypothetical scenarios
-- Fun facts or interesting statements
-- Playful observations or genuine compliments
-- Creative metaphors or analogies
+    const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
+DO NOT reference ANY information not explicitly provided in the context.
 
 Guidelines:
-- Focus ONLY on information explicitly provided in the context below
-- DO NOT reference any topics not mentioned in the context (no assumptions about interests)
-- Keep everything casual, friendly, and brief
-- Use humor appropriately for the relationship type
-- Generate NO MORE than ONE question-based icebreaker
+- Use ONLY information from the context below
+- NO assumptions about interests, hobbies, or topics not mentioned
+- Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
@@ -104,7 +95,7 @@ ${contextString}`;
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
       generationConfig: {
-        temperature: isFirstTime ? 0.9 : 0.5,
+        temperature: isFirstTime ? 0.7 : 0.5,
         topK: 40,
         topP: 0.95,
       },
@@ -131,10 +122,15 @@ ${contextString}`;
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
     
+    // Enhanced error handling for safety blocks
+    const errorMessage = error.message.includes('SAFETY') 
+      ? 'AI safety filters triggered. Please try again with different input.'
+      : error.message;
+    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to generate icebreakers',
-        details: error.message 
+        details: errorMessage 
       }),
       { 
         status: 500,
