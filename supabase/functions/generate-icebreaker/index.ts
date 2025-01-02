@@ -22,7 +22,6 @@ serve(async (req) => {
     });
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
-    // Strictly filter out empty fields and ensure values are strings
     const filteredAnswers = Object.entries(answers)
       .filter(([key, value]: [string, any]) => {
         const isValid = value && 
@@ -36,7 +35,7 @@ serve(async (req) => {
         ...acc,
         [key]: {
           ...value,
-          value: value.value.trim() // Ensure no whitespace
+          value: value.value.trim()
         }
       }), {});
     
@@ -63,6 +62,7 @@ serve(async (req) => {
       throw new Error('Gemini API key not configured');
     }
 
+    console.log('Initializing Gemini AI with API key...');
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
@@ -74,7 +74,6 @@ serve(async (req) => {
       },
     });
 
-    // Build context only from filtered fields
     const contextString = Object.entries(filteredAnswers)
       .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
       .join('\n');
@@ -127,7 +126,6 @@ ${contextString}`;
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
     
-    // Enhanced error handling for safety blocks
     const errorMessage = error.message.includes('SAFETY') 
       ? 'AI safety filters triggered. Please try again with different input.'
       : error.message;
