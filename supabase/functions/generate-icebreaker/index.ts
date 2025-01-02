@@ -15,7 +15,15 @@ serve(async (req) => {
 
   try {
     const { answers, temperature, isFirstTime } = await req.json();
-    console.log('Received request with answers:', answers);
+    
+    // Filter out empty fields before logging
+    const filteredAnswers = Object.fromEntries(
+      Object.entries(answers).filter(([_, value]) => 
+        value && value.value && value.value.toString().trim() !== ''
+      )
+    );
+    
+    console.log('Received request with filtered answers:', filteredAnswers);
 
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     if (!geminiApiKey) {
@@ -24,6 +32,11 @@ serve(async (req) => {
 
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+    // Only include non-empty fields in the context
+    const contextString = Object.entries(filteredAnswers)
+      .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
+      .join('\n');
 
     const systemPrompt = `You are a charming conversation expert. Generate 3 engaging, numbered icebreakers that are clever, charming, witty, and fun. Mix different types of icebreakers with equal probability, such as:
 - Teasing or playful banter (if appropriate for the relationship)
@@ -44,9 +57,7 @@ Guidelines:
 - No introductory text or emojis
 
 Context about the interaction:
-${Object.entries(answers)
-  .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
-  .join('\n')}`;
+${contextString}`;
 
     console.log('Using prompt:', systemPrompt);
 
