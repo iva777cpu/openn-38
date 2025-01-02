@@ -42,7 +42,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
         <UserTraitsForm 
           userProfile={userProfile} 
           onUpdate={onUpdate}
-          includeRelationship={true} // Add this prop
+          includeRelationship={true}
         />
       </FormSection>
 

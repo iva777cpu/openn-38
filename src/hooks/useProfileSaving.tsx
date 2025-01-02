@@ -36,6 +36,8 @@ export const useProfileSaving = () => {
 
       const uniqueName = await getUniqueProfileName(user.id, profileName);
       console.log("Generated unique profile name:", uniqueName);
+      console.log("Profile data being saved:", profileData);
+      console.log("Relationship value:", profileData.relationship);
 
       const { error } = await supabase.from("user_profiles").insert({
         user_id: user.id,
@@ -43,6 +45,7 @@ export const useProfileSaving = () => {
         user_age: profileData.userAge,
         user_gender: profileData.userGender,
         user_impression: profileData.impression,
+        relationship: profileData.relationship,
         target_age: profileData.targetAge,
         target_gender: profileData.targetGender,
         target_personality: profileData.targetPersonality,
