@@ -62,7 +62,7 @@ serve(async (req) => {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
       generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3, // Lowered temperature
+        temperature: isFirstTime ? 0.7 : 0.5,
         topK: 40,
         topP: 0.95,
         maxOutputTokens: 200,
@@ -76,15 +76,13 @@ serve(async (req) => {
 
     console.log('Final context string being sent to AI:', contextString);
 
-    const systemPrompt = `CRITICAL: You are a friendly conversation expert generating EXACTLY 3 appropriate, casual icebreakers based ONLY on the context below. 
+    const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
 
 Guidelines:
 - Use ONLY information from the context below
-- Keep all content friendly, casual, and appropriate
-- NO assumptions about interests or topics not mentioned
-- NO inappropriate, suggestive, or controversial content
-- Keep responses light and conversational
+- NO assumptions about interests, hobbies, or topics not mentioned
+- Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
@@ -97,7 +95,7 @@ ${contextString}`;
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
       generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3, // Lowered temperature
+        temperature: isFirstTime ? 0.7 : 0.5,
         topK: 40,
         topP: 0.95,
       },
@@ -126,7 +124,7 @@ ${contextString}`;
     
     // Enhanced error handling for safety blocks
     const errorMessage = error.message.includes('SAFETY') 
-      ? 'Content safety filters were triggered. Please try again with different input or less personal details.'
+      ? 'AI safety filters triggered. Please try again with different input.'
       : error.message;
     
     return new Response(
