@@ -15,6 +15,11 @@ serve(async (req) => {
   try {
     const { answers, temperature, isFirstTime } = await req.json();
     
+    console.log('Raw request received:', {
+      isFirstTime,
+      temperature,
+      totalFields: Object.keys(answers).length
+    });
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
     // Strictly filter out empty fields and ensure values are strings
@@ -35,7 +40,7 @@ serve(async (req) => {
         }
       }), {});
     
-    console.log('Strictly filtered answers:', JSON.stringify(filteredAnswers, null, 2));
+    console.log('Filtered answers to be sent to AI:', JSON.stringify(filteredAnswers, null, 2));
 
     if (Object.keys(filteredAnswers).length === 0) {
       return new Response(
@@ -62,7 +67,7 @@ serve(async (req) => {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
       generationConfig: {
-        temperature: isFirstTime ? 0.7 : 0.5,
+        temperature: isFirstTime ? 0.5 : 0.3,
         topK: 40,
         topP: 0.95,
         maxOutputTokens: 200,
@@ -95,7 +100,7 @@ ${contextString}`;
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
       generationConfig: {
-        temperature: isFirstTime ? 0.7 : 0.5,
+        temperature: isFirstTime ? 0.5 : 0.3,
         topK: 40,
         topP: 0.95,
       },
