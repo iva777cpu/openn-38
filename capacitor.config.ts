@@ -5,7 +5,16 @@ const config: CapacitorConfig = {
   appName: 'Openera',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    cleartext: true,
+  },
+  android: {
+    buildOptions: {
+      keystorePath: undefined,
+      keystorePassword: undefined,
+      keystoreAlias: undefined,
+      keystoreAliasPassword: undefined,
+    }
   },
   plugins: {
     SplashScreen: {
