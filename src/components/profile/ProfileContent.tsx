@@ -44,7 +44,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         profileName={selectedProfileName}
         hasChanges={hasChanges}
       />
-      <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] text-left mb-4">
+      <div className="text-xs text-[#47624B] dark:text-[#E5D4BC] text-left mb-4">
         Share as much or as little as you'd like
       </div>
       <div className="flex items-center space-x-2 mb-4 justify-start w-full">
@@ -59,7 +59,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         />
         <label 
           htmlFor="firstTime"
-          className="text-[15px] font-semibold text-[#47624B] dark:text-[#EDEDDD]"
+          className="text-[15px] font-semibold text-[#47624B] dark:text-[#E5D4BC]"
         >
           First time approaching this person?
         </label>
@@ -71,7 +71,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         onIcebreakersUpdate={handleIcebreakersUpdate}
         isFirstTime={isFirstTime}
       />
-      <div className="text-xs text-[#47624B] dark:text-[#EDEDDD] mt-6 text-left">
+      <div className="text-xs text-[#47624B] dark:text-[#E5D4BC] mt-6 text-left">
         hey its Edda, the developer :D I&apos;d really appreciate your thoughts on the app :3<br />
         (pls give my app a good rating :D :3 )<br />
         I&apos;ll be updating the app to improve it and add the extra features that I have in mind.<br />
