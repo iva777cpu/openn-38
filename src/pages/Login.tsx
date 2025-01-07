@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuthSetup } from "@/hooks/useAuthSetup";
 
 export default function Login() {
-  const { error, handleAuthError } = useAuthSetup();
+  const { error } = useAuthSetup();
 
   return (
     <div className="fixed inset-0 bg-[#EDEDDD]">
