@@ -10,7 +10,7 @@ export default function Login() {
     <div className="fixed inset-0 bg-[#EDEDDD]">
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg">
-          <h1 className="text-2xl font-bold text-[#EDEDDD] text-center mb-8">
+          <h1 className="text-2xl font-bold text-[#E5D4BC] text-center mb-8">
             Welcome to Openera
           </h1>
           {error && (
@@ -27,18 +27,18 @@ export default function Login() {
                   colors: {
                     brand: '#47624B',
                     brandAccent: '#47624B',
-                    brandButtonText: "#EDEDDD",
+                    brandButtonText: "#E5D4BC",
                     defaultButtonBackground: "#47624B",
                     defaultButtonBackgroundHover: "#47624B",
-                    defaultButtonBorder: "#EDEDDD",
-                    defaultButtonText: "#EDEDDD",
+                    defaultButtonBorder: "#E5D4BC",
+                    defaultButtonText: "#E5D4BC",
                     inputBackground: '#47624B',
-                    inputBorder: '#EDEDDD',
-                    inputText: '#EDEDDD',
-                    inputPlaceholder: '#EDEDDD',
-                    messageText: '#EDEDDD',
-                    anchorTextColor: '#EDEDDD',
-                    dividerBackground: '#EDEDDD',
+                    inputBorder: '#E5D4BC',
+                    inputText: '#E5D4BC',
+                    inputPlaceholder: '#E5D4BC',
+                    messageText: '#E5D4BC',
+                    anchorTextColor: '#E5D4BC',
+                    dividerBackground: '#E5D4BC',
                   }
                 }
               },
@@ -46,10 +46,16 @@ export default function Login() {
                 container: 'auth-container',
                 button: 'auth-button',
                 input: 'auth-input',
-              }
+                message: 'auth-message',
+              },
+              style: {
+                button: { background: '#47624B' },
+                anchor: { color: '#E5D4BC' },
+                container: { background: '#2D4531' },
+                message: { color: '#E5D4BC', background: '#2D4531' },
+              },
             }}
             providers={[]}
-            onError={(error) => handleAuthError(error)}
           />
         </div>
       </div>

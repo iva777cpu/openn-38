@@ -60,6 +60,26 @@
     @apply bg-[#303D24] text-[#E5D4BC];
   }
 
+  /* Auth UI Overrides */
+  .supabase-auth-ui_ui-message {
+    background-color: #2D4531 !important;
+    color: #E5D4BC !important;
+  }
+
+  .auth-message {
+    background-color: #2D4531 !important;
+    color: #E5D4BC !important;
+  }
+
+  /* Checkbox Overrides */
+  html:not(.dark) .first-time-checkbox {
+    @apply border-[#47624B] bg-[#47624B];
+  }
+
+  html:not(.dark) .first-time-checkbox[data-state="checked"] {
+    @apply bg-[#47624B] border-[#47624B] text-[#E5D4BC];
+  }
+
   /* Header Spacing */
   .openera-header {
     @apply pt-4;
