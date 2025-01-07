@@ -36,7 +36,12 @@ export default defineConfig(({ mode }) => ({
             'lucide-react'
           ],
           ui: [
-            '@/components/ui'
+            '@/components/ui/button',
+            '@/components/ui/dialog',
+            '@/components/ui/input',
+            '@/components/ui/select',
+            '@/components/ui/card',
+            '@/components/ui/form'
           ]
         }
       }
