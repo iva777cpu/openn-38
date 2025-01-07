@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const useAuthSetup = () => {
   const navigate = useNavigate();
@@ -26,6 +27,11 @@ export const useAuthSetup = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          toast.error("Please wait at least 38 seconds before requesting another password reset.");
+          return;
+        }
+
         if (session) {
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           
@@ -60,5 +66,19 @@ export const useAuthSetup = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  return { error };
+  // Add error handler for rate limits
+  const handleAuthError = (error: any) => {
+    if (error?.status === 429) {
+      const message = error.message || "Too many requests. Please wait before trying again.";
+      if (message.includes("over_email_send_rate_limit")) {
+        toast.error("Please wait at least 38 seconds before requesting another password reset.");
+      } else {
+        toast.error(message);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  return { error, handleAuthError };
 };

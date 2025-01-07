@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuthSetup } from "@/hooks/useAuthSetup";
 
 export default function Login() {
-  const { error } = useAuthSetup();
+  const { error, handleAuthError } = useAuthSetup();
 
   return (
     <div className="fixed inset-0 bg-[#EDEDDD]">
@@ -49,6 +49,7 @@ export default function Login() {
               }
             }}
             providers={[]}
+            onError={(error) => handleAuthError(error)}
           />
         </div>
       </div>
