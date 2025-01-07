@@ -115,11 +115,7 @@
 
   /* Input Focus Override */
   input:focus {
-    @apply outline-none ring-0 border-none shadow-none;
-  }
-
-  input {
-    @apply focus:outline-none focus:ring-0 focus:border-none focus:shadow-none border-none ring-0 shadow-none;
+    @apply outline-none ring-0 border-none;
   }
 
   /* Checkbox Override for Light Mode */
