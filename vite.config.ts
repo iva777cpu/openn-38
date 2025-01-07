@@ -22,5 +22,24 @@ export default defineConfig(({ mode }) => ({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
+            '@tanstack/react-query',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-select',
+            'lucide-react'
+          ],
+          ui: [
+            '@/components/ui'
+          ]
+        }
+      }
+    }
   }
 }));
