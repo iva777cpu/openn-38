@@ -7,7 +7,7 @@ export default function Login() {
   const { error } = useAuthSetup();
 
   return (
-    <div className="fixed inset-0 bg-[#EDEDDD]">
+    <div className="fixed inset-0 bg-[#E5D4BC]">
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg">
           <h1 className="text-2xl font-bold text-[#E5D4BC] text-center mb-8">
