@@ -27,11 +27,11 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-transparent hover:text-[#303D24] dark:hover:text-[#EDEDDD]"
+            className="text-[#303D24] dark:text-[#E5D4BC] hover:bg-transparent hover:text-[#303D24] dark:hover:text-[#E5D4BC]"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <h1 className="text-[18px] font-bold text-[#303D24] dark:text-[#EDEDDD]">
+          <h1 className="text-[18px] font-bold text-[#303D24] dark:text-[#E5D4BC]">
             Saved Icebreakers
           </h1>
         </header>
@@ -40,7 +40,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
           <div className="px-4">
             <Button
               onClick={handleDeleteSelected}
-              className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs h-6 text-[11px]"
+              className="bg-[#47624B] text-[#E5D4BC] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs h-6 text-[11px]"
             >
               Delete Selected ({selectedMessages.size})
             </Button>
@@ -63,7 +63,7 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
             ))}
 
             {messages?.length === 0 && (
-              <p className="text-center text-[#47624B] dark:text-[#EDEDDD]">
+              <p className="text-center text-[#47624B] dark:text-[#E5D4BC]">
                 No saved icebreakers yet.
               </p>
             )}

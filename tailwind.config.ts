@@ -21,10 +21,10 @@ export default {
       colors: {
         background: {
           DEFAULT: "#303D24",
-          light: "#EDEDDD",
+          light: "#E5D4BC",
         },
         foreground: {
-          DEFAULT: "#EDEDDD",
+          DEFAULT: "#E5D4BC",
           light: "#47624B",
         },
         secondary: {
@@ -39,7 +39,7 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         primary: {
-          DEFAULT: "#EDEDDD",
+          DEFAULT: "#E5D4BC",
           foreground: "#47624B",
         },
       },

@@ -4,20 +4,20 @@
  
 @layer base {
   :root {
-    --background: 60 14% 90%;
+    --background: 37 39% 82%;
     --foreground: 134 18% 20%;
     --card: 134 18% 20%;
-    --card-foreground: 60 14% 90%;
+    --card-foreground: 37 39% 82%;
     --popover: 134 18% 20%;
-    --popover-foreground: 60 14% 90%;
-    --primary: 60 14% 90%;
+    --popover-foreground: 37 39% 82%;
+    --primary: 37 39% 82%;
     --primary-foreground: 134 18% 20%;
     --secondary: 134 18% 20%;
-    --secondary-foreground: 60 14% 90%;
+    --secondary-foreground: 37 39% 82%;
     --accent: 167 24% 13%;
-    --accent-foreground: 60 14% 90%;
+    --accent-foreground: 37 39% 82%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 14% 90%;
+    --destructive-foreground: 37 39% 82%;
     --border: 167 24% 13%;
     --input: 167 24% 13%;
     --ring: 134 18% 20%;
@@ -26,22 +26,22 @@
 
   .dark {
     --background: 134 18% 20%;
-    --foreground: 60 14% 90%;
+    --foreground: 37 39% 82%;
     --card: 134 18% 20%;
-    --card-foreground: 60 14% 90%;
+    --card-foreground: 37 39% 82%;
     --popover: 134 18% 20%;
-    --popover-foreground: 60 14% 90%;
-    --primary: 60 14% 90%;
+    --popover-foreground: 37 39% 82%;
+    --primary: 37 39% 82%;
     --primary-foreground: 134 18% 20%;
     --secondary: 134 18% 20%;
-    --secondary-foreground: 60 14% 90%;
+    --secondary-foreground: 37 39% 82%;
     --accent: 167 24% 13%;
-    --accent-foreground: 60 14% 90%;
+    --accent-foreground: 37 39% 82%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 14% 90%;
+    --destructive-foreground: 37 39% 82%;
     --border: 167 24% 13%;
     --input: 167 24% 13%;
-    --ring: 60 14% 90%;
+    --ring: 37 39% 82%;
   }
 
   * {
@@ -53,11 +53,11 @@
   }
   
   html {
-    @apply bg-[#EDEDDD] text-[#2D4531];
+    @apply bg-[#E5D4BC] text-[#2D4531];
   }
   
   html.dark {
-    @apply bg-[#303D24] text-[#EDEDDD];
+    @apply bg-[#303D24] text-[#E5D4BC];
   }
 
   /* Header Spacing */
@@ -77,21 +77,21 @@
 
   /* First Time Checkbox Styles */
   .first-time-checkbox {
-    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#EDEDDD] font-semibold;
+    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
   }
 
   html.dark .first-time-checkbox {
-    @apply border-[#EDEDDD] bg-[#EDEDDD] data-[state=checked]:bg-[#EDEDDD] data-[state=checked]:text-[#2D4531];
+    @apply border-[#E5D4BC] bg-[#E5D4BC] data-[state=checked]:bg-[#E5D4BC] data-[state=checked]:text-[#2D4531];
   }
 
   /* Profile and Icebreaker Box Styles */
   .profile-box, .icebreaker-box {
-    @apply border border-transparent dark:border-[#EDEDDD] dark:border-2 w-full;
+    @apply border border-transparent dark:border-[#E5D4BC] dark:border-2 w-full;
   }
 
   /* Delete Selected Button Styles */
   .delete-selected-button {
-    @apply bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs mb-2;
+    @apply bg-[#47624B] text-[#E5D4BC] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs mb-2;
   }
 
   /* Profile Form Spacing */
