@@ -77,7 +77,7 @@
 
   /* First Time Checkbox Styles */
   .first-time-checkbox {
-    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
+    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-transparent data-[state=checked]:text-[#E5D4BC] font-semibold;
   }
 
   html.dark .first-time-checkbox {
@@ -111,5 +111,19 @@
   
   .loading-dots > span {
     @apply !h-2 !w-2;
+  }
+
+  /* Input Focus Override */
+  input:focus {
+    @apply outline-none ring-0 border-none;
+  }
+
+  /* Checkbox Override for Light Mode */
+  html:not(.dark) [data-state=checked].first-time-checkbox {
+    @apply bg-transparent border-[#47624B];
+  }
+
+  html:not(.dark) [data-state=checked].first-time-checkbox [data-state=checked] {
+    @apply text-[#E5D4BC];
   }
 }
