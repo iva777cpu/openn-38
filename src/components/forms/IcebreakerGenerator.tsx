@@ -35,7 +35,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
       <Button 
         onClick={handleGenerate} 
         disabled={isLoading}
-        className="w-full mb-4 bg-[#2D4531] text-[#EDEDDD] hover:bg-[#2D4531] border border-[#EDEDDD]"
+        className="w-full mb-4 bg-[#2D4531] text-[#E5D4BC] hover:bg-[#2D4531] border border-[#E5D4BC]"
       >
         {isLoading ? (
           <span className="flex items-center">

@@ -28,32 +28,32 @@ export const ProfileListItem: React.FC<ProfileListItemProps> = ({
   onProfileSelect,
 }) => {
   return (
-    <div className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg profile-box">
+    <div className="flex items-center justify-between p-3 bg-[#47624B] dark:bg-[#2D4531] rounded-lg border border-[#E5D4BC]">
       <div className="flex items-center gap-3 flex-grow">
         <Checkbox
           checked={selectedProfiles.has(profile.id)}
           onCheckedChange={() => onSelect(profile.id)}
-          className="border-[#EDEDDD] dark:border-[#E5D4BC] bg-transparent"
+          className="border-[#E5D4BC] bg-transparent"
         />
         {editingId === profile.id ? (
           <div className="flex items-center gap-2 flex-grow">
             <Input
               value={editingName}
               onChange={(e) => onEditNameChange(e.target.value)}
-              className="bg-[#EDEDDD] dark:bg-[#303D24] text-[#47624B] dark:text-[#E5D4BC] border-[#1A2A1D] text-[15px]"
+              className="bg-[#E5D4BC] text-[#47624B] border-[#E5D4BC] text-[15px]"
             />
             <Button
               variant="ghost"
               size="icon"
               onClick={onSave}
-              className="text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+              className="text-[#E5D4BC] hover:bg-[#1A2A1D]"
             >
               <Save className="h-4 w-4" />
             </Button>
           </div>
         ) : (
           <span
-            className="text-[#EDEDDD] dark:text-[#E5D4BC] cursor-pointer flex-grow text-[15px]"
+            className="text-[#E5D4BC] cursor-pointer flex-grow text-[15px]"
             onClick={() => onProfileSelect(profile)}
           >
             {profile.profile_name}
@@ -64,7 +64,7 @@ export const ProfileListItem: React.FC<ProfileListItemProps> = ({
         variant="ghost"
         size="icon"
         onClick={() => onEdit(profile)}
-        className="text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+        className="text-[#E5D4BC] hover:bg-[#1A2A1D]"
       >
         <Edit2 className="h-4 w-4" />
       </Button>

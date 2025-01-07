@@ -20,18 +20,18 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="text-[#303D24] dark:text-[#EDEDDD] hover:bg-transparent hover:text-[#303D24] dark:hover:text-[#EDEDDD]"
+          className="text-[#1B4233] dark:text-[#E5D4BC] hover:bg-transparent hover:text-[#1B4233] dark:hover:text-[#E5D4BC]"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
-        <h1 className="text-[18px] font-bold text-[#303D24] dark:text-[#EDEDDD]">Profiles</h1>
+        <h1 className="text-[18px] font-bold text-[#1B4233] dark:text-[#E5D4BC]">Profiles</h1>
       </header>
 
       {selectedCount > 0 && onDeleteSelected && (
         <div className="px-4">
           <Button
             onClick={onDeleteSelected}
-            className="bg-[#47624B] text-[#EDEDDD] hover:bg-[#2D4531] text-xs py-1 h-7 px-2"
+            className="bg-[#47624B] text-[#E5D4BC] hover:bg-[#2D4531] text-xs py-1 h-7 px-2"
           >
             Delete Selected ({selectedCount})
           </Button>

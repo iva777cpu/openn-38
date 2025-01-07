@@ -27,11 +27,11 @@ export const SavedIcebreakers: React.FC<SavedIcebreakersProps> = ({ onBack }) =>
             variant="ghost"
             size="icon"
             onClick={onBack}
-            className="text-[#303D24] dark:text-[#E5D4BC] hover:bg-transparent hover:text-[#303D24] dark:hover:text-[#E5D4BC]"
+            className="text-[#1B4233] dark:text-[#E5D4BC] hover:bg-transparent hover:text-[#1B4233] dark:hover:text-[#E5D4BC]"
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <h1 className="text-[18px] font-bold text-[#303D24] dark:text-[#E5D4BC]">
+          <h1 className="text-[18px] font-bold text-[#1B4233] dark:text-[#E5D4BC]">
             Saved Icebreakers
           </h1>
         </header>

@@ -18,8 +18,8 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   return (
     <div className="space-y-2">
       {icebreakers.map((icebreaker, index) => (
-        <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start">
-          <span className="text-[15px]">{icebreaker}</span>
+        <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start border border-[#E5D4BC]">
+          <span className="text-[15px] text-[#E5D4BC]">{icebreaker}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -29,8 +29,8 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
             <BookmarkPlus 
               className={`h-4 w-4 ${
                 savedIcebreakers.has(icebreaker) 
-                  ? 'fill-[#EDEDDD] stroke-[#EDEDDD]' 
-                  : 'stroke-[#EDEDDD]'
+                  ? 'fill-[#E5D4BC] stroke-[#E5D4BC]' 
+                  : 'stroke-[#E5D4BC]'
               }`}
             />
           </Button>
