@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FormSection } from "./forms/FormSection";
 import { UserTraitsForm } from "./forms/UserTraitsForm";
 import { TargetTraitsForm } from "./forms/TargetTraitsForm";
 import { GeneralInfoForm } from "./forms/GeneralInfoForm";
-import { IcebreakerGenerator } from "./forms/IcebreakerGenerator";
-import { IcebreakerList } from "./icebreakers/IcebreakerList";
-import { useIcebreakers } from "@/hooks/useIcebreakers";
+import { IcebreakerSection } from "./forms/IcebreakerSection";
 
 interface ProfileFormProps {
   userProfile: Record<string, string>;
@@ -19,23 +17,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   userProfile, 
   onUpdate,
   onIcebreakersUpdate,
-  persistedIcebreakers,
   isFirstTime
 }) => {
-  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
-
-  // Clear icebreakers on mount and when profile changes
-  useEffect(() => {
-    clearAllIcebreakers();
-    setIcebreakers([]);
-  }, [userProfile, clearAllIcebreakers, setIcebreakers]);
-
-  const handleIcebreakersGenerated = (newIcebreakers: string[]) => {
-    console.log("ProfileForm: New icebreakers generated", newIcebreakers);
-    setIcebreakers(newIcebreakers);
-    onIcebreakersUpdate(newIcebreakers);
-  };
-
   return (
     <section className="w-full space-y-3">
       <FormSection title="About You">
@@ -55,15 +38,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       </FormSection>
 
       <FormSection title="Ice Breakers">
-        <IcebreakerGenerator 
+        <IcebreakerSection 
           userProfile={userProfile}
-          onIcebreakersGenerated={handleIcebreakersGenerated}
+          onIcebreakersUpdate={onIcebreakersUpdate}
           isFirstTime={isFirstTime}
-        />
-        <IcebreakerList 
-          icebreakers={icebreakers}
-          savedIcebreakers={savedIcebreakers}
-          onToggleSave={toggleIcebreaker}
         />
       </FormSection>
     </section>
