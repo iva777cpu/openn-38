@@ -23,7 +23,7 @@ export const MenuContent = ({
   <div className="space-y-4 mt-8">
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onNewProfile}
     >
       <Plus className="mr-2 h-4 w-4" />
@@ -31,7 +31,7 @@ export const MenuContent = ({
     </Button>
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onSaveProfile}
     >
       <Save className="mr-2 h-4 w-4" />
@@ -39,7 +39,7 @@ export const MenuContent = ({
     </Button>
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onViewProfiles}
     >
       <Users className="mr-2 h-4 w-4" />
@@ -47,7 +47,7 @@ export const MenuContent = ({
     </Button>
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onViewSavedMessages}
     >
       <BookmarkPlus className="mr-2 h-4 w-4" />
@@ -55,7 +55,7 @@ export const MenuContent = ({
     </Button>
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onToggleTheme}
     >
       {isDarkMode ? (
@@ -72,7 +72,7 @@ export const MenuContent = ({
     </Button>
     <Button
       variant="ghost"
-      className="w-full justify-start text-[#EDEDDD] hover:bg-[#1A2A1D]"
+      className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
       onClick={onLogout}
     >
       <LogOut className="mr-2 h-4 w-4" />
