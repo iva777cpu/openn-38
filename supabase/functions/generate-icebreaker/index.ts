@@ -23,14 +23,41 @@ serve(async (req) => {
     });
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
-    const filteredAnswers = Object.entries(answers)
+    const userTraits = Object.entries(answers)
       .filter(([key, value]: [string, any]) => {
-        const isValid = value && 
+        return key.startsWith('user') && value && 
                typeof value.value === 'string' && 
                value.value.trim().length > 0;
-        
-        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid} - Temperature: ${value?.temperature}`);
-        return isValid;
+      })
+      .reduce((acc, [key, value]) => ({
+        ...acc,
+        [key]: {
+          ...value,
+          value: value.value.trim()
+        }
+      }), {});
+
+    const targetTraits = Object.entries(answers)
+      .filter(([key, value]: [string, any]) => {
+        return (key.startsWith('target') || ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music'].includes(key)) && 
+               value && 
+               typeof value.value === 'string' && 
+               value.value.trim().length > 0;
+      })
+      .reduce((acc, [key, value]) => ({
+        ...acc,
+        [key]: {
+          ...value,
+          value: value.value.trim()
+        }
+      }), {});
+
+    const situationInfo = Object.entries(answers)
+      .filter(([key, value]: [string, any]) => {
+        return ['situation', 'previousTopics'].includes(key) && 
+               value && 
+               typeof value.value === 'string' && 
+               value.value.trim().length > 0;
       })
       .reduce((acc, [key, value]) => ({
         ...acc,
@@ -40,9 +67,11 @@ serve(async (req) => {
         }
       }), {});
     
-    console.log('Filtered answers to be sent to AI:', JSON.stringify(filteredAnswers, null, 2));
+    console.log('Filtered user traits:', JSON.stringify(userTraits, null, 2));
+    console.log('Filtered target traits:', JSON.stringify(targetTraits, null, 2));
+    console.log('Filtered situation info:', JSON.stringify(situationInfo, null, 2));
 
-    if (Object.keys(filteredAnswers).length === 0) {
+    if (Object.keys(targetTraits).length === 0 && Object.keys(userTraits).length === 0) {
       return new Response(
         JSON.stringify({ 
           error: 'No valid input provided',
@@ -62,9 +91,21 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    const contextString = Object.entries(filteredAnswers)
-      .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
-      .join('\n');
+    const contextString = `
+ABOUT YOU (The person approaching):
+${Object.entries(userTraits)
+  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .join('\n')}
+
+ABOUT THEM (The person you're approaching):
+${Object.entries(targetTraits)
+  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .join('\n')}
+
+SITUATION:
+${Object.entries(situationInfo)
+  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
 
