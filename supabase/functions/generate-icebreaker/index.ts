@@ -9,7 +9,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,8 +17,7 @@ serve(async (req) => {
     const { answers } = await req.json();
     console.log('Received answers:', JSON.stringify(answers, null, 2));
 
-    // Create a more focused prompt for the AI
-    const prompt = `Generate 3 unique, natural conversation starters or icebreakers based on these traits:
+    const prompt = `Generate 10 unique, natural conversation starters or icebreakers based on these traits:
 
 User: ${answers.impression?.value || 'No specific impression'}
 Target Person: 
@@ -34,7 +32,8 @@ Important:
 - Focus on common interests and positive topics
 - Avoid personal questions or sensitive topics
 - Make each icebreaker unique and engaging
-- Format as a numbered list (1., 2., 3.)`;
+- Format as a numbered list (1., 2., 3., etc.)
+- Generate exactly 10 icebreakers`;
 
     console.log('Sending prompt to OpenAI:', prompt);
 
@@ -76,7 +75,7 @@ Important:
     console.log('Generated icebreakers:', icebreakers);
 
     return new Response(
-      JSON.stringify({ icebreakers: icebreakers.join('\n') }),
+      JSON.stringify({ icebreakers }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
