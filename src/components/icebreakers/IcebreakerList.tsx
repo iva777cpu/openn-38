@@ -16,18 +16,15 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   if (icebreakers.length === 0) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {icebreakers.map((icebreaker, index) => (
-        <div 
-          key={index} 
-          className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start border border-[#E5D4BC] shadow-sm hover:shadow-md transition-shadow duration-200"
-        >
-          <span className="text-[15px] text-[#E5D4BC] flex-1 mr-4">{icebreaker}</span>
+        <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start border border-[#E5D4BC]">
+          <span className="text-[15px] text-[#E5D4BC]">{icebreaker}</span>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onToggleSave(icebreaker)}
-            className="ml-2 hover:bg-[#1A2A1D] transition-all shrink-0"
+            className="ml-2 hover:bg-[#1A2A1D] transition-all"
           >
             <BookmarkPlus 
               className={`h-4 w-4 ${
