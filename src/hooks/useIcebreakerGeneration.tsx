@@ -25,30 +25,33 @@ export const useIcebreakerGeneration = (
             .find(q => q.id === key);
           
           if (question) {
-            console.log(`Field ${key} found with priority ${question.priority}`);
-            // Special handling for zodiac priority
-            const priority = key === 'zodiac' ? 0.3 : 
-              isFirstTime ? Math.min(0.9, question.priority + 0.2) : question.priority;
+            console.log(`Processing field ${key}:`, {
+              value: value.trim(),
+              prompt: question.prompt,
+              priority: question.priority,
+              questionText: question.text
+            });
             
             return {
               ...acc,
               [key]: {
                 value: value.trim(),
                 prompt: question.prompt,
-                priority
+                priority: question.priority,
+                questionText: question.text
               }
             };
           }
+          console.log(`Warning: No question definition found for field ${key}`);
           return acc;
         }, {});
 
-      console.log('Filtered filled fields:', JSON.stringify(filledFields, null, 2));
+      console.log('Filtered and processed fields:', JSON.stringify(filledFields, null, 2));
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
           answers: filledFields,
-          isFirstTime,
-          priority: isFirstTime ? 0.8 : 0.4
+          isFirstTime
         }
       });
 

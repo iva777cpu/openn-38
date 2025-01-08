@@ -18,92 +18,59 @@ serve(async (req) => {
     
     console.log('Raw request received:', {
       isFirstTime,
-      totalFields: Object.keys(answers).length
+      totalFields: Object.keys(answers).length,
+      fields: Object.keys(answers)
     });
-    console.log('Raw answers received:', JSON.stringify(answers, null, 2));
     
+    console.log('Detailed answers received:', JSON.stringify(answers, null, 2));
+
     const userTraits = Object.entries(answers)
-      .filter(([key, value]: [string, any]) => {
-        return key.startsWith('user') && value && 
-               typeof value.value === 'string' && 
-               value.value.trim().length > 0;
-      })
-      .reduce((acc, [key, value]) => ({
+      .filter(([key]: [string, any]) => key.startsWith('user'))
+      .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
-        [key]: {
-          ...value,
-          value: value.value.trim()
-        }
+        [key]: value
       }), {});
 
     const targetTraits = Object.entries(answers)
-      .filter(([key, value]: [string, any]) => {
-        return (key.startsWith('target') || ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music'].includes(key)) && 
-               value && 
-               typeof value.value === 'string' && 
-               value.value.trim().length > 0;
-      })
-      .reduce((acc, [key, value]) => ({
+      .filter(([key]: [string, any]) => 
+        key.startsWith('target') || 
+        ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
+      )
+      .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
-        [key]: {
-          ...value,
-          value: value.value.trim(),
-          priority: value.priority || 0.5
-        }
+        [key]: value
       }), {});
 
     const situationInfo = Object.entries(answers)
-      .filter(([key, value]: [string, any]) => {
-        return ['situation', 'previousTopics'].includes(key) && 
-               value && 
-               typeof value.value === 'string' && 
-               value.value.trim().length > 0;
-      })
-      .reduce((acc, [key, value]) => ({
+      .filter(([key]: [string, any]) => ['situation', 'previousTopics'].includes(key))
+      .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
-        [key]: {
-          ...value,
-          value: value.value.trim()
-        }
+        [key]: value
       }), {});
-    
-    console.log('Filtered user traits:', JSON.stringify(userTraits, null, 2));
-    console.log('Filtered target traits:', JSON.stringify(targetTraits, null, 2));
-    console.log('Filtered situation info:', JSON.stringify(situationInfo, null, 2));
 
-    if (Object.keys(targetTraits).length === 0 && Object.keys(userTraits).length === 0) {
-      return new Response(
-        JSON.stringify({ 
-          error: 'No valid input provided',
-          details: 'All fields are empty or contain only whitespace'
-        }),
-        { 
-          status: 400,
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    }
+    console.log('Processed traits:', {
+      userTraits: Object.keys(userTraits),
+      targetTraits: Object.keys(targetTraits),
+      situationInfo: Object.keys(situationInfo)
+    });
 
     const contextString = `
 YOUR TRAITS (The person initiating conversation):
 ${Object.entries(userTraits)
   .map(([key, value]: [string, any]) => 
-    `${key} (priority ${value.priority || 0.5}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.5} when deciding how much to reference this trait.`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
   .join('\n')}
 
 THEIR TRAITS (The person you're approaching):
 ${Object.entries(targetTraits)
   .map(([key, value]: [string, any]) => 
-    `${key} (priority ${value.priority || 0.5}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.5} when deciding how much to reference this trait.`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
   .join('\n')}
 
 SITUATION:
 ${Object.entries(situationInfo)
   .map(([key, value]: [string, any]) => 
-    `${key} (priority ${value.priority || 0.7}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.7} when deciding how much to reference this context.`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this context'} with priority ${value.priority}.`)
   .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
@@ -144,8 +111,6 @@ ${contextString}
 Additional Context:
 - First time approaching: ${isFirstTime ? 'Yes' : 'No'}
 - Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}`;
-
-    console.log('Full prompt being sent to OpenAI:', systemPrompt);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
