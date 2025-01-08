@@ -48,7 +48,8 @@ serve(async (req) => {
         ...acc,
         [key]: {
           ...value,
-          value: value.value.trim()
+          value: value.value.trim(),
+          temperature: key === 'zodiac' ? 0.3 : value.temperature // Update zodiac temperature
         }
       }), {});
 
@@ -109,15 +110,13 @@ ${Object.entries(situationInfo)
 
     console.log('Final context string being sent to OpenAI:', contextString);
 
-    const systemPrompt = `You are a charming conversation expert generating EXACTLY 10 icebreakers based on the context below.
+    const systemPrompt = `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 
-You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, charming, witty, and fun. You tell great jokes and pickup lines. Mix formats and types with equal probability, such as:
-Teasing or banter (if appropriate)
+Teasing or playful banter (if appropriate)
 Shared experiences or hypotheticals
-Fun facts or statements
+Fun facts or bold statements
 Other creative options
-Focus on the target's interests and experiences, keep everything charming, witty and friendly, and use humor appropriately. Do not generate too many questions. If referencing specific content (books, joke, mythology, celebrities, etc...), add a brief explanation (max 15 words) in parentheses. Ensure each icebreaker length is within 40 words. 
-avoid asking more than 3 questions.
+Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. Avoid generating too many questions. If referencing anything that may need context (e.g., books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
 - Use mostly information from the context below
