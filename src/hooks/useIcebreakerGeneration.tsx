@@ -23,16 +23,16 @@ export const useIcebreakerGeneration = (
             .find(q => q.id === key);
           
           if (question) {
-            // Special handling for zodiac temperature
-            const temperature = key === 'zodiac' ? 0.3 : 
-              isFirstTime ? Math.min(0.9, question.temperature + 0.2) : question.temperature;
+            // Special handling for zodiac priority
+            const priority = key === 'zodiac' ? 0.3 : 
+              isFirstTime ? Math.min(0.9, question.priority + 0.2) : question.priority;
             
             return {
               ...acc,
               [key]: {
                 value,
                 prompt: question.prompt,
-                temperature
+                priority
               }
             };
           }
@@ -45,7 +45,7 @@ export const useIcebreakerGeneration = (
         body: { 
           answers: filledFields,
           isFirstTime,
-          temperature: isFirstTime ? 0.9 : 0.4
+          priority: isFirstTime ? 0.8 : 0.4
         }
       });
 
