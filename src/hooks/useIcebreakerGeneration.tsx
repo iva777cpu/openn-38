@@ -23,19 +23,29 @@ export const useIcebreakerGeneration = (
             .find(q => q.id === key);
           
           if (question) {
+            const adjustedTemperature = isFirstTime ? 
+              Math.min(0.9, question.temperature + 0.2) : 
+              question.temperature;
+
+            console.log(`Field ${key} temperature:`, {
+              base: question.temperature,
+              adjusted: adjustedTemperature,
+              isFirstTime
+            });
+
             return {
               ...acc,
               [key]: {
                 value,
                 prompt: question.prompt,
-                temperature: isFirstTime ? Math.min(0.9, question.temperature + 0.2) : question.temperature
+                temperature: adjustedTemperature
               }
             };
           }
           return acc;
         }, {});
 
-      console.log('Filtered filled fields:', filledFields);
+      console.log('Filtered fields with temperatures:', filledFields);
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 

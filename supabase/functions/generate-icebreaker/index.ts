@@ -15,21 +15,26 @@ serve(async (req) => {
   try {
     const { answers, temperature, isFirstTime } = await req.json();
     
-    console.log('Raw request received:', {
+    console.log('Request details:', {
       isFirstTime,
-      temperature,
+      baseTemperature: temperature,
       totalFields: Object.keys(answers).length
     });
-    console.log('Raw answers received:', JSON.stringify(answers, null, 2));
+
+    // Log each field's value and temperature for debugging
+    Object.entries(answers).forEach(([key, value]: [string, any]) => {
+      console.log(`Field ${key}:`, {
+        value: value.value,
+        temperature: value.temperature,
+        prompt: value.prompt
+      });
+    });
     
     const filteredAnswers = Object.entries(answers)
-      .filter(([key, value]: [string, any]) => {
-        const isValid = value && 
+      .filter(([_, value]: [string, any]) => {
+        return value && 
                typeof value.value === 'string' && 
                value.value.trim().length > 0;
-        
-        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid}`);
-        return isValid;
       })
       .reduce((acc, [key, value]) => ({
         ...acc,
@@ -38,14 +43,11 @@ serve(async (req) => {
           value: value.value.trim()
         }
       }), {});
-    
-    console.log('Filtered answers to be sent to AI:', JSON.stringify(filteredAnswers, null, 2));
 
     if (Object.keys(filteredAnswers).length === 0) {
       return new Response(
         JSON.stringify({ 
-          error: 'No valid input provided',
-          details: 'All fields are empty or contain only whitespace'
+          error: 'No valid input provided'
         }),
         { 
           status: 400,
@@ -62,44 +64,57 @@ serve(async (req) => {
       throw new Error('Gemini API key not configured');
     }
 
-    console.log('Initializing Gemini AI with API key...');
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-pro',
       generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
+        temperature: isFirstTime ? 0.9 : 0.7,
         topK: 40,
         topP: 0.95,
         maxOutputTokens: 200,
       },
     });
 
-    const contextString = Object.entries(filteredAnswers)
-      .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
+    // Create a clear context string that distinguishes between user and target traits
+    const userTraits = Object.entries(filteredAnswers)
+      .filter(([key]) => key.startsWith('user'))
+      .map(([key, value]: [string, any]) => `${key}: ${value.value} (temperature: ${value.temperature})`)
       .join('\n');
 
-    console.log('Final context string being sent to AI:', contextString);
+    const targetTraits = Object.entries(filteredAnswers)
+      .filter(([key]) => key.startsWith('target') || ['situation', 'previousTopics'].includes(key))
+      .map(([key, value]: [string, any]) => `${key}: ${value.value} (temperature: ${value.temperature})`)
+      .join('\n');
 
     const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
 
-Guidelines:
+IMPORTANT RULES:
 - Use ONLY information from the context below
 - NO assumptions about interests, hobbies, or topics not mentioned
 - Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
+- DO NOT ask questions like "tell me more", "what's your favorite", etc.
+- Focus on making statements or observations that invite natural conversation
+- DO NOT ask the person to tell stories or jokes
+- Make genuine, charming comments that don't require much effort to respond to
 
-Context (USE ONLY THIS INFORMATION):
-${contextString}`;
+YOUR TRAITS:
+${userTraits}
+
+THEIR TRAITS (Use these to craft the icebreakers):
+${targetTraits}
+
+Remember: Create engaging icebreakers that don't put pressure on them to respond with long answers.`;
 
     console.log('Full prompt being sent to AI:', systemPrompt);
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
       generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
+        temperature: isFirstTime ? 0.9 : 0.7,
         topK: 40,
         topP: 0.95,
       },
