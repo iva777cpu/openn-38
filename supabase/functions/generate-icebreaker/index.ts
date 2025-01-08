@@ -103,14 +103,7 @@ CRITICAL GUIDELINES:
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
-- Make sure to maintain this distinction in your responses
-
-Context (USE ONLY THIS INFORMATION):
-${contextString}
-
-Additional Context:
-- First time approaching: ${isFirstTime ? 'Yes' : 'No'}
-- Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}`;
+- Make sure to maintain this distinction in your responses`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
