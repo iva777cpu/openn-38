@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3";
+
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,30 +58,17 @@ serve(async (req) => {
       );
     }
 
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!geminiApiKey) {
-      throw new Error('Gemini API key not configured');
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
     }
-
-    console.log('Initializing Gemini AI with API key...');
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
-      generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 200,
-      },
-    });
 
     const contextString = Object.entries(filteredAnswers)
       .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
       .join('\n');
 
-    console.log('Final context string being sent to AI:', contextString);
+    console.log('Final context string being sent to OpenAI:', contextString);
 
-    const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
+    const systemPrompt = `You are a conversation expert generating EXACTLY 10 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
 
 Guidelines:
@@ -88,47 +76,49 @@ Guidelines:
 - NO assumptions about interests, hobbies, or topics not mentioned
 - Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
-- Return exactly 3 responses, numbered 1-3
+- Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}`;
 
-    console.log('Full prompt being sent to AI:', systemPrompt);
+    console.log('Full prompt being sent to OpenAI:', systemPrompt);
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-      generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
-        topK: 40,
-        topP: 0.95,
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt }
+        ],
+        temperature: isFirstTime ? 0.9 : 0.7,
+        max_tokens: 500,
+      }),
     });
-    
-    const response = await result.response;
-    const text = response.text();
-    
-    console.log('Raw AI response:', text);
 
-    const formattedText = text
-      .split('\n')
-      .filter(line => line.trim())
-      .join('\n');
-
-    if (!formattedText) {
-      throw new Error('No valid text generated');
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('OpenAI API error:', error);
+      throw new Error('Failed to generate icebreakers');
     }
 
+    const data = await response.json();
+    const icebreakers = data.choices[0].message.content;
+    
+    console.log('Raw OpenAI response:', icebreakers);
+
     return new Response(
-      JSON.stringify({ icebreakers: formattedText }),
+      JSON.stringify({ icebreakers }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
     
-    const errorMessage = error.message.includes('SAFETY') 
-      ? 'AI safety filters triggered. Please try again with different input.'
-      : error.message;
+    const errorMessage = error.message || 'Failed to generate icebreakers';
     
     return new Response(
       JSON.stringify({ 
