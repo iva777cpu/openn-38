@@ -18,18 +18,10 @@ serve(async (req) => {
     console.log('Request details:', {
       isFirstTime,
       baseTemperature: temperature,
-      totalFields: Object.keys(answers).length
+      totalFields: Object.keys(answers).length,
+      answers
     });
 
-    // Log each field's value and temperature for debugging
-    Object.entries(answers).forEach(([key, value]: [string, any]) => {
-      console.log(`Field ${key}:`, {
-        value: value.value,
-        temperature: value.temperature,
-        prompt: value.prompt
-      });
-    });
-    
     const filteredAnswers = Object.entries(answers)
       .filter(([_, value]: [string, any]) => {
         return value && 
@@ -75,16 +67,21 @@ serve(async (req) => {
       },
     });
 
-    // Create a clear context string that distinguishes between user and target traits
+    // Separate user and target traits with their temperatures
     const userTraits = Object.entries(filteredAnswers)
       .filter(([key]) => key.startsWith('user'))
-      .map(([key, value]: [string, any]) => `${key}: ${value.value} (temperature: ${value.temperature})`)
-      .join('\n');
+      .map(([key, value]: [string, any]) => 
+        `${key}: ${value.value} (temperature: ${value.temperature}, use this to adjust response style)`
+      ).join('\n');
 
     const targetTraits = Object.entries(filteredAnswers)
-      .filter(([key]) => key.startsWith('target') || ['situation', 'previousTopics'].includes(key))
-      .map(([key, value]: [string, any]) => `${key}: ${value.value} (temperature: ${value.temperature})`)
-      .join('\n');
+      .filter(([key]) => 
+        key.startsWith('target') || 
+        ['situation', 'previousTopics', 'humor', 'personality', 'mood'].includes(key)
+      )
+      .map(([key, value]: [string, any]) => 
+        `${key}: ${value.value} (temperature: ${value.temperature}, use this to match their traits)`
+      ).join('\n');
 
     const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
@@ -100,14 +97,16 @@ IMPORTANT RULES:
 - Focus on making statements or observations that invite natural conversation
 - DO NOT ask the person to tell stories or jokes
 - Make genuine, charming comments that don't require much effort to respond to
+- CRITICAL: Match the target's personality and mood exactly - if they're dark or bitter, responses should reflect that
+- DO NOT generate upbeat responses for someone with a dark/negative personality trait
 
-YOUR TRAITS:
+YOUR TRAITS (Use these to shape your speaking style):
 ${userTraits}
 
-THEIR TRAITS (Use these to craft the icebreakers):
+THEIR TRAITS (These determine the tone and content of icebreakers):
 ${targetTraits}
 
-Remember: Create engaging icebreakers that don't put pressure on them to respond with long answers.`;
+Remember: Create engaging icebreakers that match their exact personality and don't put pressure on them to respond with long answers.`;
 
     console.log('Full prompt being sent to AI:', systemPrompt);
 
