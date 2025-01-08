@@ -19,6 +19,7 @@ serve(async (req) => {
       isFirstTime,
       baseTemperature: temperature,
       totalFields: Object.keys(answers).length,
+      answers
     });
 
     const filteredAnswers = Object.entries(answers)
@@ -66,11 +67,11 @@ serve(async (req) => {
       },
     });
 
-    // Separate user and target traits
+    // Separate user and target traits with their temperatures
     const userTraits = Object.entries(filteredAnswers)
       .filter(([key]) => key.startsWith('user'))
       .map(([key, value]: [string, any]) => 
-        `${key}: ${value.value} (temperature: ${value.temperature})`
+        `${key}: ${value.value} (temperature: ${value.temperature}, use this to adjust response style)`
       ).join('\n');
 
     const targetTraits = Object.entries(filteredAnswers)
@@ -79,18 +80,16 @@ serve(async (req) => {
         ['situation', 'previousTopics', 'humor', 'personality', 'mood'].includes(key)
       )
       .map(([key, value]: [string, any]) => 
-        `${key}: ${value.value} (temperature: ${value.temperature})`
+        `${key}: ${value.value} (temperature: ${value.temperature}, use this to match their traits)`
       ).join('\n');
 
-    console.log('Processed traits:', { userTraits, targetTraits });
+    const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
+DO NOT reference ANY information not explicitly provided in the context.
 
-    const systemPrompt = `You are a conversation expert generating EXACTLY 3 icebreakers based on the context below.
-Use ONLY information explicitly provided in the context.
-
-RULES:
+IMPORTANT RULES:
 - Use ONLY information from the context below
-- NO assumptions about interests or topics not mentioned
-- Keep responses casual and brief
+- NO assumptions about interests, hobbies, or topics not mentioned
+- Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
@@ -103,22 +102,24 @@ RULES:
   * "what kind of... do you like"
   * "what brings you here..."
   * "how do you feel about..."
-- Focus on making statements that invite natural conversation
-- Make genuine, observational comments that don't require much effort to respond to
-- Match the target's personality traits appropriately
-- Avoid overly personal or invasive comments
-- Keep the tone appropriate for the situation
-- Make statements that acknowledge their traits without requiring explanations
+- Focus on making statements or observations that invite natural conversation
+- DO NOT ask the person to tell stories or jokes
+- Make genuine, charming comments that don't require much effort to respond to
+- CRITICAL: Match the target's personality and mood exactly - if they're dark or bitter, responses should reflect that
+- DO NOT generate upbeat responses for someone with a dark/negative personality trait
+- NEVER ask about shopping preferences or personal choices
+- DO NOT ask for pickup lines or jokes
+- Make statements that show understanding of their traits without requiring them to explain themselves
 
 YOUR TRAITS (Use these to shape your speaking style):
 ${userTraits}
 
-THEIR TRAITS (These determine the tone and content):
+THEIR TRAITS (These determine the tone and content of icebreakers):
 ${targetTraits}
 
-Remember: Create engaging conversation starters that match their personality while keeping interactions natural and comfortable.`;
+Remember: Create engaging icebreakers that match their exact personality and don't put pressure on them to respond with long answers.`;
 
-    console.log('Sending prompt to AI:', systemPrompt);
+    console.log('Full prompt being sent to AI:', systemPrompt);
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
@@ -150,10 +151,14 @@ Remember: Create engaging conversation starters that match their personality whi
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
     
+    const errorMessage = error.message.includes('SAFETY') 
+      ? 'AI safety filters triggered. Please try again with different input.'
+      : error.message;
+    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to generate icebreakers',
-        details: 'Please try again with different input. If the issue persists, try adjusting some of your inputs.'
+        details: errorMessage 
       }),
       { 
         status: 500,
