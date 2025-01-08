@@ -40,19 +40,9 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
 
   const {
     persistedIcebreakers,
-    isFirstTime,
-    setIsFirstTime,
     handleIcebreakersUpdate,
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
-
-  // Reset isFirstTime when selecting a new profile
-  React.useEffect(() => {
-    if (currentProfile.isFirstTime !== undefined) {
-      console.log('Setting isFirstTime from profile:', currentProfile.isFirstTime);
-      setIsFirstTime(currentProfile.isFirstTime === 'true');
-    }
-  }, [currentProfile, setIsFirstTime]);
 
   const contentProps = {
     currentProfile,
@@ -79,8 +69,6 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
         setShowSavedIcebreakers={setShowSavedIcebreakers}
         handleSelectProfile={handleSelectProfile}
         contentProps={contentProps}
-        isFirstTime={isFirstTime}
-        setIsFirstTime={setIsFirstTime}
         persistedIcebreakers={persistedIcebreakers}
         handleIcebreakersUpdate={handleIcebreakersUpdate}
         clearIcebreakers={clearIcebreakers}

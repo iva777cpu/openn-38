@@ -2,9 +2,8 @@ import React from "react";
 import { SavedIcebreakers } from "../SavedIcebreakers";
 import { SavedProfiles } from "../SavedProfiles";
 import { ProfileContent } from "./ProfileContent";
-import { ProfileStateExtendedProps } from "./ProfileStateManager";
 
-interface ProfileRoutingProps extends ProfileStateExtendedProps {
+interface ProfileRoutingProps {
   showProfiles: boolean;
   showSavedIcebreakers: boolean;
   setShowProfiles: (show: boolean) => void;
@@ -21,6 +20,9 @@ interface ProfileRoutingProps extends ProfileStateExtendedProps {
     hasChanges?: boolean;
     selectedProfileName?: string;
   };
+  persistedIcebreakers: string[];
+  handleIcebreakersUpdate: (icebreakers: string[]) => void;
+  clearIcebreakers: () => void;
 }
 
 export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
@@ -30,8 +32,6 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   setShowSavedIcebreakers,
   handleSelectProfile,
   contentProps,
-  isFirstTime,
-  setIsFirstTime,
   persistedIcebreakers,
   handleIcebreakersUpdate,
   clearIcebreakers,
@@ -59,8 +59,6 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   return (
     <ProfileContent
       {...contentProps}
-      isFirstTime={isFirstTime}
-      setIsFirstTime={setIsFirstTime}
       persistedIcebreakers={persistedIcebreakers}
       handleIcebreakersUpdate={handleIcebreakersUpdate}
     />

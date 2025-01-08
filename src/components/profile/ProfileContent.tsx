@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ProfileForm } from "../ProfileForm";
 import { SaveProfileDialog } from "../SaveProfileDialog";
 import { Checkbox } from "../ui/checkbox";
@@ -14,8 +14,6 @@ interface ProfileContentProps {
   onSaveProfile: () => void;
   hasChanges?: boolean;
   selectedProfileName?: string;
-  isFirstTime: boolean;
-  setIsFirstTime: (value: boolean) => void;
   persistedIcebreakers: string[];
   handleIcebreakersUpdate: (icebreakers: string[]) => void;
 }
@@ -30,15 +28,24 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   onSaveProfile,
   hasChanges,
   selectedProfileName,
-  isFirstTime,
-  setIsFirstTime,
   persistedIcebreakers,
   handleIcebreakersUpdate,
 }) => {
+  const [isFirstTime, setIsFirstTime] = useState(false);
+
+  // Initialize isFirstTime from currentProfile when it changes
+  useEffect(() => {
+    if (currentProfile.isFirstTime !== undefined) {
+      console.log('Setting isFirstTime from profile:', currentProfile.isFirstTime);
+      setIsFirstTime(currentProfile.isFirstTime === 'true');
+    } else {
+      setIsFirstTime(false);
+    }
+  }, [currentProfile]);
+
   const handleFirstTimeChange = (checked: boolean) => {
     console.log('First time checkbox changed:', checked);
     setIsFirstTime(checked);
-    // Update the profile to trigger hasChanges
     handleUpdateProfile('isFirstTime', checked.toString());
   };
 
