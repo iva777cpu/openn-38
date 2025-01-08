@@ -29,7 +29,7 @@ serve(async (req) => {
                typeof value.value === 'string' && 
                value.value.trim().length > 0;
         
-        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid}`);
+        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid} - Temperature: ${value?.temperature}`);
         return isValid;
       })
       .reduce((acc, [key, value]) => ({
@@ -63,7 +63,7 @@ serve(async (req) => {
     }
 
     const contextString = Object.entries(filteredAnswers)
-      .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
+      .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
       .join('\n');
 
     console.log('Final context string being sent to OpenAI:', contextString);
@@ -71,16 +71,29 @@ serve(async (req) => {
     const systemPrompt = `You are a conversation expert generating EXACTLY 10 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
 
-Guidelines:
+CRITICAL GUIDELINES:
 - Use ONLY information from the context below
 - NO assumptions about interests, hobbies, or topics not mentioned
 - Keep responses casual, friendly, and brief
 - Each icebreaker must be under 25 words
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
+- NEVER ask the person to:
+  - Tell a story
+  - Share a joke
+  - Give a pickup line
+  - Share shopping preferences
+  - Explain where they got something
+- Focus on making statements or observations rather than asking questions
+- Create genuine, charming conversation starters that don't require much effort from the target
+- Adjust response style based on the temperature values provided for each trait
 
 Context (USE ONLY THIS INFORMATION):
-${contextString}`;
+${contextString}
+
+Additional Context:
+- First time approaching: ${isFirstTime ? 'Yes' : 'No'}
+- Base temperature: ${isFirstTime ? '0.9' : '0.7'}`;
 
     console.log('Full prompt being sent to OpenAI:', systemPrompt);
 

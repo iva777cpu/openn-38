@@ -35,7 +35,7 @@ export const useIcebreakerGeneration = (
           return acc;
         }, {});
 
-      console.log('Filtered filled fields:', filledFields);
+      console.log('Filtered filled fields:', JSON.stringify(filledFields, null, 2));
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
         body: { 
