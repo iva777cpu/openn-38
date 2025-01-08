@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { questions } from "@/utils/questions";
+import { toast } from "sonner";
 
 export const useIcebreakerGeneration = (
   userProfile: Record<string, string>,
@@ -71,6 +72,7 @@ export const useIcebreakerGeneration = (
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
+      toast.error('Failed to generate icebreakers. Please try again.');
     } finally {
       setIsLoading(false);
     }
