@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -8,17 +8,25 @@ import "./App.css";
 
 function App() {
   const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkInitialAuth = async () => {
       try {
-        await supabase.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
       } finally {
         setIsAuthChecking(false);
       }
     };
     
     checkInitialAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (isAuthChecking) {
@@ -52,8 +60,26 @@ function App() {
       />
       <Router>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
+          <Route 
+            path="/" 
+            element={
+              isAuthenticated ? (
+                <Index />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            } 
+          />
+          <Route 
+            path="/login" 
+            element={
+              isAuthenticated ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Login />
+              )
+            } 
+          />
         </Routes>
       </Router>
     </main>
