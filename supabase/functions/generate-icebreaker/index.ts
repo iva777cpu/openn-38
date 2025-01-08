@@ -1,6 +1,5 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3";
+import OpenAI from "https://esm.sh/openai@4.28.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,21 +56,14 @@ serve(async (req) => {
       );
     }
 
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!geminiApiKey) {
-      throw new Error('Gemini API key not configured');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API key not configured');
     }
 
-    console.log('Initializing Gemini AI with API key...');
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
-      generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 200,
-      },
+    console.log('Initializing OpenAI client...');
+    const openai = new OpenAI({
+      apiKey: openaiApiKey,
     });
 
     const contextString = Object.entries(filteredAnswers)
@@ -82,6 +74,7 @@ serve(async (req) => {
 
     const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
 DO NOT reference ANY information not explicitly provided in the context.
+DO NOT ask the target to tell stories, jokes, or their preferences.
 
 Guidelines:
 - Use ONLY information from the context below
@@ -90,34 +83,35 @@ Guidelines:
 - Each icebreaker must be under 25 words
 - Return exactly 3 responses, numbered 1-3
 - No introductory text or emojis
+- DO NOT ask questions that require the target to tell stories or jokes
+- DO NOT ask about shopping preferences or favorites
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}`;
 
     console.log('Full prompt being sent to AI:', systemPrompt);
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-      generationConfig: {
-        temperature: isFirstTime ? 0.5 : 0.3,
-        topK: 40,
-        topP: 0.95,
-      },
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: systemPrompt }
+      ],
+      temperature: isFirstTime ? 0.5 : 0.3,
+      max_tokens: 200,
+      top_p: 0.95,
     });
     
-    const response = await result.response;
-    const text = response.text();
-    
+    const text = completion.choices[0].message.content;
     console.log('Raw AI response:', text);
+
+    if (!text) {
+      throw new Error('No valid text generated');
+    }
 
     const formattedText = text
       .split('\n')
       .filter(line => line.trim())
       .join('\n');
-
-    if (!formattedText) {
-      throw new Error('No valid text generated');
-    }
 
     return new Response(
       JSON.stringify({ icebreakers: formattedText }),
