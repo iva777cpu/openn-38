@@ -35,13 +35,6 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   persistedIcebreakers,
   handleIcebreakersUpdate,
 }) => {
-  const handleFirstTimeChange = (checked: boolean) => {
-    console.log('First time checkbox changed:', checked);
-    setIsFirstTime(checked);
-    // Trigger profile update to mark changes
-    handleUpdateProfile('isFirstTime', checked.toString());
-  };
-
   return (
     <div className="w-full pt-6 px-4">
       <ProfileHeader
@@ -58,7 +51,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         <Checkbox 
           id="firstTime" 
           checked={isFirstTime}
-          onCheckedChange={handleFirstTimeChange}
+          onCheckedChange={(checked) => {
+            console.log('First time checkbox changed:', checked);
+            setIsFirstTime(checked as boolean);
+          }}
           className="first-time-checkbox"
         />
         <label 
