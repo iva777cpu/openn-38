@@ -15,19 +15,19 @@ serve(async (req) => {
   }
 
   try {
-    const { userProfile } = await req.json();
-    console.log('Received user profile:', JSON.stringify(userProfile, null, 2));
+    const { answers } = await req.json();
+    console.log('Received answers:', JSON.stringify(answers, null, 2));
 
     // Create a more focused prompt for the AI
     const prompt = `Generate 3 unique, natural conversation starters or icebreakers based on these traits:
 
-User: ${userProfile.user_impression || 'No specific impression'}
+User: ${answers.impression?.value || 'No specific impression'}
 Target Person: 
-- Personality: ${userProfile.target_personality || 'Not specified'}
-- Interests: ${userProfile.target_hobbies || 'Not specified'}
-- Likes: ${userProfile.target_loves || 'Not specified'}
+- Personality: ${answers.targetPersonality?.value || 'Not specified'}
+- Interests: ${answers.loves?.value || 'Not specified'}
+- Humor: ${answers.humor?.value || 'Not specified'}
 
-Context: ${userProfile.situation || 'A casual conversation'}
+Context: ${answers.situation?.value || 'A casual conversation'}
 
 Important:
 - Keep responses brief and natural
@@ -76,7 +76,7 @@ Important:
     console.log('Generated icebreakers:', icebreakers);
 
     return new Response(
-      JSON.stringify({ icebreakers }),
+      JSON.stringify({ icebreakers: icebreakers.join('\n') }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
