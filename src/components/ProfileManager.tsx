@@ -46,6 +46,13 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
 
+  // Reset isFirstTime when selecting a new profile
+  React.useEffect(() => {
+    if (currentProfile.isFirstTime) {
+      setIsFirstTime(currentProfile.isFirstTime === 'true');
+    }
+  }, [currentProfile, setIsFirstTime]);
+
   const contentProps = {
     currentProfile,
     saveDialogOpen,
