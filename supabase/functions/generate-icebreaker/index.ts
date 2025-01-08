@@ -49,7 +49,7 @@ serve(async (req) => {
         [key]: {
           ...value,
           value: value.value.trim(),
-          temperature: key === 'zodiac' ? 0.3 : value.temperature // Update zodiac temperature
+          temperature: key === 'zodiac' ? 0.3 : value.temperature
         }
       }), {});
 
@@ -88,24 +88,23 @@ serve(async (req) => {
       );
     }
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
-    }
-
     const contextString = `
 ABOUT YOU (The person approaching):
 ${Object.entries(userTraits)
-  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .map(([key, value]: [string, any]) => 
+    `${key} (temperature ${value.temperature || 0.5}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.5} for creativity when referencing this trait.`)
   .join('\n')}
 
 ABOUT THEM (The person you're approaching):
 ${Object.entries(targetTraits)
-  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .map(([key, value]: [string, any]) => 
+    `${key} (temperature ${value.temperature || 0.5}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.5} for creativity when referencing this trait.`)
   .join('\n')}
 
 SITUATION:
 ${Object.entries(situationInfo)
-  .map(([key, value]: [string, any]) => `${key} (temperature ${value.temperature}): ${value.value}`)
+  .map(([key, value]: [string, any]) => 
+    `${key} (temperature ${value.temperature || 0.7}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.7} for creativity when referencing this context.`)
   .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
@@ -128,14 +127,17 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- Adjust response style based on the temperature values provided for each trait
+- For each trait or piece of information, adjust your creativity based on the temperature value provided
+- Higher temperatures (0.7-0.9) mean more creative and varied responses
+- Lower temperatures (0.2-0.4) mean more focused and conservative responses
+- For zodiac references specifically, keep it subtle and use temperature 0.3
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}
 
 Additional Context:
 - First time approaching: ${isFirstTime ? 'Yes' : 'No'}
-- Base temperature: ${isFirstTime ? '0.9' : '0.4'}`;
+- Base creativity level: ${isFirstTime ? 'High (0.9)' : 'Moderate (0.4)'}`;
 
     console.log('Full prompt being sent to OpenAI:', systemPrompt);
 
@@ -150,8 +152,7 @@ Additional Context:
         messages: [
           { role: 'system', content: systemPrompt }
         ],
-        temperature: isFirstTime ? 0.9 : 0.4,
-        max_tokens: 500,
+        temperature: 0.7, // Using a balanced base temperature
       }),
     });
 
