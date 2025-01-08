@@ -41,7 +41,7 @@ export const useIcebreakerGeneration = (
         body: { 
           answers: filledFields,
           isFirstTime,
-          temperature: isFirstTime ? 0.9 : 0.5
+          temperature: isFirstTime ? 0.9 : 0.4
         }
       });
 
