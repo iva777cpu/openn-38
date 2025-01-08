@@ -14,11 +14,10 @@ serve(async (req) => {
   }
 
   try {
-    const { answers, temperature, isFirstTime } = await req.json();
+    const { answers, isFirstTime } = await req.json();
     
     console.log('Raw request received:', {
       isFirstTime,
-      temperature,
       totalFields: Object.keys(answers).length
     });
     console.log('Raw answers received:', JSON.stringify(answers, null, 2));
@@ -49,7 +48,7 @@ serve(async (req) => {
         [key]: {
           ...value,
           value: value.value.trim(),
-          temperature: key === 'zodiac' ? 0.3 : value.temperature
+          priority: value.priority || 0.5
         }
       }), {});
 
@@ -92,19 +91,19 @@ serve(async (req) => {
 ABOUT YOU (The person approaching):
 ${Object.entries(userTraits)
   .map(([key, value]: [string, any]) => 
-    `${key} (temperature ${value.temperature || 0.5}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.5} for creativity when referencing this trait.`)
+    `${key} (priority ${value.priority || 0.5}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.5} when deciding how much to reference this trait.`)
   .join('\n')}
 
 ABOUT THEM (The person you're approaching):
 ${Object.entries(targetTraits)
   .map(([key, value]: [string, any]) => 
-    `${key} (temperature ${value.temperature || 0.5}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.5} for creativity when referencing this trait.`)
+    `${key} (priority ${value.priority || 0.5}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.5} when deciding how much to reference this trait.`)
   .join('\n')}
 
 SITUATION:
 ${Object.entries(situationInfo)
   .map(([key, value]: [string, any]) => 
-    `${key} (temperature ${value.temperature || 0.7}): ${value.value}\nINSTRUCTION: Use temperature ${value.temperature || 0.7} for creativity when referencing this context.`)
+    `${key} (priority ${value.priority || 0.7}): ${value.value}\nINSTRUCTION: Use priority ${value.priority || 0.7} when deciding how much to reference this context.`)
   .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
@@ -127,17 +126,17 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- For each trait or piece of information, adjust your creativity based on the temperature value provided
-- Higher temperatures (0.7-0.9) mean more creative and varied responses
-- Lower temperatures (0.2-0.4) mean more focused and conservative responses
-- For zodiac references specifically, keep it subtle and use temperature 0.3
+- For each trait or piece of information, use the priority value to determine how much emphasis to give it
+- Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
+- Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
+- Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}
 
 Additional Context:
 - First time approaching: ${isFirstTime ? 'Yes' : 'No'}
-- Base creativity level: ${isFirstTime ? 'High (0.9)' : 'Moderate (0.4)'}`;
+- Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}`;
 
     console.log('Full prompt being sent to OpenAI:', systemPrompt);
 
@@ -152,7 +151,7 @@ Additional Context:
         messages: [
           { role: 'system', content: systemPrompt }
         ],
-        temperature: 0.7, // Using a balanced base temperature
+        temperature: isFirstTime ? 0.8 : 0.4, // Using isFirstTime priority as temperature
       }),
     });
 
