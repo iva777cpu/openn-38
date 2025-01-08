@@ -20,10 +20,12 @@ export const useIcebreakerGeneration = (
       const filledFields = Object.entries(userProfile)
         .filter(([_, value]) => value && value.toString().trim() !== '')
         .reduce((acc, [key, value]) => {
+          // Find the question definition that matches this field
           const question = [...questions.userTraits, ...questions.targetTraits, ...questions.generalInfo]
             .find(q => q.id === key);
           
           if (question) {
+            console.log(`Field ${key} found with priority ${question.priority}`);
             // Special handling for zodiac priority
             const priority = key === 'zodiac' ? 0.3 : 
               isFirstTime ? Math.min(0.9, question.priority + 0.2) : question.priority;
@@ -31,7 +33,7 @@ export const useIcebreakerGeneration = (
             return {
               ...acc,
               [key]: {
-                value,
+                value: value.trim(),
                 prompt: question.prompt,
                 priority
               }

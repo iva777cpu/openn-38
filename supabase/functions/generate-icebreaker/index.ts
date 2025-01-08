@@ -154,11 +154,11 @@ Additional Context:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: systemPrompt }
         ],
-        temperature: 0.7, // Fixed temperature for creativity
+        temperature: 0.7,
       }),
     });
 
