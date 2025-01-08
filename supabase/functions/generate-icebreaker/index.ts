@@ -1,5 +1,7 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import OpenAI from "https://esm.sh/openai@4.28.0";
+
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,129 +9,85 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { answers, temperature, isFirstTime } = await req.json();
-    
-    console.log('Raw request received:', {
-      isFirstTime,
-      temperature,
-      totalFields: Object.keys(answers).length
-    });
-    console.log('Raw answers received:', JSON.stringify(answers, null, 2));
-    
-    const filteredAnswers = Object.entries(answers)
-      .filter(([key, value]: [string, any]) => {
-        const isValid = value && 
-               typeof value.value === 'string' && 
-               value.value.trim().length > 0;
-        
-        console.log(`Field ${key}: ${value?.value} - Valid: ${isValid}`);
-        return isValid;
-      })
-      .reduce((acc, [key, value]) => ({
-        ...acc,
-        [key]: {
-          ...value,
-          value: value.value.trim()
-        }
-      }), {});
-    
-    console.log('Filtered answers to be sent to AI:', JSON.stringify(filteredAnswers, null, 2));
+    const { userProfile } = await req.json();
+    console.log('Received user profile:', JSON.stringify(userProfile, null, 2));
 
-    if (Object.keys(filteredAnswers).length === 0) {
-      return new Response(
-        JSON.stringify({ 
-          error: 'No valid input provided',
-          details: 'All fields are empty or contain only whitespace'
-        }),
-        { 
-          status: 400,
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    }
+    // Create a more focused prompt for the AI
+    const prompt = `Generate 3 unique, natural conversation starters or icebreakers based on these traits:
 
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured');
-    }
+User: ${userProfile.user_impression || 'No specific impression'}
+Target Person: 
+- Personality: ${userProfile.target_personality || 'Not specified'}
+- Interests: ${userProfile.target_hobbies || 'Not specified'}
+- Likes: ${userProfile.target_loves || 'Not specified'}
 
-    console.log('Initializing OpenAI client...');
-    const openai = new OpenAI({
-      apiKey: openaiApiKey,
+Context: ${userProfile.situation || 'A casual conversation'}
+
+Important:
+- Keep responses brief and natural
+- Focus on common interests and positive topics
+- Avoid personal questions or sensitive topics
+- Make each icebreaker unique and engaging
+- Format as a numbered list (1., 2., 3.)`;
+
+    console.log('Sending prompt to OpenAI:', prompt);
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that generates natural, appropriate conversation starters. Keep responses concise and engaging.'
+          },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+      }),
     });
 
-    const contextString = Object.entries(filteredAnswers)
-      .map(([key, value]: [string, any]) => `${key}: ${value.value}`)
-      .join('\n');
+    const data = await response.json();
+    console.log('OpenAI response:', JSON.stringify(data, null, 2));
 
-    console.log('Final context string being sent to AI:', contextString);
-
-    const systemPrompt = `CRITICAL: You are a conversation expert generating EXACTLY 3 icebreakers based ONLY on the context below. 
-DO NOT reference ANY information not explicitly provided in the context.
-DO NOT ask the target to tell stories, jokes, or their preferences.
-
-Guidelines:
-- Use ONLY information from the context below
-- NO assumptions about interests, hobbies, or topics not mentioned
-- Keep responses casual, friendly, and brief
-- Each icebreaker must be under 25 words
-- Return exactly 3 responses, numbered 1-3
-- No introductory text or emojis
-- DO NOT ask questions that require the target to tell stories or jokes
-- DO NOT ask about shopping preferences or favorites
-
-Context (USE ONLY THIS INFORMATION):
-${contextString}`;
-
-    console.log('Full prompt being sent to AI:', systemPrompt);
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: systemPrompt }
-      ],
-      temperature: isFirstTime ? 0.5 : 0.3,
-      max_tokens: 200,
-      top_p: 0.95,
-    });
-    
-    const text = completion.choices[0].message.content;
-    console.log('Raw AI response:', text);
-
-    if (!text) {
-      throw new Error('No valid text generated');
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      throw new Error('Invalid response from OpenAI');
     }
 
-    const formattedText = text
+    const icebreakers = data.choices[0].message.content
       .split('\n')
-      .filter(line => line.trim())
-      .join('\n');
+      .filter(line => line.trim().match(/^\d+\./))
+      .map(line => line.replace(/^\d+\.\s*/, '').trim());
+
+    if (icebreakers.length === 0) {
+      throw new Error('No valid icebreakers generated');
+    }
+
+    console.log('Generated icebreakers:', icebreakers);
 
     return new Response(
-      JSON.stringify({ icebreakers: formattedText }),
+      JSON.stringify({ icebreakers }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
+
   } catch (error) {
     console.error('Error in generate-icebreaker function:', error);
-    
-    const errorMessage = error.message.includes('SAFETY') 
-      ? 'AI safety filters triggered. Please try again with different input.'
-      : error.message;
-    
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Failed to generate icebreakers',
-        details: errorMessage 
+        details: error.message
       }),
-      { 
+      {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
