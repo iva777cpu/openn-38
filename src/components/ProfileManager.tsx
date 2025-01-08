@@ -48,7 +48,8 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
 
   // Reset isFirstTime when selecting a new profile
   React.useEffect(() => {
-    if (currentProfile.isFirstTime) {
+    if (currentProfile.isFirstTime !== undefined) {
+      console.log('Setting isFirstTime from profile:', currentProfile.isFirstTime);
       setIsFirstTime(currentProfile.isFirstTime === 'true');
     }
   }, [currentProfile, setIsFirstTime]);

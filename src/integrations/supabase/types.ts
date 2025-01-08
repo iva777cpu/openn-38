@@ -61,6 +61,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_first_time: boolean | null
           previous_topics: string | null
           profile_name: string
           relationship: string | null
@@ -87,6 +88,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_first_time?: boolean | null
           previous_topics?: string | null
           profile_name: string
           relationship?: string | null
@@ -113,6 +115,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_first_time?: boolean | null
           previous_topics?: string | null
           profile_name?: string
           relationship?: string | null

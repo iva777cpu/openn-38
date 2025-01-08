@@ -8,6 +8,7 @@ export const useProfileOperations = () => {
       console.log("Saving profile changes for ID:", selectedProfileId);
       console.log("Current profile data:", currentProfile);
       console.log("Relationship value being saved:", currentProfile.relationship);
+      console.log("isFirstTime value being saved:", currentProfile.isFirstTime);
       
       const { error } = await supabase
         .from("user_profiles")
@@ -32,6 +33,7 @@ export const useProfileOperations = () => {
           target_style: currentProfile.style,
           situation: currentProfile.situation,
           previous_topics: currentProfile.previousTopics,
+          is_first_time: currentProfile.isFirstTime === 'true',
         })
         .eq("id", selectedProfileId);
 
@@ -51,6 +53,7 @@ export const useProfileOperations = () => {
   ) => {
     console.log("Selecting profile:", profile);
     console.log("Profile relationship value:", profile.relationship);
+    console.log("Profile isFirstTime value:", profile.is_first_time);
     
     const profileData = {
       userAge: profile.user_age || "",
@@ -73,6 +76,7 @@ export const useProfileOperations = () => {
       style: profile.target_style || "",
       situation: profile.situation || "",
       previousTopics: profile.previous_topics || "",
+      isFirstTime: profile.is_first_time?.toString() || "false",
     };
     
     console.log("Transformed profile data:", profileData);
