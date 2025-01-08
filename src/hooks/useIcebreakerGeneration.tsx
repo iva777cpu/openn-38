@@ -30,7 +30,9 @@ export const useIcebreakerGeneration = (
             console.log(`Field ${key} temperature:`, {
               base: question.temperature,
               adjusted: adjustedTemperature,
-              isFirstTime
+              isFirstTime,
+              value,
+              prompt: question.prompt
             });
 
             return {
@@ -38,7 +40,9 @@ export const useIcebreakerGeneration = (
               [key]: {
                 value,
                 prompt: question.prompt,
-                temperature: adjustedTemperature
+                temperature: adjustedTemperature,
+                category: key.startsWith('user') ? 'user' : 
+                         key.startsWith('target') ? 'target' : 'general'
               }
             };
           }
@@ -66,7 +70,11 @@ export const useIcebreakerGeneration = (
         throw new Error('Invalid response format from AI');
       }
 
-      const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
+      const newIcebreakers = data.icebreakers
+        .split(/\d+\./)
+        .filter(Boolean)
+        .map((text: string) => text.trim());
+      
       console.log('Processed icebreakers:', newIcebreakers);
       
       if (newIcebreakers.length === 0) {
