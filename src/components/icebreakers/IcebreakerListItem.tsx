@@ -1,26 +1,50 @@
 import React from "react";
 import { Card } from "../ui/card";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import { BookmarkIcon } from "lucide-react";
+
+interface SavedMessage {
+  id: string;
+  message_text: string;
+  created_at: string;
+  is_edited: boolean;
+  user_id: string;
+}
 
 interface IcebreakerListItemProps {
-  message: { id: string; message_text: string };
+  message: SavedMessage;
   isSelected: boolean;
-  onToggleSelection: (messageId: string) => void;
+  onToggleSelection: (id: string) => void;
 }
 
 export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
   message,
   isSelected,
   onToggleSelection,
-}) => (
-  <Card className="icebreaker-box p-3 bg-[#47624B] dark:bg-[#2D4531] text-[#E5D4BC] border border-[#E5D4BC]">
-    <div className="flex items-start gap-2">
-      <Checkbox
-        checked={isSelected}
-        onCheckedChange={() => onToggleSelection(message.id)}
-        className="mt-1 border-[#E5D4BC]"
-      />
-      <p className="flex-grow text-[15px]">{message.message_text}</p>
-    </div>
-  </Card>
-);
+}) => {
+  return (
+    <Card
+      className={`p-4 cursor-pointer transition-colors ${
+        isSelected
+          ? "bg-[#47624B] text-[#E5D4BC]"
+          : "bg-[#E5D4BC] text-[#1B4233] hover:bg-[#D4C3AB]"
+      }`}
+      onClick={() => onToggleSelection(message.id)}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="flex-1">{message.message_text}</p>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={`shrink-0 ${
+            isSelected
+              ? "text-[#E5D4BC] hover:text-[#E5D4BC]"
+              : "text-[#1B4233] hover:text-[#1B4233]"
+          }`}
+        >
+          <BookmarkIcon className="h-4 w-4" />
+        </Button>
+      </div>
+    </Card>
+  );
+};
