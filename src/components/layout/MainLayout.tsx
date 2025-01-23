@@ -5,6 +5,7 @@ import { SavedProfiles } from "@/components/SavedProfiles";
 import { ProfileManager } from "@/components/ProfileManager";
 import { useProfileManagement } from "@/hooks/useProfileManagement";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthDialog } from "@/components/AuthDialog";
 
 interface MainLayoutProps {
   onDeleteAccount: () => Promise<void>;
@@ -17,6 +18,8 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
   const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   const {
     currentProfile,
@@ -32,7 +35,8 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
   const checkAuth = async (action: () => void) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      window.location.href = '/login';
+      setPendingAction(() => action);
+      setShowAuthDialog(true);
       return;
     }
     action();
@@ -86,6 +90,14 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
           checkAuth={checkAuth}
         />
       )}
+
+      <AuthDialog 
+        open={showAuthDialog} 
+        onOpenChange={(open) => {
+          setShowAuthDialog(open);
+          if (!open) setPendingAction(null);
+        }} 
+      />
     </div>
   );
 };

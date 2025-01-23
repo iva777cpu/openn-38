@@ -2,14 +2,26 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthSetup } from "@/hooks/useAuthSetup";
+import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
   const { error } = useAuthSetup();
+  const navigate = useNavigate();
 
   return (
     <div className="fixed inset-0 bg-[#E5D4BC]">
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg">
+        <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2 text-[#E5D4BC] hover:bg-[#3d5941]"
+            onClick={() => navigate(-1)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
           <h1 className="text-2xl font-bold text-[#E5D4BC] text-center mb-8">
             Welcome to Openera
           </h1>

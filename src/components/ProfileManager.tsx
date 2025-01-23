@@ -46,10 +46,10 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
 
-  // Only clear icebreakers when switching profiles
   const handleProfileSelect = (profile: any) => {
-    clearIcebreakers(); // Clear icebreakers only when switching profiles
+    clearIcebreakers();
     handleSelectProfile(profile);
+    setShowProfiles(false); // Add this line to close profiles view
   };
 
   const contentProps = {
