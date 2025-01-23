@@ -18,6 +18,7 @@ interface ProfileManagerProps {
   onSaveProfile: () => void;
   hasChanges?: boolean;
   selectedProfileName?: string;
+  checkAuth: (action: () => void) => Promise<void>;
 }
 
 export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
@@ -36,6 +37,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     onSaveProfile,
     hasChanges,
     selectedProfileName,
+    checkAuth,
   } = props;
 
   const {
@@ -54,6 +56,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     onSaveProfile,
     hasChanges,
     selectedProfileName,
+    checkAuth,
   };
 
   return (

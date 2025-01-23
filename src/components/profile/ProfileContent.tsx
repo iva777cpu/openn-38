@@ -16,6 +16,7 @@ interface ProfileContentProps {
   selectedProfileName?: string;
   persistedIcebreakers: string[];
   handleIcebreakersUpdate: (icebreakers: string[]) => void;
+  checkAuth: (action: () => void) => Promise<void>;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -30,10 +31,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   selectedProfileName,
   persistedIcebreakers,
   handleIcebreakersUpdate,
+  checkAuth,
 }) => {
   const [isFirstTime, setIsFirstTime] = useState(false);
 
-  // Initialize isFirstTime from currentProfile when it changes
   useEffect(() => {
     if (currentProfile.isFirstTime !== undefined) {
       console.log('Setting isFirstTime from profile:', currentProfile.isFirstTime);
@@ -83,6 +84,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         persistedIcebreakers={persistedIcebreakers}
         onIcebreakersUpdate={handleIcebreakersUpdate}
         isFirstTime={isFirstTime}
+        checkAuth={checkAuth}
       />
       <div className="text-xs text-[#47624B] dark:text-[#E5D4BC] mt-6 text-left">
         hey its Edda, the developer :D I&apos;d really appreciate your thoughts on the app :3<br />
