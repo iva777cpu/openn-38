@@ -40,7 +40,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       {icebreakers.map((icebreaker, index) => (
         <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start border border-[#E5D4BC]">
           <span className="text-[15px] text-[#E5D4BC]">{icebreaker}</span>
-          <div className="flex items-center gap-3 ml-2">
+          <div className="flex flex-col gap-2 ml-2">
             <Button
               variant="ghost"
               size="icon"
