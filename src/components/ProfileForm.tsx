@@ -11,6 +11,7 @@ interface ProfileFormProps {
   persistedIcebreakers: string[];
   onIcebreakersUpdate: (icebreakers: string[]) => void;
   isFirstTime: boolean;
+  checkAuth: (action: () => void) => Promise<void>;
 }
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({ 
@@ -18,25 +19,17 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   onUpdate,
   onIcebreakersUpdate,
   isFirstTime,
-  persistedIcebreakers
+  persistedIcebreakers,
+  checkAuth
 }) => {
   const navigate = useNavigate();
-
-  const checkAuthAndProceed = async (action: () => void) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate('/login');
-      return;
-    }
-    action();
-  };
 
   return (
     <section className="w-full space-y-3">
       <ProfileFormSections 
         userProfile={userProfile}
         onUpdate={onUpdate}
-        checkAuth={checkAuthAndProceed}
+        checkAuth={checkAuth}
       />
 
       <FormSection title="Ice Breakers">
@@ -44,7 +37,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           userProfile={userProfile}
           onIcebreakersUpdate={onIcebreakersUpdate}
           isFirstTime={isFirstTime}
-          checkAuth={checkAuthAndProceed}
+          checkAuth={checkAuth}
         />
       </FormSection>
     </section>
