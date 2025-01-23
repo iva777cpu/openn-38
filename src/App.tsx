@@ -13,21 +13,8 @@ function App() {
   useEffect(() => {
     const checkInitialAuth = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Auth check error:", error);
-          setIsAuthenticated(false);
-          // Clear any stale auth state
-          await supabase.auth.signOut();
-          localStorage.removeItem('supabase.auth.token');
-          return;
-        }
-
+        const { data: { session } } = await supabase.auth.getSession();
         setIsAuthenticated(!!session);
-      } catch (error) {
-        console.error("Failed to check auth status:", error);
-        setIsAuthenticated(false);
       } finally {
         setIsAuthChecking(false);
       }
@@ -35,38 +22,11 @@ function App() {
     
     checkInitialAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event);
-      
-      if (event === 'SIGNED_OUT') {
-        setIsAuthenticated(false);
-        localStorage.removeItem('supabase.auth.token');
-        return;
-      }
-
-      if (session?.user) {
-        try {
-          // Verify the session is still valid
-          const { error: verifyError } = await supabase.auth.getUser();
-          if (verifyError) {
-            console.error("Session verification failed:", verifyError);
-            setIsAuthenticated(false);
-            await supabase.auth.signOut();
-            return;
-          }
-          setIsAuthenticated(true);
-        } catch (error) {
-          console.error("Session verification error:", error);
-          setIsAuthenticated(false);
-        }
-      } else {
-        setIsAuthenticated(false);
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   if (isAuthChecking) {
