@@ -29,6 +29,8 @@ interface MenuContentProps {
   onViewProfiles: () => void;
   onLogout: () => void;
   onOpenChange: (open: boolean) => void;
+  isDarkMode?: boolean;
+  onToggleTheme?: () => void;
 }
 
 export const MenuContent: React.FC<MenuContentProps> = ({
@@ -41,14 +43,15 @@ export const MenuContent: React.FC<MenuContentProps> = ({
 }) => {
   const handleDeleteAccount = async () => {
     try {
+      // Just sign out the user since we can't delete via client API
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) throw signOutError;
       
-      toast.success("Account deleted successfully");
+      toast.success("Successfully signed out");
       onOpenChange(false);
     } catch (error) {
-      console.error("Error deleting account:", error);
-      toast.error("Failed to delete account. Please try again later.");
+      console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again later.");
     }
   };
 
@@ -114,15 +117,14 @@ export const MenuContent: React.FC<MenuContentProps> = ({
         <AlertDialogTrigger asChild>
           <Button variant="ghost" className="w-full justify-start text-destructive">
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete Account
+            Sign Out
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              This action will sign you out of your account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -131,7 +133,7 @@ export const MenuContent: React.FC<MenuContentProps> = ({
               onClick={handleDeleteAccount}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete Account
+              Sign Out
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
