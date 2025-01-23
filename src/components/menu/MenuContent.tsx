@@ -15,6 +15,7 @@ interface MenuContentProps {
   onToggleTheme: () => void;
   onLogout: () => void;
   onDeleteAccount: () => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 export const MenuContent = ({
@@ -26,10 +27,10 @@ export const MenuContent = ({
   onToggleTheme,
   onLogout,
   onDeleteAccount,
+  isAuthenticated,
 }: MenuContentProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col h-full">
@@ -70,31 +71,29 @@ export const MenuContent = ({
 
         <Button
           variant="ghost"
+          className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${!isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
+          onClick={onLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </Button>
+
+        <Button
+          variant="ghost"
+          className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
+          onClick={() => window.location.href = '/login'}
+        >
+          <LogIn className="mr-2 h-4 w-4" />
+          Login
+        </Button>
+
+        <Button
+          variant="ghost"
           className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] opacity-60"
           onClick={() => setShowDeleteDialog(true)}
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Account
-        </Button>
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
-          onClick={() => navigate('/login')}
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          Login
-        </Button>
-      </div>
-
-      <div className="mt-auto pt-4 border-t border-[#1A2A1D]">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
-          onClick={onLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
         </Button>
       </div>
 

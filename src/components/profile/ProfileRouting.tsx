@@ -19,6 +19,7 @@ interface ProfileRoutingProps {
     onSaveProfile: () => void;
     hasChanges?: boolean;
     selectedProfileName?: string;
+    checkAuth: (action: () => void) => Promise<void>;
   };
   persistedIcebreakers: string[];
   handleIcebreakersUpdate: (icebreakers: string[]) => void;

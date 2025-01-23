@@ -4,9 +4,9 @@ import { MainLayout } from "@/components/layout/MainLayout";
 interface IndexProps {
   onDeleteAccount: () => Promise<void>;
   onSignOut: () => Promise<void>;
+  isAuthenticated: boolean;
 }
 
-export default function Index({ onDeleteAccount, onSignOut }: IndexProps) {
-  useAuthCheck();
-  return <MainLayout onDeleteAccount={onDeleteAccount} onSignOut={onSignOut} />;
+export default function Index({ onDeleteAccount, onSignOut, isAuthenticated }: IndexProps) {
+  return <MainLayout onDeleteAccount={onDeleteAccount} onSignOut={onSignOut} isAuthenticated={isAuthenticated} />;
 }

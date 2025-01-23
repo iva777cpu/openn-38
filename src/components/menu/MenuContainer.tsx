@@ -13,6 +13,7 @@ interface MenuContainerProps {
   onDeleteAccount: () => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isAuthenticated: boolean;
 }
 
 export const MenuContainer: React.FC<MenuContainerProps> = ({
@@ -24,6 +25,7 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
   onDeleteAccount,
   open,
   onOpenChange,
+  isAuthenticated,
 }) => {
   const { isDarkMode, toggleTheme } = useThemePreference();
 
@@ -62,6 +64,7 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
             onOpenChange(false);
           }}
           onDeleteAccount={onDeleteAccount}
+          isAuthenticated={isAuthenticated}
         />
       </SheetContent>
     </Sheet>

@@ -10,6 +10,7 @@ interface SideMenuProps {
   onDeleteAccount: () => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  isAuthenticated: boolean;
 }
 
 export const SideMenu: React.FC<SideMenuProps> = (props) => {

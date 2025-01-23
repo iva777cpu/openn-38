@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import { Toaster } from "sonner";
@@ -42,22 +42,16 @@ function App() {
           <Route 
             path="/" 
             element={
-              isAuthenticated ? (
-                <Index onDeleteAccount={handleDeleteAccount} onSignOut={handleSignOut} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              <Index 
+                onDeleteAccount={handleDeleteAccount} 
+                onSignOut={handleSignOut}
+                isAuthenticated={isAuthenticated}
+              />
             } 
           />
           <Route 
             path="/login" 
-            element={
-              isAuthenticated ? (
-                <Navigate to="/" replace />
-              ) : (
-                <Login />
-              )
-            } 
+            element={<Login />}
           />
         </Routes>
       </Router>
