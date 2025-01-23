@@ -19,60 +19,62 @@ function App() {
         
         if (error) {
           console.error("Initial auth check error:", error);
-          if (error.status === 403) {
-            await supabase.auth.signOut();
-            toast.error("Your session has expired. Please sign in again.");
-          }
-          setIsAuthenticated(false);
+          handleAuthError(error);
           return;
         }
 
         setIsAuthenticated(!!session);
-      } catch (error: any) {
+      } catch (error) {
         console.error("Failed to check initial auth status:", error);
-        if (error.status === 403) {
-          await supabase.auth.signOut();
-          toast.error("Your session has expired. Please sign in again.");
-        }
-        setIsAuthenticated(false);
+        handleAuthError(error);
       } finally {
         setIsAuthChecking(false);
       }
     };
     
+    const handleAuthError = async (error: any) => {
+      setIsAuthenticated(false);
+      if (error?.status === 403) {
+        // Clear local storage to remove any invalid tokens
+        window.localStorage.removeItem('supabase.auth.token');
+        try {
+          await supabase.auth.signOut();
+        } catch (signOutError) {
+          console.error("Error during sign out:", signOutError);
+        }
+        toast.error("Your session has expired. Please sign in again.");
+      }
+    };
+
     checkInitialAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       try {
-        if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        if (event === 'SIGNED_OUT') {
           setIsAuthenticated(false);
           return;
         }
 
         if (session) {
-          // Verify the session is still valid
-          const { error: verifyError } = await supabase.auth.getUser();
-          if (verifyError) {
-            console.error("Session verification error:", verifyError);
-            if (verifyError.status === 403) {
-              await supabase.auth.signOut();
-              toast.error("Your session has expired. Please sign in again.");
-              setIsAuthenticated(false);
+          try {
+            const { error: verifyError } = await supabase.auth.getUser();
+            if (verifyError) {
+              console.error("Session verification error:", verifyError);
+              handleAuthError(verifyError);
               return;
             }
+            setIsAuthenticated(true);
+          } catch (verifyError) {
+            console.error("Error verifying session:", verifyError);
+            handleAuthError(verifyError);
           }
-          setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Auth state change error:", error);
-        if (error.status === 403) {
-          await supabase.auth.signOut();
-          toast.error("Your session has expired. Please sign in again.");
-        }
-        setIsAuthenticated(false);
+        handleAuthError(error);
       }
     });
 
