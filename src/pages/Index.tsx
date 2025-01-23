@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
-import { toast } from "sonner";
 import { ProfileManager } from "@/components/ProfileManager";
 import { SideMenu } from "@/components/SideMenu";
 import { SavedIcebreakers } from "@/components/SavedIcebreakers";
@@ -40,7 +38,6 @@ export default function Index({ onDeleteAccount, onSignOut }: IndexProps) {
     } catch (error: any) {
       console.error('Logout error:', error);
     } finally {
-      // Clear local storage and redirect regardless of API success
       localStorage.clear();
       navigate("/login");
     }
@@ -83,12 +80,12 @@ export default function Index({ onDeleteAccount, onSignOut }: IndexProps) {
 
       {showProfiles ? (
         <SavedProfiles 
-          onSelectProfile={handleSelectProfile} 
-          onBack={() => setShowProfiles(false)} 
+          onBack={() => setShowProfiles(false)}
+          onSelectProfile={handleSelectProfile}
         />
       ) : showSavedIcebreakers ? (
         <SavedIcebreakers 
-          onBack={() => setShowSavedIcebreakers(false)} 
+          onBack={() => setShowSavedIcebreakers(false)}
         />
       ) : (
         <ProfileManager

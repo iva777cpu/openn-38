@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Plus, Save, Users, BookmarkPlus, LogOut, Sun, Moon, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { DeleteAccountDialog } from "../DeleteAccountDialog";
 
 interface MenuContentProps {
   isDarkMode: boolean;
@@ -22,6 +24,8 @@ export const MenuContent = ({
   onLogout,
   onDeleteAccount,
 }: MenuContentProps) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   return (
     <div className="space-y-4 mt-8">
       <Button
@@ -83,12 +87,21 @@ export const MenuContent = ({
       </Button>
       <Button
         variant="ghost"
-        className="w-full justify-start text-red-500 hover:bg-[#1A2A1D] hover:text-red-400"
-        onClick={onDeleteAccount}
+        className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+        onClick={() => setShowDeleteDialog(true)}
       >
         <Trash2 className="mr-2 h-4 w-4" />
         Delete Account
       </Button>
+
+      <DeleteAccountDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirmDelete={async () => {
+          await onDeleteAccount();
+          setShowDeleteDialog(false);
+        }}
+      />
     </div>
   );
 };
