@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, LogOut, Trash2, FileText } from "lucide-react";
+import { Sun, Moon, LogOut, Trash2, FileText, LogIn } from "lucide-react";
 import { useState } from "react";
 import { DeleteAccountDialog } from "../DeleteAccountDialog";
 import { PrivacyPolicyDialog } from "../PrivacyPolicyDialog";
 import { MenuActions } from "./MenuActions";
+import { useNavigate } from "react-router-dom";
 
 interface MenuContentProps {
   isDarkMode: boolean;
@@ -28,17 +29,18 @@ export const MenuContent = ({
 }: MenuContentProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col h-full">
-      <MenuActions
-        onNewProfile={onNewProfile}
-        onSaveProfile={onSaveProfile}
-        onViewProfiles={onViewProfiles}
-        onViewSavedMessages={onViewSavedMessages}
-      />
-      
-      <div className="flex-1 space-y-4">
+      <div className="space-y-4">
+        <MenuActions
+          onNewProfile={onNewProfile}
+          onSaveProfile={onSaveProfile}
+          onViewProfiles={onViewProfiles}
+          onViewSavedMessages={onViewSavedMessages}
+        />
+        
         <Button
           variant="ghost"
           className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] mb-4"
@@ -73,6 +75,15 @@ export const MenuContent = ({
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Account
+        </Button>
+
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          onClick={() => navigate('/login')}
+        >
+          <LogIn className="mr-2 h-4 w-4" />
+          Login
         </Button>
       </div>
 
