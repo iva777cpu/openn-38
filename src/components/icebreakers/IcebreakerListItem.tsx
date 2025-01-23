@@ -1,76 +1,50 @@
-import React, { useState } from "react";
-import { Save, Flag } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import React from "react";
+import { Card } from "../ui/card";
+import { Button } from "../ui/button";
+import { BookmarkIcon } from "lucide-react";
+
+interface SavedMessage {
+  id: string;
+  message_text: string;
+  created_at: string;
+  is_edited: boolean;
+  user_id: string;
+}
 
 interface IcebreakerListItemProps {
-  message: string;
-  onSave?: (message: string) => Promise<void>;
-  showSaveButton?: boolean;
+  message: SavedMessage;
+  isSelected: boolean;
+  onToggleSelection: (id: string) => void;
 }
 
 export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
   message,
-  onSave,
-  showSaveButton = true,
+  isSelected,
+  onToggleSelection,
 }) => {
-  const [isReporting, setIsReporting] = useState(false);
-
-  const handleReport = async () => {
-    setIsReporting(true);
-    try {
-      const { error } = await supabase.functions.invoke('report-message', {
-        body: { message }
-      });
-
-      if (error) throw error;
-
-      toast.success("Message reported", {
-        position: "top-center",
-        style: {
-          background: "#47624B",
-          color: "#E5D4BC",
-        }
-      });
-    } catch (error) {
-      console.error("Error reporting message:", error);
-      toast.error("Failed to report message", {
-        position: "top-center",
-        style: {
-          background: "#47624B",
-          color: "#E5D4BC",
-        }
-      });
-    } finally {
-      setIsReporting(false);
-    }
-  };
-
   return (
-    <div className="relative group flex items-start gap-2 p-4 rounded-lg bg-[#E5D4BC] dark:bg-[#2D4531] text-[#1A2A1D] dark:text-[#E5D4BC]">
-      <p className="flex-1 whitespace-pre-wrap">{message}</p>
-      <div className="flex items-center gap-3">
-        {showSaveButton && onSave && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 hover:bg-[#47624B]/20"
-            onClick={() => onSave(message)}
-          >
-            <Save className="h-4 w-4" />
-          </Button>
-        )}
+    <Card
+      className={`p-4 cursor-pointer transition-colors ${
+        isSelected
+          ? "bg-[#47624B] text-[#E5D4BC]"
+          : "bg-[#E5D4BC] text-[#1B4233] hover:bg-[#D4C3AB]"
+      }`}
+      onClick={() => onToggleSelection(message.id)}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="flex-1">{message.message_text}</p>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 hover:bg-[#47624B]/20 opacity-40 hover:opacity-100 transition-opacity"
-          onClick={handleReport}
-          disabled={isReporting}
+          className={`shrink-0 ${
+            isSelected
+              ? "text-[#E5D4BC] hover:text-[#E5D4BC]"
+              : "text-[#1B4233] hover:text-[#1B4233]"
+          }`}
         >
-          <Flag className="h-4 w-4" />
+          <BookmarkIcon className="h-4 w-4" />
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };
