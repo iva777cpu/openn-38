@@ -67,7 +67,6 @@ export const useAuthSetup = () => {
     initAuth();
   }, [navigate]);
 
-  // Add error handler for rate limits and network issues
   const handleAuthError = (error: any) => {
     console.error('Auth error:', error);
     
@@ -81,7 +80,6 @@ export const useAuthSetup = () => {
       return true;
     }
     
-    // Handle network errors
     if (error?.message === "Failed to fetch") {
       toast.error("Unable to connect to the authentication service. Please check your internet connection and try again.");
       return true;
