@@ -115,7 +115,7 @@
 
   /* Delete Selected Button Styles */
   .delete-selected-button {
-    @apply bg-[#47624B] text-[#E5D4BC] hover:bg-[#2D4531] px-2 py-1 rounded-md text-xs mb-2;
+    @apply bg-[#47624B] text-[#E5D4BC] hover:bg-[#2D4531] px-4 py-2 rounded-md text-sm;
   }
 
   /* Profile Form Spacing */
@@ -153,5 +153,10 @@
 
   html:not(.dark) [data-state=checked].first-time-checkbox [data-state=checked] {
     @apply text-[#E5D4BC];
+  }
+
+  /* Auth Background Override */
+  #root {
+    @apply bg-[#E5D4BC] dark:bg-[#303D24];
   }
 }

@@ -30,32 +30,31 @@ export const useThemePreference = () => {
             setIsDarkMode(shouldBeDark);
             document.documentElement.classList.toggle('dark', shouldBeDark);
             localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
-          } else {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-              const shouldBeDark = savedTheme === 'dark';
-              setIsDarkMode(shouldBeDark);
-              document.documentElement.classList.toggle('dark', shouldBeDark);
-            }
           }
         }
       } catch (error) {
         console.error('Error initializing theme:', error);
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setIsDarkMode(savedTheme === 'dark');
-        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
       }
     };
 
+    // Set initial theme immediately from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      const shouldBeDark = savedTheme === 'dark';
+      setIsDarkMode(shouldBeDark);
+      document.documentElement.classList.toggle('dark', shouldBeDark);
+    }
+
+    // Then fetch from database
     initializeTheme();
   }, []);
 
   const toggleTheme = async () => {
     try {
       const newTheme = !isDarkMode;
-      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
       setIsDarkMode(newTheme);
       document.documentElement.classList.toggle('dark', newTheme);
+      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
 
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {

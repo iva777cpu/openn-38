@@ -22,21 +22,28 @@ export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
   isSelected,
   onToggleSelection,
 }) => {
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleSelection(message.id);
+  };
+
   return (
     <Card
       className={`p-4 cursor-pointer transition-colors ${
         isSelected
           ? "bg-[#47624B] text-[#E5D4BC]"
-          : "bg-[#E5D4BC] dark:bg-[#2D4531] text-[#1B4233] dark:text-[#E5D4BC] hover:bg-[#D4C3AB] dark:hover:bg-[#3d5941]"
+          : "bg-[#47624B] dark:bg-[#2D4531] text-[#E5D4BC] hover:bg-[#3d5941] dark:hover:bg-[#3d5941]"
       }`}
       onClick={() => onToggleSelection(message.id)}
     >
       <div className="flex items-start gap-2">
-        <Checkbox
-          checked={isSelected}
-          onCheckedChange={() => onToggleSelection(message.id)}
-          className="border-[#E5D4BC] bg-transparent mt-1"
-        />
+        <div onClick={handleCheckboxClick}>
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => onToggleSelection(message.id)}
+            className="first-time-checkbox mt-1"
+          />
+        </div>
         <p className="flex-1">{message.message_text}</p>
       </div>
     </Card>
