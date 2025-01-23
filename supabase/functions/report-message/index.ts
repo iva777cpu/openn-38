@@ -29,8 +29,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Openera <onboarding@resend.dev>",
-        to: ["Novatica78@gmail.com"],
+        from: "Openera <churlly2018@gmail.com>",
+        to: ["churlly2018@gmail.com"],
         subject: "Message Reported in Openera",
         html: `
           <h2>A message has been reported in Openera</h2>
@@ -50,6 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
       });
     } else {
       const error = await res.text();
+      console.error("Resend API error:", error);
       return new Response(JSON.stringify({ error }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
