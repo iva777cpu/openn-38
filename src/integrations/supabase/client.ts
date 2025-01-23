@@ -8,19 +8,25 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    flowType: 'pkce'
   },
   global: {
     headers: {
-      'X-Client-Info': 'supabase-js-web'
-    }
-  }
+      'X-Client-Info': 'supabase-js-web',
+    },
+  },
 });
 
-// Add health check function
+// Add health check function with timeout
 export const checkSupabaseConnection = async () => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
     const { data, error } = await supabase.auth.getSession();
+    clearTimeout(timeoutId);
+
     if (error) {
       console.error('Supabase connection error:', error);
       return false;
