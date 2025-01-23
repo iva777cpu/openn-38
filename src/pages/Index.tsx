@@ -7,6 +7,7 @@ import { ProfileManager } from "@/components/ProfileManager";
 import { SideMenu } from "@/components/SideMenu";
 import { SavedIcebreakers } from "@/components/SavedIcebreakers";
 import { SavedProfiles } from "@/components/SavedProfiles";
+import { useProfileManagement } from "@/hooks/useProfileManagement";
 
 interface IndexProps {
   onDeleteAccount: () => Promise<void>;
@@ -19,27 +20,40 @@ export default function Index({ onDeleteAccount }: IndexProps) {
   const [showProfiles, setShowProfiles] = useState(false);
   const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+
+  const {
+    currentProfile,
+    selectedProfileId,
+    selectedProfileName,
+    hasChanges,
+    handleUpdateProfile,
+    handleNewProfile: handleNewProfileFromHook,
+    handleSelectProfile,
+    handleSaveChanges,
+  } = useProfileManagement();
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
     } catch (error: any) {
       console.error('Logout error:', error);
-      // Even if the API call fails, we want to clear local state
-      localStorage.clear();
     } finally {
-      // Always navigate to login page
+      // Clear local storage and redirect regardless of API success
+      localStorage.clear();
       navigate("/login");
     }
   };
 
   const handleNewProfile = () => {
+    handleNewProfileFromHook();
     setShowProfiles(false);
     setShowSavedIcebreakers(false);
   };
 
   const handleSaveProfile = () => {
-    setShowProfiles(true);
+    setSaveDialogOpen(true);
+    setShowProfiles(false);
     setShowSavedIcebreakers(false);
   };
 
@@ -67,11 +81,31 @@ export default function Index({ onDeleteAccount }: IndexProps) {
       />
 
       {showProfiles ? (
-        <SavedProfiles onClose={() => setShowProfiles(false)} />
+        <SavedProfiles 
+          onSelectProfile={handleSelectProfile} 
+          onBack={() => setShowProfiles(false)} 
+        />
       ) : showSavedIcebreakers ? (
-        <SavedIcebreakers onClose={() => setShowSavedIcebreakers(false)} />
+        <SavedIcebreakers 
+          onBack={() => setShowSavedIcebreakers(false)} 
+        />
       ) : (
-        <ProfileManager />
+        <ProfileManager
+          currentProfile={currentProfile}
+          saveDialogOpen={saveDialogOpen}
+          setSaveDialogOpen={setSaveDialogOpen}
+          showProfiles={showProfiles}
+          showSavedIcebreakers={showSavedIcebreakers}
+          selectedProfileId={selectedProfileId}
+          handleUpdateProfile={handleUpdateProfile}
+          handleSelectProfile={handleSelectProfile}
+          handleSaveChanges={handleSaveChanges}
+          setShowProfiles={setShowProfiles}
+          setShowSavedIcebreakers={setShowSavedIcebreakers}
+          onSaveProfile={handleSaveProfile}
+          hasChanges={hasChanges}
+          selectedProfileName={selectedProfileName}
+        />
       )}
     </div>
   );
