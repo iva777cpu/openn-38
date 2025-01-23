@@ -22,7 +22,7 @@ export const useIcebreakersState = (currentProfile: Record<string, string>) => {
     localStorage.removeItem('currentIcebreakers');
   }, [clearAllIcebreakers]);
 
-  // Remove the effect that was clearing icebreakers on profile changes
+  // Only update isFirstTime from profile, remove other effects
   useEffect(() => {
     if (currentProfile && Object.keys(currentProfile).length > 0) {
       setIsFirstTime(currentProfile.isFirstTime === 'true');

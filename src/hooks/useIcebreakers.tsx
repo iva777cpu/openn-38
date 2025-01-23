@@ -3,7 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
-  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [icebreakers, setIcebreakers] = useState<string[]>(() => {
+    const saved = localStorage.getItem('currentIcebreakers');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     loadSavedIcebreakers();
@@ -31,7 +34,14 @@ export const useIcebreakers = () => {
 
   const clearAllIcebreakers = useCallback(() => {
     setIcebreakers([]);
+    localStorage.removeItem('currentIcebreakers');
   }, []);
+
+  useEffect(() => {
+    if (icebreakers.length > 0) {
+      localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
+    }
+  }, [icebreakers]);
 
   const toggleIcebreaker = async (icebreaker: string) => {
     try {

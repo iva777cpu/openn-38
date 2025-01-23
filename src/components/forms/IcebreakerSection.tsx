@@ -16,12 +16,7 @@ export const IcebreakerSection: React.FC<IcebreakerSectionProps> = ({
   isFirstTime,
   checkAuth,
 }) => {
-  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
-
-  React.useEffect(() => {
-    clearAllIcebreakers();
-    setIcebreakers([]);
-  }, [userProfile, clearAllIcebreakers, setIcebreakers]);
+  const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker } = useIcebreakers();
 
   const handleIcebreakersGenerated = (newIcebreakers: string[]) => {
     console.log("IcebreakerSection: New icebreakers generated", newIcebreakers);
