@@ -1,3 +1,5 @@
+// ... keep existing code (imports and type definitions)
+
 export const questions = {
   userTraits: [
     { id: "userAge", text: "How old are you?", prompt: "Consider age", priority: 0.5 },
@@ -24,5 +26,17 @@ export const questions = {
   generalInfo: [
     { id: "situation", text: "What's the situation?", prompt: "Try to match your responses according to the situation", priority: 0.8 },
     { id: "previousTopics", text: "What topics have you chatted about before?", prompt: "Build on previous conversations", priority: 0.7 }
+  ],
+  references: [
+    "movies and TV shows",
+    "music and songs",
+    "books and poems",
+    "historical events",
+    "cultural references",
+    "sports",
+    "technology",
+    "food and cuisine"
   ]
 };
+
+// ... keep existing code (exports and other configurations)

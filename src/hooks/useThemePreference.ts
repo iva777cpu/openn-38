@@ -17,6 +17,13 @@ export const useThemePreference = () => {
   useEffect(() => {
     const initializeTheme = async () => {
       try {
+        // Set initial theme immediately from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        const shouldBeDark = savedTheme === 'dark';
+        setIsDarkMode(shouldBeDark);
+        document.documentElement.classList.toggle('dark', shouldBeDark);
+
+        // Then check user preferences from database
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: preferences } = await supabase
@@ -26,10 +33,10 @@ export const useThemePreference = () => {
             .maybeSingle();
 
           if (preferences) {
-            const shouldBeDark = preferences.theme === 'dark';
-            setIsDarkMode(shouldBeDark);
-            document.documentElement.classList.toggle('dark', shouldBeDark);
-            localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
+            const dbTheme = preferences.theme === 'dark';
+            setIsDarkMode(dbTheme);
+            document.documentElement.classList.toggle('dark', dbTheme);
+            localStorage.setItem('theme', dbTheme ? 'dark' : 'light');
           }
         }
       } catch (error) {
@@ -37,15 +44,6 @@ export const useThemePreference = () => {
       }
     };
 
-    // Set initial theme immediately from localStorage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      const shouldBeDark = savedTheme === 'dark';
-      setIsDarkMode(shouldBeDark);
-      document.documentElement.classList.toggle('dark', shouldBeDark);
-    }
-
-    // Then fetch from database
     initializeTheme();
   }, []);
 

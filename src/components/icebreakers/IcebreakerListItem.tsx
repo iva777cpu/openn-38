@@ -34,17 +34,16 @@ export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
           ? "bg-[#47624B] text-[#E5D4BC]"
           : "bg-[#47624B] dark:bg-[#2D4531] text-[#E5D4BC] hover:bg-[#3d5941] dark:hover:bg-[#3d5941]"
       }`}
-      onClick={() => onToggleSelection(message.id)}
     >
       <div className="flex items-start gap-2">
-        <div onClick={handleCheckboxClick}>
+        <div onClick={handleCheckboxClick} className="cursor-pointer">
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onToggleSelection(message.id)}
             className="first-time-checkbox mt-1"
           />
         </div>
-        <p className="flex-1">{message.message_text}</p>
+        <p className="flex-1" onClick={() => onToggleSelection(message.id)}>{message.message_text}</p>
       </div>
     </Card>
   );
