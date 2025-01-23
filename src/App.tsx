@@ -1,33 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import { Toaster } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuthState } from "@/hooks/useAuthState";
 import "./App.css";
 
 function App() {
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkInitialAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsAuthenticated(!!session);
-      } finally {
-        setIsAuthChecking(false);
-      }
-    };
-    
-    checkInitialAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { isAuthChecking, isAuthenticated, handleDeleteAccount } = useAuthState();
 
   if (isAuthChecking) {
     return (
@@ -64,7 +43,7 @@ function App() {
             path="/" 
             element={
               isAuthenticated ? (
-                <Index />
+                <Index onDeleteAccount={handleDeleteAccount} />
               ) : (
                 <Navigate to="/login" replace />
               )
