@@ -70,7 +70,7 @@ export const PrivacyPolicyDialog: React.FC<PrivacyPolicyDialogProps> = ({
           <section>
             <h3 className="font-semibold mb-2">6. Contact Information</h3>
             <p>For privacy-related inquiries, please contact us at:</p>
-            <p>Email: support@yourdomain.com</p>
+            <p>Email: novatica78@gmail.com</p>
           </section>
         </div>
 

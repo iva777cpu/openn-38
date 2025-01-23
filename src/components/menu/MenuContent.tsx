@@ -38,7 +38,7 @@ export const MenuContent = ({
         onViewSavedMessages={onViewSavedMessages}
       />
       
-      <div className="flex-1">
+      <div className="flex-1 space-y-4">
         <Button
           variant="ghost"
           className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
@@ -68,20 +68,22 @@ export const MenuContent = ({
 
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
-          onClick={onLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
-
-        <Button
-          variant="ghost"
           className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] opacity-60"
           onClick={() => setShowDeleteDialog(true)}
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Account
+        </Button>
+      </div>
+
+      <div className="mt-auto pt-4 border-t border-[#1A2A1D]">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          onClick={onLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
         </Button>
       </div>
 
