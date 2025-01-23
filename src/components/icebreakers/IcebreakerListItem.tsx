@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
 
 interface SavedMessage {
   id: string;
@@ -36,14 +37,12 @@ export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
       }`}
     >
       <div className="flex items-start gap-2">
-        <div onClick={handleCheckboxClick} className="cursor-pointer">
-          <Checkbox
-            checked={isSelected}
-            onCheckedChange={() => onToggleSelection(message.id)}
-            className="first-time-checkbox mt-1"
-          />
-        </div>
-        <p className="flex-1" onClick={() => onToggleSelection(message.id)}>{message.message_text}</p>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => onToggleSelection(message.id)}
+          className="first-time-checkbox mt-1 border-[#2D4531] dark:border-[#E5D4BC]"
+        />
+        <p className="flex-1">{message.message_text}</p>
       </div>
     </Card>
   );

@@ -62,22 +62,20 @@
 
   /* Auth UI Overrides */
   .supabase-auth-ui_ui-message {
-    background-color: #2D4531 !important;
-    color: #E5D4BC !important;
+    @apply bg-[#2D4531] text-[#E5D4BC];
   }
 
   .auth-message {
-    background-color: #2D4531 !important;
-    color: #E5D4BC !important;
+    @apply bg-[#2D4531] text-[#E5D4BC];
   }
 
   /* Checkbox Overrides */
   html:not(.dark) .first-time-checkbox {
-    @apply border-[#47624B] bg-[#47624B];
+    @apply border-[#2D4531] bg-[#47624B];
   }
 
   html:not(.dark) .first-time-checkbox[data-state="checked"] {
-    @apply bg-[#47624B] border-[#47624B];
+    @apply bg-[#47624B] border-[#2D4531];
   }
 
   html:not(.dark) .first-time-checkbox[data-state="checked"] svg {
@@ -101,7 +99,7 @@
 
   /* First Time Checkbox Styles */
   .first-time-checkbox {
-    @apply border-[#47624B] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
+    @apply border-[#2D4531] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
   }
 
   html.dark .first-time-checkbox {
@@ -144,15 +142,6 @@
 
   input {
     @apply focus:outline-none focus:ring-0 focus:border-none focus:shadow-none border-none ring-0 shadow-none;
-  }
-
-  /* Checkbox Override for Light Mode */
-  html:not(.dark) [data-state=checked].first-time-checkbox {
-    @apply bg-[#47624B] border-[#47624B];
-  }
-
-  html:not(.dark) [data-state=checked].first-time-checkbox [data-state=checked] {
-    @apply text-[#E5D4BC];
   }
 
   /* Auth Background Override */
