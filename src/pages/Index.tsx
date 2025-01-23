@@ -11,9 +11,10 @@ import { useProfileManagement } from "@/hooks/useProfileManagement";
 
 interface IndexProps {
   onDeleteAccount: () => Promise<void>;
+  onSignOut: () => Promise<void>;
 }
 
-export default function Index({ onDeleteAccount }: IndexProps) {
+export default function Index({ onDeleteAccount, onSignOut }: IndexProps) {
   const navigate = useNavigate();
   useAuthCheck();
   
@@ -35,7 +36,7 @@ export default function Index({ onDeleteAccount }: IndexProps) {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      await onSignOut();
     } catch (error: any) {
       console.error('Logout error:', error);
     } finally {
