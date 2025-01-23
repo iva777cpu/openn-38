@@ -7,12 +7,14 @@ interface IcebreakerSectionProps {
   userProfile: Record<string, string>;
   onIcebreakersUpdate: (icebreakers: string[]) => void;
   isFirstTime: boolean;
+  checkAuth: (action: () => void) => Promise<void>;
 }
 
 export const IcebreakerSection: React.FC<IcebreakerSectionProps> = ({
   userProfile,
   onIcebreakersUpdate,
   isFirstTime,
+  checkAuth,
 }) => {
   const { savedIcebreakers, icebreakers, setIcebreakers, toggleIcebreaker, clearAllIcebreakers } = useIcebreakers();
 
@@ -37,7 +39,7 @@ export const IcebreakerSection: React.FC<IcebreakerSectionProps> = ({
       <IcebreakerList 
         icebreakers={icebreakers}
         savedIcebreakers={savedIcebreakers}
-        onToggleSave={toggleIcebreaker}
+        onToggleSave={(icebreaker) => checkAuth(() => toggleIcebreaker(icebreaker))}
       />
     </>
   );

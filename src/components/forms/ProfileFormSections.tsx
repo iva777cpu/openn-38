@@ -7,9 +7,10 @@ import { GeneralInfoForm } from "./GeneralInfoForm";
 interface ProfileFormSectionsProps {
   userProfile: Record<string, string>;
   onUpdate: (field: string, value: string) => void;
+  checkAuth: (action: () => void) => Promise<void>;
 }
 
-export const ProfileFormSections = ({ userProfile, onUpdate }: ProfileFormSectionsProps) => {
+export const ProfileFormSections = ({ userProfile, onUpdate, checkAuth }: ProfileFormSectionsProps) => {
   return (
     <>
       <FormSection title="About You">
