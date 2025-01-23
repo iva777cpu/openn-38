@@ -6,7 +6,7 @@ import { useAuthState } from "@/hooks/useAuthState";
 import "./App.css";
 
 function App() {
-  const { isAuthChecking, isAuthenticated, handleDeleteAccount } = useAuthState();
+  const { isAuthChecking, isAuthenticated, handleSignOut, handleDeleteAccount } = useAuthState();
 
   if (isAuthChecking) {
     return (
@@ -43,7 +43,7 @@ function App() {
             path="/" 
             element={
               isAuthenticated ? (
-                <Index onDeleteAccount={handleDeleteAccount} />
+                <Index onDeleteAccount={handleDeleteAccount} onSignOut={handleSignOut} />
               ) : (
                 <Navigate to="/login" replace />
               )

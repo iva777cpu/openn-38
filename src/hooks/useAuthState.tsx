@@ -41,6 +41,25 @@ export const useAuthState = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const handleSignOut = async () => {
+    try {
+      // First clear all local storage data
+      localStorage.clear();
+      
+      // Then attempt to sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error during sign out:", error);
+        // Even if there's an error, we want to force the signed out state
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      // Force signed out state even if the API call fails
+      setIsAuthenticated(false);
+    }
+  };
+
   const handleDeleteAccount = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -59,7 +78,7 @@ export const useAuthState = () => {
         return;
       }
 
-      await supabase.auth.signOut();
+      await handleSignOut();
       toast.success("Account successfully deleted");
     } catch (error) {
       console.error("Error in account deletion:", error);
@@ -70,6 +89,7 @@ export const useAuthState = () => {
   return {
     isAuthChecking,
     isAuthenticated,
+    handleSignOut,
     handleDeleteAccount
   };
 };
