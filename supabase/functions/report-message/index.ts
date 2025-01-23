@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Openera <onboarding@resend.dev>",
-        to: ["Novatica78@gmail.com"],
+        to: ["novatica78@gmail.com"],
         subject: "Message Reported in Openera",
         html: `
           <h2>A message has been reported in Openera</h2>
@@ -42,17 +42,18 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    const responseData = await res.json();
+    console.log("Resend API response:", responseData);
+
     if (res.ok) {
-      const data = await res.json();
-      return new Response(JSON.stringify(data), {
+      return new Response(JSON.stringify(responseData), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } else {
-      const error = await res.text();
-      console.error("Resend API error:", error);
-      return new Response(JSON.stringify({ error }), {
-        status: 400,
+      console.error("Resend API error:", responseData);
+      return new Response(JSON.stringify({ error: responseData }), {
+        status: res.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
