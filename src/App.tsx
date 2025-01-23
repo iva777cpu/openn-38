@@ -20,30 +20,14 @@ function App() {
         if (error) {
           console.error("Initial auth check error:", error);
           handleAuthError(error);
-          setIsAuthChecking(false);
           return;
         }
 
-        if (!session) {
-          setIsAuthenticated(false);
-          setIsAuthChecking(false);
-          return;
-        }
-
-        // Verify the session is still valid
-        const { error: verifyError } = await supabase.auth.getUser();
-        if (verifyError) {
-          console.error("Session verification error:", verifyError);
-          handleAuthError(verifyError);
-          setIsAuthChecking(false);
-          return;
-        }
-
-        setIsAuthenticated(true);
-        setIsAuthChecking(false);
+        setIsAuthenticated(!!session);
       } catch (error) {
         console.error("Failed to check initial auth status:", error);
         handleAuthError(error);
+      } finally {
         setIsAuthChecking(false);
       }
     };
@@ -51,12 +35,8 @@ function App() {
     const handleAuthError = async (error: any) => {
       setIsAuthenticated(false);
       if (error?.status === 403) {
-        // Clear all Supabase-related items from localStorage
-        for (const key of Object.keys(localStorage)) {
-          if (key.startsWith('sb-')) {
-            localStorage.removeItem(key);
-          }
-        }
+        // Clear local storage to remove any invalid tokens
+        window.localStorage.removeItem('supabase.auth.token');
         try {
           await supabase.auth.signOut();
         } catch (signOutError) {
