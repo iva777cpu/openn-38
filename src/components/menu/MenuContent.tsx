@@ -33,7 +33,7 @@ export const MenuContent = ({
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-6">
       <div className="space-y-4">
         <MenuActions
           onNewProfile={onNewProfile}

@@ -46,6 +46,12 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
 
+  // Wrap handleSelectProfile to clear icebreakers when switching profiles
+  const handleProfileSelect = (profile: any) => {
+    clearIcebreakers(); // Clear icebreakers before switching profiles
+    handleSelectProfile(profile);
+  };
+
   const contentProps = {
     currentProfile,
     saveDialogOpen,
@@ -70,11 +76,12 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
         showSavedIcebreakers={showSavedIcebreakers}
         setShowProfiles={setShowProfiles}
         setShowSavedIcebreakers={setShowSavedIcebreakers}
-        handleSelectProfile={handleSelectProfile}
+        handleSelectProfile={handleProfileSelect}
         contentProps={contentProps}
         persistedIcebreakers={persistedIcebreakers}
         handleIcebreakersUpdate={handleIcebreakersUpdate}
         clearIcebreakers={clearIcebreakers}
+        checkAuth={checkAuth}
       />
     </ProfileStateManager>
   );
