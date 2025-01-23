@@ -20,11 +20,13 @@ function App() {
         if (error) {
           console.error("Initial auth check error:", error);
           handleAuthError(error);
+          setIsAuthChecking(false);
           return;
         }
 
         if (!session) {
           setIsAuthenticated(false);
+          setIsAuthChecking(false);
           return;
         }
 
@@ -33,14 +35,15 @@ function App() {
         if (verifyError) {
           console.error("Session verification error:", verifyError);
           handleAuthError(verifyError);
+          setIsAuthChecking(false);
           return;
         }
 
         setIsAuthenticated(true);
+        setIsAuthChecking(false);
       } catch (error) {
         console.error("Failed to check initial auth status:", error);
         handleAuthError(error);
-      } finally {
         setIsAuthChecking(false);
       }
     };
