@@ -5,7 +5,11 @@ import { ProfileManager } from "@/components/ProfileManager";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
 import { useProfileManagement } from "@/hooks/useProfileManagement";
 
-const Index = () => {
+interface IndexProps {
+  onDeleteAccount: () => Promise<void>;
+}
+
+const Index = ({ onDeleteAccount }: IndexProps) => {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showSavedIcebreakers, setShowSavedIcebreakers] = useState(false);
@@ -66,6 +70,7 @@ const Index = () => {
           setMenuOpen(false);
         }}
         onLogout={handleLogout}
+        onDeleteAccount={onDeleteAccount}
         open={menuOpen}
         onOpenChange={setMenuOpen}
       />
