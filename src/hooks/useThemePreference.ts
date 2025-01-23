@@ -9,6 +9,7 @@ export const useThemePreference = () => {
       return savedTheme === 'dark';
     }
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    localStorage.setItem('theme', systemPrefersDark ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', systemPrefersDark);
     return systemPrefersDark;
   });
@@ -29,10 +30,20 @@ export const useThemePreference = () => {
             setIsDarkMode(shouldBeDark);
             document.documentElement.classList.toggle('dark', shouldBeDark);
             localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
+          } else {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+              const shouldBeDark = savedTheme === 'dark';
+              setIsDarkMode(shouldBeDark);
+              document.documentElement.classList.toggle('dark', shouldBeDark);
+            }
           }
         }
       } catch (error) {
         console.error('Error initializing theme:', error);
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setIsDarkMode(savedTheme === 'dark');
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
       }
     };
 

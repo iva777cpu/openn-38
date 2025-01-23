@@ -5,31 +5,13 @@ import { useAuthSetup } from "@/hooks/useAuthSetup";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
 
 export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Set a timeout to ensure minimum loading time for UI consistency
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 bg-[#E5D4BC] flex items-center justify-center">
-        <span className="text-[#2D4531] text-lg font-medium">Loading...</span>
-      </div>
-    );
-  }
 
   return (
-    <div className="fixed inset-0 bg-[#E5D4BC]">
+    <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#2D4531] p-8 rounded-lg shadow-lg relative">
           <Button
