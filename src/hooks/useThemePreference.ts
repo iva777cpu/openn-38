@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useThemePreference = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Initialize from localStorage first for instant theme application
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   useEffect(() => {
     const initializeTheme = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          console.log("Fetching theme preference for user:", user.id);
-          
           const { data: preferences, error } = await supabase
             .from('user_preferences')
             .select('theme')
@@ -23,19 +28,17 @@ export const useThemePreference = () => {
           }
 
           if (preferences) {
-            console.log("Found user theme preference:", preferences.theme);
             const shouldBeDark = preferences.theme === 'dark';
             setIsDarkMode(shouldBeDark);
             document.documentElement.classList.toggle('dark', shouldBeDark);
+            localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
           } else {
-            // If no preference exists, use system preference
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            console.log("Using system theme preference:", systemPrefersDark ? 'dark' : 'light');
             setIsDarkMode(systemPrefersDark);
             document.documentElement.classList.toggle('dark', systemPrefersDark);
+            localStorage.setItem('theme', systemPrefersDark ? 'dark' : 'light');
             
-            // Save the system preference
-            const { error: upsertError } = await supabase
+            await supabase
               .from('user_preferences')
               .upsert({
                 user_id: user.id,
@@ -44,17 +47,7 @@ export const useThemePreference = () => {
               }, {
                 onConflict: 'user_id'
               });
-
-            if (upsertError) {
-              console.error("Error saving initial theme preference:", upsertError);
-            }
           }
-        } else {
-          // If no user is logged in, use system preference
-          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          console.log("No user logged in, using system theme:", systemPrefersDark ? 'dark' : 'light');
-          setIsDarkMode(systemPrefersDark);
-          document.documentElement.classList.toggle('dark', systemPrefersDark);
         }
       } catch (error) {
         console.error('Error initializing theme:', error);
@@ -67,11 +60,14 @@ export const useThemePreference = () => {
   const toggleTheme = async () => {
     try {
       const newTheme = !isDarkMode;
+      // Update localStorage first for instant feedback
+      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+      setIsDarkMode(newTheme);
+      document.documentElement.classList.toggle('dark', newTheme);
+
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (user) {
-        console.log("Saving theme preference:", newTheme ? 'dark' : 'light');
-        const { error } = await supabase
+        await supabase
           .from('user_preferences')
           .upsert({
             user_id: user.id,
@@ -80,15 +76,7 @@ export const useThemePreference = () => {
           }, {
             onConflict: 'user_id'
           });
-
-        if (error) {
-          console.error("Error saving theme preference:", error);
-          return;
-        }
       }
-
-      setIsDarkMode(newTheme);
-      document.documentElement.classList.toggle('dark', newTheme);
     } catch (error) {
       console.error('Error toggling theme:', error);
     }

@@ -41,7 +41,7 @@ export const MenuContent = ({
       <div className="flex-1 space-y-4">
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] mb-4"
           onClick={onToggleTheme}
         >
           {isDarkMode ? (
@@ -59,11 +59,11 @@ export const MenuContent = ({
 
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] text-[14px]"
           onClick={() => setShowPrivacyPolicy(true)}
         >
           <FileText className="mr-2 h-4 w-4" />
-          <span className="text-[13px]">Privacy Policy</span>
+          Privacy Policy
         </Button>
 
         <Button
