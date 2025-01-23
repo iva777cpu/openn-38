@@ -48,13 +48,24 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
     setShowSavedIcebreakers(false);
   };
 
+  const handleViewSection = (section: 'profiles' | 'icebreakers') => {
+    if (section === 'profiles') {
+      setShowSavedIcebreakers(false);
+      setShowProfiles(true);
+    } else {
+      setShowProfiles(false);
+      setShowSavedIcebreakers(true);
+    }
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen relative">
       <SideMenu
         onNewProfile={handleNewProfile}
         onSaveProfile={() => checkAuth(() => setSaveDialogOpen(true))}
-        onViewSavedMessages={() => setShowSavedIcebreakers(true)}
-        onViewProfiles={() => setShowProfiles(true)}
+        onViewSavedMessages={() => handleViewSection('icebreakers')}
+        onViewProfiles={() => handleViewSection('profiles')}
         onLogout={onSignOut}
         onDeleteAccount={onDeleteAccount}
         open={isMenuOpen}
@@ -65,7 +76,10 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
       {showProfiles ? (
         <SavedProfiles 
           onBack={() => setShowProfiles(false)}
-          onSelectProfile={handleSelectProfile}
+          onSelectProfile={(profile) => {
+            handleSelectProfile(profile);
+            setShowProfiles(false);
+          }}
         />
       ) : showSavedIcebreakers ? (
         <SavedIcebreakers 

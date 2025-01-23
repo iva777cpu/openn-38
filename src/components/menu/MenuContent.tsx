@@ -71,15 +71,6 @@ export const MenuContent = ({
 
         <Button
           variant="ghost"
-          className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${!isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
-          onClick={onLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
-
-        <Button
-          variant="ghost"
           className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
           onClick={() => window.location.href = '/login'}
         >
@@ -89,11 +80,20 @@ export const MenuContent = ({
 
         <Button
           variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] opacity-60"
+          className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${!isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
           onClick={() => setShowDeleteDialog(true)}
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete Account
+        </Button>
+
+        <Button
+          variant="ghost"
+          className={`w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] ${!isAuthenticated ? 'opacity-60 pointer-events-none' : ''}`}
+          onClick={onLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
         </Button>
       </div>
 

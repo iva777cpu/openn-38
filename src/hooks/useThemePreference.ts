@@ -3,12 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useThemePreference = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Initialize from localStorage first for instant theme application
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
       return savedTheme === 'dark';
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', systemPrefersDark);
+    return systemPrefersDark;
   });
 
   useEffect(() => {
@@ -16,37 +18,17 @@ export const useThemePreference = () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: preferences, error } = await supabase
+          const { data: preferences } = await supabase
             .from('user_preferences')
             .select('theme')
             .eq('user_id', user.id)
             .maybeSingle();
-
-          if (error) {
-            console.error("Error fetching theme preferences:", error);
-            return;
-          }
 
           if (preferences) {
             const shouldBeDark = preferences.theme === 'dark';
             setIsDarkMode(shouldBeDark);
             document.documentElement.classList.toggle('dark', shouldBeDark);
             localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
-          } else {
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setIsDarkMode(systemPrefersDark);
-            document.documentElement.classList.toggle('dark', systemPrefersDark);
-            localStorage.setItem('theme', systemPrefersDark ? 'dark' : 'light');
-            
-            await supabase
-              .from('user_preferences')
-              .upsert({
-                user_id: user.id,
-                theme: systemPrefersDark ? 'dark' : 'light',
-                updated_at: new Date().toISOString()
-              }, {
-                onConflict: 'user_id'
-              });
           }
         }
       } catch (error) {
@@ -60,7 +42,6 @@ export const useThemePreference = () => {
   const toggleTheme = async () => {
     try {
       const newTheme = !isDarkMode;
-      // Update localStorage first for instant feedback
       localStorage.setItem('theme', newTheme ? 'dark' : 'light');
       setIsDarkMode(newTheme);
       document.documentElement.classList.toggle('dark', newTheme);
