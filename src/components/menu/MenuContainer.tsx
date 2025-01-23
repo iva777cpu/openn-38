@@ -40,6 +40,7 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
       </div>
       <SheetContent className="bg-[#47624B] dark:bg-[#2D4531] border-[#1A2A1D]">
         <MenuContent
+          isDarkMode={isDarkMode}
           onNewProfile={handleNewProfile}
           onSaveProfile={() => {
             onSaveProfile();
@@ -53,13 +54,11 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
             onViewSavedMessages();
             onOpenChange(false);
           }}
+          onToggleTheme={toggleTheme}
           onLogout={() => {
             onLogout();
             onOpenChange(false);
           }}
-          onOpenChange={onOpenChange}
-          isDarkMode={isDarkMode}
-          onToggleTheme={toggleTheme}
         />
       </SheetContent>
     </Sheet>

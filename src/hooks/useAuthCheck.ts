@@ -9,8 +9,13 @@ export const useAuthCheck = () => {
     const checkAuth = async () => {
       try {
         console.log("Checking authentication status...");
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
         
+        if (error) {
+          console.error("Auth check error:", error);
+          throw error;
+        }
+
         if (!session) {
           console.log("No active session, redirecting to login");
           navigate("/login");
@@ -26,7 +31,8 @@ export const useAuthCheck = () => {
     
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event);
       if (!session) {
         navigate("/login");
       }
