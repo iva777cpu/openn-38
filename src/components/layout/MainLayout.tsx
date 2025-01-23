@@ -30,14 +30,8 @@ export const MainLayout = ({ onDeleteAccount, onSignOut }: MainLayoutProps) => {
   } = useProfileManagement();
 
   const handleLogout = async () => {
-    try {
-      await onSignOut();
-    } catch (error: any) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.clear();
-      navigate("/login");
-    }
+    await onSignOut();
+    navigate("/login");
   };
 
   const handleNewProfile = () => {
@@ -46,29 +40,13 @@ export const MainLayout = ({ onDeleteAccount, onSignOut }: MainLayoutProps) => {
     setShowSavedIcebreakers(false);
   };
 
-  const handleSaveProfile = () => {
-    setSaveDialogOpen(true);
-    setShowProfiles(false);
-    setShowSavedIcebreakers(false);
-  };
-
-  const handleViewSavedMessages = () => {
-    setShowProfiles(false);
-    setShowSavedIcebreakers(true);
-  };
-
-  const handleViewProfiles = () => {
-    setShowProfiles(true);
-    setShowSavedIcebreakers(false);
-  };
-
   return (
     <div className="min-h-screen relative">
       <SideMenu
         onNewProfile={handleNewProfile}
-        onSaveProfile={handleSaveProfile}
-        onViewSavedMessages={handleViewSavedMessages}
-        onViewProfiles={handleViewProfiles}
+        onSaveProfile={() => setSaveDialogOpen(true)}
+        onViewSavedMessages={() => setShowSavedIcebreakers(true)}
+        onViewProfiles={() => setShowProfiles(true)}
         onLogout={handleLogout}
         onDeleteAccount={onDeleteAccount}
         open={isMenuOpen}
@@ -97,7 +75,7 @@ export const MainLayout = ({ onDeleteAccount, onSignOut }: MainLayoutProps) => {
           handleSaveChanges={handleSaveChanges}
           setShowProfiles={setShowProfiles}
           setShowSavedIcebreakers={setShowSavedIcebreakers}
-          onSaveProfile={handleSaveProfile}
+          onSaveProfile={() => setSaveDialogOpen(true)}
           hasChanges={hasChanges}
           selectedProfileName={selectedProfileName}
         />

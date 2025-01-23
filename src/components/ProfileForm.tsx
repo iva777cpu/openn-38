@@ -1,8 +1,6 @@
 import React from "react";
 import { FormSection } from "./forms/FormSection";
-import { UserTraitsForm } from "./forms/UserTraitsForm";
-import { TargetTraitsForm } from "./forms/TargetTraitsForm";
-import { GeneralInfoForm } from "./forms/GeneralInfoForm";
+import { ProfileFormSections } from "./forms/ProfileFormSections";
 import { IcebreakerSection } from "./forms/IcebreakerSection";
 
 interface ProfileFormProps {
@@ -17,25 +15,15 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   userProfile, 
   onUpdate,
   onIcebreakersUpdate,
-  isFirstTime
+  isFirstTime,
+  persistedIcebreakers
 }) => {
   return (
     <section className="w-full space-y-3">
-      <FormSection title="About You">
-        <UserTraitsForm 
-          userProfile={userProfile} 
-          onUpdate={onUpdate}
-          includeRelationship={true}
-        />
-      </FormSection>
-
-      <FormSection title="About Them">
-        <TargetTraitsForm userProfile={userProfile} onUpdate={onUpdate} />
-      </FormSection>
-
-      <FormSection title="General Information">
-        <GeneralInfoForm userProfile={userProfile} onUpdate={onUpdate} />
-      </FormSection>
+      <ProfileFormSections 
+        userProfile={userProfile}
+        onUpdate={onUpdate}
+      />
 
       <FormSection title="Ice Breakers">
         <IcebreakerSection 

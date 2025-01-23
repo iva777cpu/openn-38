@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { questions } from "@/utils/questions";
 import { toast } from "sonner";
+import { useIcebreakerValidation } from "./useIcebreakerValidation";
 
 export const useIcebreakerGeneration = (
   userProfile: Record<string, string>,
@@ -9,6 +9,7 @@ export const useIcebreakerGeneration = (
   onIcebreakersGenerated: (icebreakers: string[]) => void
 ) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { validateAndProcessFields } = useIcebreakerValidation();
 
   const generateIcebreakers = async () => {
     console.log('Starting icebreaker generation with profile:', userProfile);
@@ -16,36 +17,7 @@ export const useIcebreakerGeneration = (
     
     setIsLoading(true);
     try {
-      // Only include filled fields to reduce token usage
-      const filledFields = Object.entries(userProfile)
-        .filter(([_, value]) => value && value.toString().trim() !== '')
-        .reduce((acc, [key, value]) => {
-          // Find the question definition that matches this field
-          const question = [...questions.userTraits, ...questions.targetTraits, ...questions.generalInfo]
-            .find(q => q.id === key);
-          
-          if (question) {
-            console.log(`Processing field ${key}:`, {
-              value: value.trim(),
-              prompt: question.prompt,
-              priority: question.priority,
-              questionText: question.text
-            });
-            
-            return {
-              ...acc,
-              [key]: {
-                value: value.trim(),
-                prompt: question.prompt,
-                priority: question.priority,
-                questionText: question.text
-              }
-            };
-          }
-          console.log(`Warning: No question definition found for field ${key}`);
-          return acc;
-        }, {});
-
+      const filledFields = validateAndProcessFields(userProfile);
       console.log('Filtered and processed fields:', JSON.stringify(filledFields, null, 2));
 
       const { data, error } = await supabase.functions.invoke('generate-icebreaker', {
@@ -55,10 +27,7 @@ export const useIcebreakerGeneration = (
         }
       });
 
-      if (error) {
-        console.error('Error from Supabase function:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       console.log('Raw AI response:', data);
 
