@@ -29,8 +29,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Openera <churlly2018@gmail.com>",
-        to: ["churlly2018@gmail.com"],
+        from: "Openera <onboarding@resend.dev>",
+        to: ["Novatica78@gmail.com"],
         subject: "Message Reported in Openera",
         html: `
           <h2>A message has been reported in Openera</h2>
