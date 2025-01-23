@@ -10,6 +10,7 @@ interface MenuContainerProps {
   onViewSavedMessages: () => void;
   onViewProfiles: () => void;
   onLogout: () => void;
+  onDeleteAccount: () => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -20,6 +21,7 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
   onViewSavedMessages,
   onViewProfiles,
   onLogout,
+  onDeleteAccount,
   open,
   onOpenChange,
 }) => {
@@ -59,6 +61,7 @@ export const MenuContainer: React.FC<MenuContainerProps> = ({
             onLogout();
             onOpenChange(false);
           }}
+          onDeleteAccount={onDeleteAccount}
         />
       </SheetContent>
     </Sheet>

@@ -7,6 +7,7 @@ interface SideMenuProps {
   onViewSavedMessages: () => void;
   onViewProfiles: () => void;
   onLogout: () => void;
+  onDeleteAccount: () => Promise<void>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
