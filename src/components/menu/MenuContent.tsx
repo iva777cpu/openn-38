@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, LogOut, Trash2 } from "lucide-react";
+import { Sun, Moon, LogOut, Trash2, FileText } from "lucide-react";
 import { useState } from "react";
 import { DeleteAccountDialog } from "../DeleteAccountDialog";
+import { PrivacyPolicyDialog } from "../PrivacyPolicyDialog";
 import { MenuActions } from "./MenuActions";
 
 interface MenuContentProps {
@@ -26,6 +27,7 @@ export const MenuContent = ({
   onDeleteAccount,
 }: MenuContentProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
@@ -54,6 +56,25 @@ export const MenuContent = ({
             </>
           )}
         </Button>
+
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          onClick={() => setShowPrivacyPolicy(true)}
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          <span className="text-[13px]">Privacy Policy</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
+          onClick={onLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </Button>
+
         <Button
           variant="ghost"
           className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D] opacity-60"
@@ -64,17 +85,6 @@ export const MenuContent = ({
         </Button>
       </div>
 
-      <div className="mt-auto mb-4">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-[#EDEDDD] dark:text-[#E5D4BC] hover:bg-[#1A2A1D]"
-          onClick={onLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
-      </div>
-
       <DeleteAccountDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
@@ -82,6 +92,11 @@ export const MenuContent = ({
           await onDeleteAccount();
           setShowDeleteDialog(false);
         }}
+      />
+
+      <PrivacyPolicyDialog
+        open={showPrivacyPolicy}
+        onOpenChange={setShowPrivacyPolicy}
       />
     </div>
   );
