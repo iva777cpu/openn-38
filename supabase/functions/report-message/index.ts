@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,30 +17,28 @@ serve(async (req) => {
     const { message } = await req.json();
     console.log("Received message to report:", message);
 
-    const client = new SmtpClient();
-    console.log("Initializing SMTP client...");
-
-    // Configure connection
-    await client.connectTLS({
-      hostname: "mail.maneblod.com",
-      port: 465,
-      username: "manebl@maneblod.com",
-      password: Deno.env.get("SMTP_PASSWORD") || "",
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Openera <onboarding@resend.dev>",
+        to: "manebl@maneblod.com",
+        subject: "Reported Message from Openera",
+        html: `<p>A message has been reported:</p><p>${message}</p>`,
+      }),
     });
-    console.log("SMTP connection established");
 
-    // Send the email
-    await client.send({
-      from: "manebl@maneblod.com",
-      to: "manebl@maneblod.com",
-      subject: "Reported Message from Openera",
-      content: `A message has been reported:\n\n${message}`,
-    });
-    console.log("Email sent successfully");
+    if (!res.ok) {
+      const error = await res.text();
+      console.error("Error from Resend API:", error);
+      throw new Error(`Resend API error: ${error}`);
+    }
 
-    // Close the connection
-    await client.close();
-    console.log("SMTP connection closed");
+    const data = await res.json();
+    console.log("Email sent successfully:", data);
 
     return new Response(
       JSON.stringify({ message: "Report sent successfully" }),
