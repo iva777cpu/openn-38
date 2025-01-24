@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
-const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
+const SMTP_PASSWORD = Deno.env.get("SMTP_PASSWORD");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,35 +19,30 @@ const handler = async (req: Request): Promise<Response> => {
     const { message } = await req.json();
     console.log("Sending report email for message:", message);
 
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${SENDGRID_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        personalizations: [{
-          to: [{ email: "churlly2018@gmail.com" }]
-        }],
-        from: { email: "noreply@sendgrid.net" },  // Using SendGrid's domain
-        subject: "Message Reported in Openera",
-        content: [{
-          type: "text/html",
-          value: `
-            <h2>A message has been reported in Openera</h2>
-            <p>Here's the reported message:</p>
-            <blockquote style="background: #f9f9f9; border-left: 4px solid #ccc; margin: 1.5em 10px; padding: 1em 10px;">
-              ${message}
-            </blockquote>
-          `
-        }]
-      })
+    const client = new SmtpClient();
+
+    await client.connectTLS({
+      hostname: "mail.maneblod.com",
+      port: 465,
+      username: "manebl@maneblod.com",
+      password: SMTP_PASSWORD!,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`SendGrid API error: ${error}`);
-    }
+    await client.send({
+      from: "manebl@maneblod.com",
+      to: "manebl@maneblod.com",
+      subject: "Message Reported in Openera",
+      content: `
+        <h2>A message has been reported in Openera</h2>
+        <p>Here's the reported message:</p>
+        <blockquote style="background: #f9f9f9; border-left: 4px solid #ccc; margin: 1.5em 10px; padding: 1em 10px;">
+          ${message}
+        </blockquote>
+      `,
+      html: true,
+    });
+
+    await client.close();
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
