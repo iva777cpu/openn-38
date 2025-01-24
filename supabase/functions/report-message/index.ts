@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SMTP_HOSTNAME = Deno.env.get("SMTP_HOSTNAME");
+const SMTP_PORT = parseInt(Deno.env.get("SMTP_PORT") || "587");
+const SMTP_USERNAME = Deno.env.get("SMTP_USERNAME");
+const SMTP_PASSWORD = Deno.env.get("SMTP_PASSWORD");
+const TO_EMAIL = Deno.env.get("TO_EMAIL");
+const FROM_EMAIL = Deno.env.get("FROM_EMAIL");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,41 +28,35 @@ const handler = async (req: Request): Promise<Response> => {
     const { message }: ReportRequest = await req.json();
     console.log("Sending report email for message:", message);
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "Openera <onboarding@resend.dev>",
-        to: ["novatica78@gmail.com"],
-        subject: "Message Reported in Openera",
-        html: `
-          <h2>A message has been reported in Openera</h2>
-          <p>Here's the reported message:</p>
-          <blockquote style="background: #f9f9f9; border-left: 4px solid #ccc; margin: 1.5em 10px; padding: 1em 10px;">
-            ${message}
-          </blockquote>
-        `,
-      }),
+    const client = new SmtpClient();
+
+    await client.connectTLS({
+      hostname: SMTP_HOSTNAME!,
+      port: SMTP_PORT,
+      username: SMTP_USERNAME!,
+      password: SMTP_PASSWORD!,
     });
 
-    const responseData = await res.json();
-    console.log("Resend API response:", responseData);
+    await client.send({
+      from: FROM_EMAIL!,
+      to: TO_EMAIL!,
+      subject: "Message Reported in Openera",
+      content: `
+        <h2>A message has been reported in Openera</h2>
+        <p>Here's the reported message:</p>
+        <blockquote style="background: #f9f9f9; border-left: 4px solid #ccc; margin: 1.5em 10px; padding: 1em 10px;">
+          ${message}
+        </blockquote>
+      `,
+      html: true,
+    });
 
-    if (res.ok) {
-      return new Response(JSON.stringify(responseData), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    } else {
-      console.error("Resend API error:", responseData);
-      return new Response(JSON.stringify({ error: responseData }), {
-        status: res.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    await client.close();
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error: any) {
     console.error("Error in report-message function:", error);
     return new Response(JSON.stringify({ error: error.message }), {
