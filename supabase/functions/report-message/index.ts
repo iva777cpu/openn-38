@@ -26,7 +26,7 @@ serve(async (req) => {
     const connectConfig = {
       hostname: "mail.maneblod.com",
       port: 465,
-      username: "manebl@maneblod.com",
+      username: "_mainaccount@maneblod.com",
       password: smtpPassword,
       tls: true,
       debug: true,
@@ -34,19 +34,30 @@ serve(async (req) => {
     };
 
     try {
-      console.log("Attempting to connect to SMTP server...");
+      console.log("Attempting to connect to SMTP server with config:", {
+        hostname: connectConfig.hostname,
+        port: connectConfig.port,
+        username: connectConfig.username,
+        tls: connectConfig.tls
+      });
+      
       await client.connectTLS(connectConfig);
       console.log("Successfully connected to SMTP server");
 
       const emailContent = {
-        from: "manebl@maneblod.com",
-        to: "manebl@maneblod.com",
+        from: "_mainaccount@maneblod.com",
+        to: "churlly2018@gmail.com", // Forward to this email as shown in your screenshot
         subject: "Reported Message from Openera",
         content: `A message has been reported:\n\n${message}`,
         html: `<p>A message has been reported:</p><p>${message}</p>`,
       };
 
-      console.log("Attempting to send email...");
+      console.log("Attempting to send email with content:", {
+        from: emailContent.from,
+        to: emailContent.to,
+        subject: emailContent.subject
+      });
+      
       await client.send(emailContent);
       console.log("Email sent successfully");
 
