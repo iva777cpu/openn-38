@@ -17,17 +17,23 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { message } = await req.json();
-    console.log("Sending report email for message:", message);
+    console.log("Attempting to send report email for message:", message);
+
+    if (!SMTP_PASSWORD) {
+      throw new Error("SMTP_PASSWORD environment variable is not set");
+    }
 
     const client = new SmtpClient();
 
+    console.log("Connecting to SMTP server...");
     await client.connectTLS({
       hostname: "mail.maneblod.com",
       port: 465,
       username: "manebl@maneblod.com",
-      password: SMTP_PASSWORD!,
+      password: SMTP_PASSWORD,
     });
 
+    console.log("Sending email...");
     await client.send({
       from: "manebl@maneblod.com",
       to: "manebl@maneblod.com",
@@ -42,6 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       html: true,
     });
 
+    console.log("Email sent successfully");
     await client.close();
 
     return new Response(JSON.stringify({ success: true }), {
@@ -49,7 +56,12 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: any) {
-    console.error("Error in report-message function:", error);
+    console.error("Detailed error in report-message function:", {
+      error: error.message,
+      stack: error.stack,
+      cause: error.cause
+    });
+    
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
