@@ -46,7 +46,7 @@ serve(async (req) => {
 
       const emailContent = {
         from: "_mainaccount@maneblod.com",
-        to: "churlly2018@gmail.com", // Forward to this email as shown in your screenshot
+        to: "_mainaccount@maneblod.com",
         subject: "Reported Message from Openera",
         content: `A message has been reported:\n\n${message}`,
         html: `<p>A message has been reported:</p><p>${message}</p>`,
