@@ -24,26 +24,27 @@ serve(async (req) => {
     const client = new SmtpClient();
 
     try {
-      await client.connect({
+      console.log("Attempting SMTP connection...");
+      
+      await client.connectTLS({
         hostname: "mail.maneblod.com",
         port: 465,
         username: "_mainaccount@maneblod.com",
         password: smtpPassword,
-        tls: true,
       });
 
-      console.log("Successfully connected to SMTP server");
+      console.log("SMTP connection established, sending email...");
 
-      await client.send({
+      const emailData = {
         from: "_mainaccount@maneblod.com",
         to: "_mainaccount@maneblod.com",
         subject: "Reported Message from Openera",
         content: `A message has been reported:\n\n${message}`,
         html: `<p>A message has been reported:</p><p>${message}</p>`,
-      });
+      };
 
+      await client.send(emailData);
       console.log("Email sent successfully");
-      await client.close();
 
       return new Response(
         JSON.stringify({ message: "Report sent successfully" }),
@@ -58,6 +59,7 @@ serve(async (req) => {
     } finally {
       try {
         await client.close();
+        console.log("SMTP connection closed");
       } catch (closeError) {
         console.error("Error closing SMTP connection:", closeError);
       }
