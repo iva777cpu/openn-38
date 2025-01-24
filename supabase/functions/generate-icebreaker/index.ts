@@ -98,7 +98,7 @@ CRITICAL GUIDELINES:
 - For each trait or piece of information, use the priority value to determine how much emphasis to give it
 - Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
 - Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
-- Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}
+- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, focus on building upon existing familiarity'}
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
@@ -109,8 +109,7 @@ Context (USE ONLY THIS INFORMATION):
 ${contextString}
 
 Additional Context:
-- First time approaching: ${isFirstTime ? 'Yes' : 'No'}
-- Base priority level: ${isFirstTime ? 'High (0.8)' : 'Low (0.4)'}`;
+- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, build upon existing familiarity'}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

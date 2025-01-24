@@ -71,11 +71,11 @@
 
   /* Checkbox Overrides */
   html:not(.dark) .first-time-checkbox {
-    @apply border-[#2D4531] bg-[#47624B];
+    @apply border-[#E5D4BC] bg-[#47624B];
   }
 
   html:not(.dark) .first-time-checkbox[data-state="checked"] {
-    @apply bg-[#47624B] border-[#2D4531];
+    @apply bg-[#47624B] border-[#E5D4BC];
   }
 
   html:not(.dark) .first-time-checkbox[data-state="checked"] svg {
@@ -99,7 +99,7 @@
 
   /* First Time Checkbox Styles */
   .first-time-checkbox {
-    @apply border-[#2D4531] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
+    @apply border-[#E5D4BC] bg-[#47624B] data-[state=checked]:bg-[#47624B] data-[state=checked]:text-[#E5D4BC] font-semibold;
   }
 
   html.dark .first-time-checkbox {
