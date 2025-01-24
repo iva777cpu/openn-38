@@ -17,19 +17,26 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 }) => {
   const handleReport = async (icebreaker: string) => {
     try {
-      const { error } = await supabase.functions.invoke('report-message', {
+      console.log("Reporting message:", icebreaker);
+      
+      const { data, error } = await supabase.functions.invoke('report-message', {
         body: { message: icebreaker }
       });
 
-      if (error) throw error;
+      console.log("Response from report-message function:", { data, error });
 
-      toast.success("Message reported", {
+      if (error) {
+        console.error('Error from report-message function:', error);
+        throw error;
+      }
+
+      toast.success("Message reported successfully", {
         position: "top-center",
         duration: 2000,
       });
     } catch (error) {
       console.error('Error reporting message:', error);
-      toast.error("Failed to report message");
+      toast.error("Failed to report message. Please try again later.");
     }
   };
 

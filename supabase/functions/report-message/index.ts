@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,49 +21,35 @@ serve(async (req) => {
       throw new Error("SMTP_PASSWORD environment variable is not set");
     }
 
-    const emailBody = `
-      To: manebl@maneblod.com
-      From: manebl@maneblod.com
-      Subject: Reported Message from Openera
-      Content-Type: text/html; charset=utf-8
+    const client = new SmtpClient();
 
-      <p>A message has been reported:</p>
-      <p>${message}</p>
-    `.trim();
+    const connectConfig = {
+      hostname: "mail.maneblod.com",
+      port: 465,
+      username: "manebl@maneblod.com",
+      password: smtpPassword,
+    };
 
-    const conn = await Deno.connect({ hostname: "mail.maneblod.com", port: 465 });
-    const tlsConn = await Deno.startTls(conn, { hostname: "mail.maneblod.com" });
+    console.log("Connecting to SMTP server...");
+    await client.connectTLS(connectConfig);
+    console.log("Connected to SMTP server");
 
-    // SMTP handshake
-    await readResponse(tlsConn); // Read greeting
-    await writeCommand(tlsConn, "EHLO mail.maneblod.com\r\n");
-    await readResponse(tlsConn);
-    
-    // Authentication
-    await writeCommand(tlsConn, "AUTH LOGIN\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, btoa("manebl@maneblod.com") + "\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, btoa(smtpPassword) + "\r\n");
-    await readResponse(tlsConn);
+    const emailContent = {
+      from: "manebl@maneblod.com",
+      to: "manebl@maneblod.com",
+      subject: "Reported Message from Openera",
+      content: `A message has been reported:\n\n${message}`,
+    };
 
-    // Send email
-    await writeCommand(tlsConn, "MAIL FROM:<manebl@maneblod.com>\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, "RCPT TO:<manebl@maneblod.com>\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, "DATA\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, emailBody + "\r\n.\r\n");
-    await readResponse(tlsConn);
-    await writeCommand(tlsConn, "QUIT\r\n");
-
-    tlsConn.close();
+    console.log("Sending email...");
+    await client.send(emailContent);
     console.log("Email sent successfully");
+
+    await client.close();
 
     return new Response(
       JSON.stringify({ message: "Report sent successfully" }),
-      {
+      { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       }
@@ -83,20 +70,3 @@ serve(async (req) => {
     );
   }
 });
-
-// Helper functions for SMTP communication
-async function readResponse(conn: Deno.TlsConn): Promise<string> {
-  const buf = new Uint8Array(1024);
-  const n = await conn.read(buf);
-  if (n === null) throw new Error("Connection closed");
-  const response = new TextDecoder().decode(buf.subarray(0, n));
-  console.log("Server response:", response);
-  return response;
-}
-
-async function writeCommand(conn: Deno.TlsConn, command: string): Promise<void> {
-  const encoder = new TextEncoder();
-  const written = await conn.write(encoder.encode(command));
-  console.log("Sent command:", command.trim());
-  if (written === null) throw new Error("Failed to write command");
-}
