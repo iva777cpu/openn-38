@@ -1,72 +1,60 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
-const SMTP_PASSWORD = Deno.env.get("SMTP_PASSWORD");
-
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const handler = async (req: Request): Promise<Response> => {
+serve(async (req) => {
   // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message } = await req.json();
-    console.log("Attempting to send report email for message:", message);
-
-    if (!SMTP_PASSWORD) {
-      throw new Error("SMTP_PASSWORD environment variable is not set");
-    }
-
     const client = new SmtpClient();
 
-    console.log("Connecting to SMTP server...");
+    const { message } = await req.json();
+
+    // Configure connection
     await client.connectTLS({
       hostname: "mail.maneblod.com",
       port: 465,
       username: "manebl@maneblod.com",
-      password: SMTP_PASSWORD,
+      password: Deno.env.get("SMTP_PASSWORD") || "",
     });
 
-    console.log("Sending email...");
+    // Send the email
     await client.send({
       from: "manebl@maneblod.com",
       to: "manebl@maneblod.com",
-      subject: "Message Reported in Openera",
-      content: `
-        <h2>A message has been reported in Openera</h2>
-        <p>Here's the reported message:</p>
-        <blockquote style="background: #f9f9f9; border-left: 4px solid #ccc; margin: 1.5em 10px; padding: 1em 10px;">
-          ${message}
-        </blockquote>
-      `,
-      html: true,
+      subject: "Reported Message from Openera",
+      content: `A message has been reported:\n\n${message}`,
     });
 
-    console.log("Email sent successfully");
+    // Close the connection
     await client.close();
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  } catch (error: any) {
-    console.error("Detailed error in report-message function:", {
-      error: error.message,
-      stack: error.stack,
-      cause: error.cause
-    });
+    return new Response(
+      JSON.stringify({ message: "Report sent successfully" }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error("Error in report-message function:", error);
     
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ 
+        error: "Failed to send report",
+        details: error.message 
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
   }
-};
-
-serve(handler);
+});
