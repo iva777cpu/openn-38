@@ -28,32 +28,48 @@ serve(async (req) => {
       port: 465,
       username: "manebl@maneblod.com",
       password: smtpPassword,
+      tls: true,
+      debug: true,
+      timeout: 10000, // 10 second timeout
     };
 
-    console.log("Connecting to SMTP server...");
-    await client.connectTLS(connectConfig);
-    console.log("Connected to SMTP server");
+    try {
+      console.log("Attempting to connect to SMTP server...");
+      await client.connectTLS(connectConfig);
+      console.log("Successfully connected to SMTP server");
 
-    const emailContent = {
-      from: "manebl@maneblod.com",
-      to: "manebl@maneblod.com",
-      subject: "Reported Message from Openera",
-      content: `A message has been reported:\n\n${message}`,
-    };
+      const emailContent = {
+        from: "manebl@maneblod.com",
+        to: "manebl@maneblod.com",
+        subject: "Reported Message from Openera",
+        content: `A message has been reported:\n\n${message}`,
+        html: `<p>A message has been reported:</p><p>${message}</p>`,
+      };
 
-    console.log("Sending email...");
-    await client.send(emailContent);
-    console.log("Email sent successfully");
+      console.log("Attempting to send email...");
+      await client.send(emailContent);
+      console.log("Email sent successfully");
 
-    await client.close();
+      await client.close();
+      console.log("SMTP connection closed");
 
-    return new Response(
-      JSON.stringify({ message: "Report sent successfully" }),
-      { 
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+      return new Response(
+        JSON.stringify({ message: "Report sent successfully" }),
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    } catch (smtpError) {
+      console.error("SMTP Error:", smtpError);
+      throw new Error(`SMTP Error: ${smtpError.message}`);
+    } finally {
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.error("Error closing SMTP connection:", closeError);
       }
-    );
+    }
   } catch (error) {
     console.error("Error in report-message function:", error);
     
