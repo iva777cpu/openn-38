@@ -23,46 +23,27 @@ serve(async (req) => {
 
     const client = new SmtpClient();
 
-    const connectConfig = {
-      hostname: "mail.maneblod.com",
-      port: 465,
-      username: "_mainaccount@maneblod.com",
-      password: smtpPassword,
-      tls: true,
-      debug: true,
-      timeout: 10000, // 10 second timeout
-    };
-
     try {
-      console.log("Attempting to connect to SMTP server with config:", {
-        hostname: connectConfig.hostname,
-        port: connectConfig.port,
-        username: connectConfig.username,
-        tls: connectConfig.tls
+      await client.connect({
+        hostname: "mail.maneblod.com",
+        port: 465,
+        username: "_mainaccount@maneblod.com",
+        password: smtpPassword,
+        tls: true,
       });
-      
-      await client.connectTLS(connectConfig);
+
       console.log("Successfully connected to SMTP server");
 
-      const emailContent = {
+      await client.send({
         from: "_mainaccount@maneblod.com",
         to: "_mainaccount@maneblod.com",
         subject: "Reported Message from Openera",
         content: `A message has been reported:\n\n${message}`,
         html: `<p>A message has been reported:</p><p>${message}</p>`,
-      };
-
-      console.log("Attempting to send email with content:", {
-        from: emailContent.from,
-        to: emailContent.to,
-        subject: emailContent.subject
       });
-      
-      await client.send(emailContent);
-      console.log("Email sent successfully");
 
+      console.log("Email sent successfully");
       await client.close();
-      console.log("SMTP connection closed");
 
       return new Response(
         JSON.stringify({ message: "Report sent successfully" }),
