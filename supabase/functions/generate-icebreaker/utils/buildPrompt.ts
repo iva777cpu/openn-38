@@ -26,7 +26,6 @@ ${Object.entries(situationInfo)
   return `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 
 Teasing or playful banter (if appropriate)
-Shared experiences or hypotheticals
 Fun facts, quotes, stories or bold statements
 Other creative options
 
@@ -34,9 +33,9 @@ Focus on charm, humor, and clever phrasing. Use contrasts for dramatic effect, p
 
 CRITICAL GUIDELINES:
 - Use a mix of approaches:
-  - At least 4 icebreakers should be based on provided traits and situation
+  - At least 6 icebreakers should be based on provided traits and situation
   - At least 2 should be general or creative icebreakers not tied to specific traits
-  - at least 4 must be combination of mixing traits and situation with general approaches, meaning you dont necessary need to refrence or use the traits in your responses but have them in mind and mostly lean on generateing general icebreakers
+  - at least 2 must be combination of mixing traits and situation with general approaches, meaning they should be general or creative icebreakers and only kind of tied to the traits
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -47,8 +46,8 @@ CRITICAL GUIDELINES:
   - Share shopping preferences
   - Explain where they got something
 - Priority values guide importance:
-  - High priority (0.5-0.7): Reference more occasionally
-  - Medium priority (0.3-0.4): Reference occasionally
+  - High priority (0.5-0.7): Reference occasionally
+  - Medium priority (0.3-0.4): Reference less occasionally
   - Low priority (0.1-0.2): Use sparingly or as subtle context
   - Mix priorities creatively for more dynamic responses
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
