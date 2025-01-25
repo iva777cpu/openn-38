@@ -37,9 +37,13 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
           isReported={reportedMessages.has(icebreaker)}
           isExplanationLoading={explanations[icebreaker]?.loading || false}
           isExplanationGenerated={explanations[icebreaker]?.generated || false}
-          onToggleSave={() => onToggleSave(icebreaker, explanations[icebreaker]?.text)}
+          onToggleSave={() => {
+            // Pass the explanation when saving
+            onToggleSave(icebreaker, explanations[icebreaker]?.text);
+          }}
           onGenerateExplanation={() => generateExplanation(icebreaker, (explanation) => {
             if (savedIcebreakers.has(icebreaker)) {
+              // Update the saved message with the new explanation
               onToggleSave(icebreaker, explanation);
             }
           })}
