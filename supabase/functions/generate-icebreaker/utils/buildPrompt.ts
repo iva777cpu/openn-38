@@ -4,13 +4,20 @@ export const buildPrompt = (
   situationInfo: Record<string, any>,
   isFirstTime: boolean
 ) => {
-  console.log('Building prompt with:', { userTraits, targetTraits, situationInfo });
+  console.log('Building prompt with raw data:', { 
+    userTraits, 
+    targetTraits, 
+    situationInfo,
+    isFirstTime 
+  });
   
   const formatTraits = (traits: Record<string, any>, section: string) => {
+    console.log(`Formatting ${section} traits:`, traits);
     return Object.entries(traits)
-      .map(([_, value]) => {
-        const priorityInstruction = value.priority ? ` (Priority: ${value.priority})` : '';
-        return `${value.questionText}${priorityInstruction}: ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'}${priorityInstruction}`;
+      .map(([key, value]) => {
+        console.log(`Processing trait ${key}:`, value);
+        const priorityText = value.priority ? ` (Priority: ${value.priority})` : '';
+        return `${value.questionText}: ${value.value}\nINSTRUCTION: ${value.prompt}${priorityText}`;
       })
       .join('\n');
   };
@@ -25,7 +32,7 @@ ${formatTraits(targetTraits, 'THEIR TRAITS')}
 SITUATION:
 ${formatTraits(situationInfo, 'SITUATION')}`;
 
-  console.log('Generated context string:', contextString);
+  console.log('Final context string being sent to OpenAI:', contextString);
 
   return `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 

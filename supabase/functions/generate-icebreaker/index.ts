@@ -36,6 +36,8 @@ serve(async (req) => {
 
     const systemPrompt = buildPrompt(userTraits, targetTraits, situationInfo, isFirstTime);
 
+    console.log('Final system prompt being sent to OpenAI:', systemPrompt);
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
