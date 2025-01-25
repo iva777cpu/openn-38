@@ -4,6 +4,8 @@ export const buildPrompt = (
   situationInfo: Record<string, any>,
   isFirstTime: boolean
 ) => {
+  console.log('Building prompt with:', { userTraits, targetTraits, situationInfo });
+  
   const contextString = `
 YOUR TRAITS (The person initiating conversation):
 ${Object.entries(userTraits)
@@ -22,6 +24,8 @@ ${Object.entries(situationInfo)
   .map(([_, value]) => 
     `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this context'} with priority ${value.priority}.`)
   .join('\n')}`;
+
+  console.log('Generated context string:', contextString);
 
   return `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 
@@ -47,11 +51,6 @@ CRITICAL GUIDELINES:
 - Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
 - Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
-
-IMPORTANT DISTINCTION:
-- When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
-- When using "THEIR TRAITS", these are traits of the person being approached (them)
-- Make sure to maintain this distinction in your responses
 
 Context (USE ONLY THIS INFORMATION):
 ${contextString}

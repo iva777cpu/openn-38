@@ -2,15 +2,20 @@ import { questions } from "@/utils/questions";
 
 export const useIcebreakerValidation = () => {
   const validateAndProcessFields = (userProfile: Record<string, string>) => {
+    console.log('Starting validation with profile:', userProfile);
+    
     const filledFields = Object.entries(userProfile)
       .filter(([_, value]) => {
-        // Strictly check for non-empty strings after trimming
         const trimmedValue = value?.toString().trim();
         return trimmedValue !== undefined && trimmedValue !== null && trimmedValue !== '';
       })
       .reduce((acc, [key, value]) => {
-        const question = [...questions.userTraits, ...questions.targetTraits, ...questions.generalInfo]
-          .find(q => q.id === key);
+        // Find matching question across all categories
+        const question = [
+          ...questions.userTraits,
+          ...questions.targetTraits,
+          ...questions.generalInfo
+        ].find(q => q.id === key);
         
         if (question) {
           console.log(`Processing field ${key}:`, {
@@ -34,8 +39,7 @@ export const useIcebreakerValidation = () => {
         return acc;
       }, {});
 
-    // Log the final filtered fields for debugging
-    console.log('Final filtered fields:', JSON.stringify(filledFields, null, 2));
+    console.log('Final processed fields:', JSON.stringify(filledFields, null, 2));
     return filledFields;
   };
 
