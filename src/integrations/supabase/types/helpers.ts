@@ -2,14 +2,22 @@ import { Database } from './database';
 
 type PublicSchema = Database['public'];
 
-export type Tables<
-  T extends keyof PublicSchema['Tables']
-> = PublicSchema['Tables'][T]['Row'];
+type TableName = keyof PublicSchema['Tables'];
 
-export type TablesInsert<
-  T extends keyof PublicSchema['Tables']
-> = PublicSchema['Tables'][T]['Insert'];
+export type Tables<T extends TableName> = {
+  [K in T]: PublicSchema['Tables'][K] extends { Row: any }
+    ? PublicSchema['Tables'][K]['Row']
+    : never;
+}[T];
 
-export type TablesUpdate<
-  T extends keyof PublicSchema['Tables']
-> = PublicSchema['Tables'][T]['Update'];
+export type TablesInsert<T extends TableName> = {
+  [K in T]: PublicSchema['Tables'][K] extends { Insert: any }
+    ? PublicSchema['Tables'][K]['Insert']
+    : never;
+}[T];
+
+export type TablesUpdate<T extends TableName> = {
+  [K in T]: PublicSchema['Tables'][K] extends { Update: any }
+    ? PublicSchema['Tables'][K]['Update']
+    : never;
+}[T];

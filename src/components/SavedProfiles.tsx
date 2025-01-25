@@ -7,9 +7,14 @@ import { LoadingDots } from "./ui/loading-dots";
 interface SavedProfilesProps {
   onSelectProfile: (profile: any) => void;
   onBack: () => void;
+  onNewProfile: () => void;
 }
 
-export const SavedProfiles: React.FC<SavedProfilesProps> = ({ onSelectProfile, onBack }) => {
+export const SavedProfiles: React.FC<SavedProfilesProps> = ({ 
+  onSelectProfile, 
+  onBack,
+  onNewProfile 
+}) => {
   const {
     profiles,
     editingId,
