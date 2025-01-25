@@ -27,11 +27,11 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that explains references, concepts, or context in icebreaker messages. Provide clear, concise explanations in less than 30 words, assuming the user has no prior knowledge of the topic.'
+            content: 'You are a helpful assistant that explains references. Provide clear, concise explanations and information in less than 30 words, assuming the user has no prior knowledge of the reference. note that you must only explain about the reference and the story behind it'
           },
           {
             role: 'user',
-            content: `Please explain this icebreaker in simple terms, assuming I know nothing about any references made: "${message}"`
+            content: `explain this reference, assume that I know nothing about the references made: "${message}"`
           }
         ],
       }),

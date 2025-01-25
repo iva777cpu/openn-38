@@ -27,6 +27,26 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
   const [explanations, setExplanations] = useState<ExplanationState>({});
 
+  // Persist explanations in localStorage
+  useEffect(() => {
+    const savedExplanations = localStorage.getItem('currentExplanations');
+    if (savedExplanations) {
+      setExplanations(JSON.parse(savedExplanations));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(explanations).length > 0) {
+      localStorage.setItem('currentExplanations', JSON.stringify(explanations));
+    }
+  }, [explanations]);
+
+  // Clear explanations when icebreakers change
+  useEffect(() => {
+    setExplanations({});
+    localStorage.removeItem('currentExplanations');
+  }, [icebreakers]);
+
   const handleReport = async (icebreaker: string) => {
     if (reportedMessages.has(icebreaker)) {
       return;
@@ -86,7 +106,14 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 
       // If the icebreaker is already saved, update it with the explanation
       if (savedIcebreakers.has(icebreaker)) {
-        onToggleSave(icebreaker, explanation);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase
+            .from('saved_messages')
+            .update({ explanation })
+            .eq('user_id', user.id)
+            .eq('message_text', icebreaker);
+        }
       }
 
     } catch (error) {
@@ -122,46 +149,55 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                   }`}
                 />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => generateExplanation(icebreaker)}
-                disabled={explanations[icebreaker]?.generated || reportedMessages.has(icebreaker)}
-                className={`hover:bg-[#1A2A1D] transition-all ${
-                  explanations[icebreaker]?.generated || reportedMessages.has(icebreaker)
-                    ? 'opacity-50'
-                    : 'opacity-60 hover:opacity-100'
-                }`}
-              >
-                {explanations[icebreaker]?.loading ? (
-                  <LoadingDots className="h-4 w-4 animate-spin" />
-                ) : (
-                  <HelpCircle 
-                    className={`h-4 w-4 stroke-[#E5D4BC] transition-all ${
-                      explanations[icebreaker]?.generated ? 'fill-[#E5D4BC]' : ''
+              <div className="flex flex-col items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => generateExplanation(icebreaker)}
+                  disabled={explanations[icebreaker]?.generated || reportedMessages.has(icebreaker)}
+                  className={`hover:bg-[#1A2A1D] transition-all ${
+                    explanations[icebreaker]?.generated 
+                      ? 'bg-[#1A2A1D]'
+                      : reportedMessages.has(icebreaker)
+                      ? 'opacity-50'
+                      : 'opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  {explanations[icebreaker]?.loading ? (
+                    <div className="h-4 w-4 animate-spin border-2 border-[#E5D4BC] border-t-transparent rounded-full" />
+                  ) : (
+                    <HelpCircle 
+                      className={`h-4 w-4 stroke-[#E5D4BC] transition-all ${
+                        explanations[icebreaker]?.generated ? 'fill-[#E5D4BC]' : ''
+                      }`}
+                    />
+                  )}
+                </Button>
+              </div>
+              <div className="flex flex-col items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleReport(icebreaker)}
+                  disabled={reportedMessages.has(icebreaker)}
+                  className={`hover:bg-[#1A2A1D] transition-all ${
+                    reportedMessages.has(icebreaker)
+                      ? 'bg-[#1A2A1D] opacity-100'
+                      : 'opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <Flag 
+                    className={`h-4 w-4 ${
+                      reportedMessages.has(icebreaker)
+                        ? 'fill-[#E5D4BC] stroke-[#E5D4BC]'
+                        : 'stroke-[#E5D4BC]'
                     }`}
                   />
+                </Button>
+                {reportedMessages.has(icebreaker) && (
+                  <span className="text-[11px] text-[#E5D4BC] mt-1">reported</span>
                 )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleReport(icebreaker)}
-                disabled={reportedMessages.has(icebreaker)}
-                className={`hover:bg-[#1A2A1D] transition-all ${
-                  reportedMessages.has(icebreaker)
-                    ? 'bg-[#1A2A1D] opacity-100'
-                    : 'opacity-60 hover:opacity-100'
-                }`}
-              >
-                <Flag 
-                  className={`h-4 w-4 ${
-                    reportedMessages.has(icebreaker)
-                      ? 'fill-[#E5D4BC] stroke-[#E5D4BC]'
-                      : 'stroke-[#E5D4BC]'
-                  }`}
-                />
-              </Button>
+              </div>
             </div>
           </div>
           {explanations[icebreaker]?.text && (
