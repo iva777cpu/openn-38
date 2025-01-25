@@ -52,6 +52,11 @@ CRITICAL GUIDELINES:
 - Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
 
+IMPORTANT DISTINCTION:
+- When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
+- When using "THEIR TRAITS", these are traits of the person being approached (them)
+- Make sure to maintain this distinction in your responses
+
 Context (USE ONLY THIS INFORMATION):
 ${contextString}
 

@@ -11,13 +11,16 @@ export const useIcebreakerValidation = () => {
       })
       .reduce((acc, [key, value]) => {
         // Find matching question across all categories
-        const question = [
+        const allQuestions = [
           ...questions.userTraits,
           ...questions.targetTraits,
           ...questions.generalInfo
-        ].find(q => q.id === key);
+        ];
+        
+        const question = allQuestions.find(q => q.id === key);
         
         if (question) {
+          // Log each field's processing details
           console.log(`Processing field ${key}:`, {
             value: value.trim(),
             prompt: question.prompt,

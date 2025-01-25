@@ -35,7 +35,11 @@ export const useIcebreakerGeneration = (
         throw new Error('Invalid response format from AI');
       }
 
-      const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
+      const newIcebreakers = data.icebreakers
+        .split(/\d+\./)
+        .filter(Boolean)
+        .map((text: string) => text.trim());
+      
       console.log('Processed icebreakers:', newIcebreakers);
       
       if (newIcebreakers.length === 0) {
