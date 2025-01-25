@@ -6,24 +6,24 @@ export const buildPrompt = (
 ) => {
   console.log('Building prompt with:', { userTraits, targetTraits, situationInfo });
   
+  const formatTraits = (traits: Record<string, any>, section: string) => {
+    return Object.entries(traits)
+      .map(([_, value]) => {
+        const priorityInstruction = value.priority ? ` (Priority: ${value.priority})` : '';
+        return `${value.questionText}${priorityInstruction}: ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'}${priorityInstruction}`;
+      })
+      .join('\n');
+  };
+
   const contextString = `
 YOUR TRAITS (The person initiating conversation):
-${Object.entries(userTraits)
-  .map(([_, value]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
-  .join('\n')}
+${formatTraits(userTraits, 'YOUR TRAITS')}
 
 THEIR TRAITS (The person you're approaching):
-${Object.entries(targetTraits)
-  .map(([_, value]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
-  .join('\n')}
+${formatTraits(targetTraits, 'THEIR TRAITS')}
 
 SITUATION:
-${Object.entries(situationInfo)
-  .map(([_, value]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this context'} with priority ${value.priority}.`)
-  .join('\n')}`;
+${formatTraits(situationInfo, 'SITUATION')}`;
 
   console.log('Generated context string:', contextString);
 
