@@ -1,3 +1,5 @@
+import { ReportedMessagesTable, SavedMessagesTable, UserPreferencesTable, UserProfilesTable } from './tables';
+
 export type Json =
   | string
   | number
