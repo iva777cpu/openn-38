@@ -27,7 +27,10 @@ export const useIcebreakerGeneration = (
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error from Supabase function:', error);
+        throw error;
+      }
       
       console.log('Raw AI response:', data);
 

@@ -23,7 +23,7 @@ export const useIcebreakerValidation = () => {
           console.log(`Processing field ${key}:`, {
             value: value.trim(),
             prompt: question.prompt,
-            priority: question.priority, // Explicitly log priority
+            priority: question.priority,
             questionText: question.text
           });
           
