@@ -22,8 +22,9 @@ export const useIcebreakers = () => {
 
       const { data, error } = await supabase
         .from('saved_messages')
-        .select('message_text')
-        .eq('user_id', user.id);
+        .select('message_text, explanation')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -64,18 +65,26 @@ export const useIcebreakers = () => {
           newSet.delete(icebreaker);
           return newSet;
         });
+        
+        toast.success("Icebreaker removed from saved messages");
       } else {
+        console.log('Saving icebreaker with explanation:', { icebreaker, explanation });
+        
         const { error } = await supabase
           .from('saved_messages')
           .insert([{ 
             user_id: user.id, 
             message_text: icebreaker,
-            explanation: explanation || null // Ensure explanation is included when saving
+            explanation: explanation || null
           }]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error saving icebreaker:', error);
+          throw error;
+        }
 
         setSavedIcebreakers(prev => new Set([...prev, icebreaker]));
+        toast.success("Icebreaker saved successfully");
       }
     } catch (error) {
       console.error('Error toggling icebreaker:', error);
