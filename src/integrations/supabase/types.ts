@@ -12,6 +12,7 @@ export type Database = {
       reported_messages: {
         Row: {
           created_at: string
+          explanation: string | null
           id: string
           message_text: string
           reported_by: string | null
@@ -19,6 +20,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          explanation?: string | null
           id?: string
           message_text: string
           reported_by?: string | null
@@ -26,6 +28,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          explanation?: string | null
           id?: string
           message_text?: string
           reported_by?: string | null
@@ -36,6 +39,7 @@ export type Database = {
       saved_messages: {
         Row: {
           created_at: string
+          explanation: string | null
           id: string
           is_edited: boolean | null
           message_text: string
@@ -43,6 +47,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          explanation?: string | null
           id?: string
           is_edited?: boolean | null
           message_text: string
@@ -50,6 +55,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          explanation?: string | null
           id?: string
           is_edited?: boolean | null
           message_text?: string

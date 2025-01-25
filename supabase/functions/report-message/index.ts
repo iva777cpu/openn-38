@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,10 +17,10 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { message } = await req.json();
+    const { message, explanation } = await req.json();
     console.log("Received message to report:", message);
+    console.log("Explanation:", explanation);
 
-    // Get the user ID from the authorization header if it exists
     const authHeader = req.headers.get('Authorization');
     let userId = null;
 
@@ -35,14 +34,14 @@ serve(async (req) => {
       }
     }
 
-    // Insert the reported message into the database
     const { data, error } = await supabaseClient
       .from('reported_messages')
       .insert([
         {
           message_text: message,
           reported_by: userId,
-          status: 'pending'
+          status: 'pending',
+          explanation: explanation
         }
       ]);
 
