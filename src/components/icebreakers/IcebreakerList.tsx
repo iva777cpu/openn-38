@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { BookmarkPlus, Flag, CircleHelp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -27,7 +27,25 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 }) => {
   const [reportedIcebreakers, setReportedIcebreakers] = useState<Set<string>>(new Set());
   const [loadingExplanations, setLoadingExplanations] = useState<Set<string>>(new Set());
-  const [explanations, setExplanations] = useState<ExplanationState>({});
+  const [explanations, setExplanations] = useState<ExplanationState>(() => {
+    const stored = localStorage.getItem('currentExplanations');
+    return stored ? JSON.parse(stored) : {};
+  });
+
+  // Save explanations to localStorage whenever they change
+  useEffect(() => {
+    if (Object.keys(explanations).length > 0) {
+      localStorage.setItem('currentExplanations', JSON.stringify(explanations));
+    }
+  }, [explanations]);
+
+  // Clear explanations when icebreakers array is empty
+  useEffect(() => {
+    if (icebreakers.length === 0) {
+      setExplanations({});
+      localStorage.removeItem('currentExplanations');
+    }
+  }, [icebreakers]);
 
   const handleReport = async (icebreaker: string) => {
     if (reportedIcebreakers.has(icebreaker)) return;
@@ -70,7 +88,11 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       console.log("Explanation response:", data);
       
       const newExplanation = data.explanation;
-      setExplanations(prev => ({ ...prev, [icebreaker]: newExplanation }));
+      setExplanations(prev => {
+        const updated = { ...prev, [icebreaker]: newExplanation };
+        localStorage.setItem('currentExplanations', JSON.stringify(updated));
+        return updated;
+      });
 
       // If the icebreaker is already saved, update it with the explanation
       if (savedIcebreakers.has(icebreaker)) {

@@ -25,6 +25,7 @@ export const useProfileState = () => {
     console.log("Creating new profile - clearing all state");
     localStorage.removeItem('currentProfile');
     localStorage.removeItem('currentIcebreakers');
+    localStorage.removeItem('currentExplanations');
     setCurrentProfile(emptyProfile);
     setOriginalProfile(emptyProfile);
     setSelectedProfileId(null);

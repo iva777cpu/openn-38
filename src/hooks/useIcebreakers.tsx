@@ -1,13 +1,24 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useIcebreakers = () => {
   const [savedIcebreakers, setSavedIcebreakers] = useState<Set<string>>(new Set());
-  const [icebreakers, setIcebreakers] = useState<string[]>([]);
+  const [icebreakers, setIcebreakers] = useState<string[]>(() => {
+    const stored = localStorage.getItem('currentIcebreakers');
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  // Save icebreakers to localStorage whenever they change
+  useEffect(() => {
+    if (icebreakers.length > 0) {
+      localStorage.setItem('currentIcebreakers', JSON.stringify(icebreakers));
+    }
+  }, [icebreakers]);
 
   const clearAllIcebreakers = useCallback(() => {
-    console.log('Clearing all icebreakers');
+    console.log('Clearing all icebreakers and removing from localStorage');
     setIcebreakers([]);
+    localStorage.removeItem('currentIcebreakers');
   }, []);
 
   const toggleIcebreaker = async (icebreaker: string, explanation?: string) => {
