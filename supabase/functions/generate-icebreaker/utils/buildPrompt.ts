@@ -27,16 +27,16 @@ ${Object.entries(situationInfo)
 
 Teasing or playful banter (if appropriate)
 Shared experiences or hypotheticals
-Fun facts or bold statements
+Fun facts, quotes, stories or bold statements
 Other creative options
 
 Focus on charm, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing when possible. try to be friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, political events, quotes, proverbs, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker combined with a reference explanation is less than 40 words.
 
 CRITICAL GUIDELINES:
 - Use a mix of approaches:
-  - At least 3 icebreakers should be based on provided traits and situation
-  - At least 3 should be general or creative icebreakers not tied to specific traits
-  - The remaining can be a combination, mixing traits with general approaches
+  - At least 4 icebreakers should be based on provided traits and situation
+  - At least 1 should be general or creative icebreakers not tied to specific traits
+  - The remaining 5 can be combination of mixing traits and situation with general approaches
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -47,7 +47,7 @@ CRITICAL GUIDELINES:
   - Share shopping preferences
   - Explain where they got something
 - Priority values guide importance:
-  - High priority (0.6-0.9): Use these traits prominently in multiple responses
+  - High priority (0.6-0.9): Use these traits more prominently in responses
   - Medium priority (0.4-0.5): Reference occasionally
   - Low priority (0.2-0.3): Use sparingly or as subtle context
   - Mix priorities creatively for more dynamic responses
@@ -58,9 +58,9 @@ IMPORTANT DISTINCTION:
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
 - Make sure to maintain this distinction in your responses
 
-Context (USE ONLY THIS INFORMATION):
+Context (MOSTLY USE THIS INFORMATION):
 ${contextString}
 
 Additional Context:
-- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, build upon existing familiarity'}`;
+- First time conversation: ${isFirstTime ? 'Yes - This is a first-time conversation' : 'No - They have talked before, at least once'}`;
 };
