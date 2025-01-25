@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,65 +13,61 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
     const { message } = await req.json();
     console.log("Received message to report:", message);
 
-    const smtpPassword = Deno.env.get("SMTP_PASSWORD");
-    if (!smtpPassword) {
-      throw new Error("SMTP_PASSWORD environment variable is not set");
+    // Get the user ID from the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('No authorization header');
     }
 
-    const client = new SmtpClient();
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
 
-    try {
-      console.log("Attempting SMTP connection...");
-      
-      await client.connectTLS({
-        hostname: "mail.maneblod.com",
-        port: 465,
-        username: "_mainaccount@maneblod.com",
-        password: smtpPassword,
-      });
+    if (userError || !user) {
+      console.error("Error getting user:", userError);
+      throw new Error('Unauthorized');
+    }
 
-      console.log("SMTP connection established, sending email...");
-
-      const emailData = {
-        from: "_mainaccount@maneblod.com",
-        to: "_mainaccount@maneblod.com",
-        subject: "Reported Message from Openera",
-        content: `A message has been reported:\n\n${message}`,
-        html: `<p>A message has been reported:</p><p>${message}</p>`,
-      };
-
-      await client.send(emailData);
-      console.log("Email sent successfully");
-
-      return new Response(
-        JSON.stringify({ message: "Report sent successfully" }),
-        { 
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
+    // Insert the reported message into the database
+    const { data, error } = await supabaseClient
+      .from('reported_messages')
+      .insert([
+        {
+          message_text: message,
+          reported_by: user.id,
+          status: 'pending'
         }
-      );
-    } catch (smtpError) {
-      console.error("SMTP Error:", smtpError);
-      throw new Error(`SMTP Error: ${smtpError.message}`);
-    } finally {
-      try {
-        await client.close();
-        console.log("SMTP connection closed");
-      } catch (closeError) {
-        console.error("Error closing SMTP connection:", closeError);
-      }
+      ]);
+
+    if (error) {
+      console.error("Error inserting report:", error);
+      throw error;
     }
+
+    console.log("Successfully stored report:", data);
+
+    return new Response(
+      JSON.stringify({ message: "Report stored successfully" }),
+      { 
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error("Error in report-message function:", error);
     
     return new Response(
       JSON.stringify({ 
-        error: "Failed to send report",
-        details: error.message,
-        stack: error.stack 
+        error: "Failed to store report",
+        details: error.message
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

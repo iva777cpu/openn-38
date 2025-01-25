@@ -17,18 +17,16 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 }) => {
   const handleReport = async (icebreaker: string) => {
     try {
-      console.log("Reporting message:", icebreaker);
-      
       const { data, error } = await supabase.functions.invoke('report-message', {
         body: { message: icebreaker }
       });
-
-      console.log("Response from report-message function:", { data, error });
 
       if (error) {
         console.error('Error from report-message function:', error);
         throw error;
       }
+
+      console.log("Response from report-message function:", data);
 
       toast.success("Message reported successfully", {
         position: "top-center",
