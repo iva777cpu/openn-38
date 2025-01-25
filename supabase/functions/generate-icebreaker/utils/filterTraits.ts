@@ -5,7 +5,13 @@ export const filterTraits = (answers: Record<string, any>) => {
     const filtered = entries.filter(([key, value]) => {
       const isEmpty = !value?.value || value.value.toString().trim() === '';
       const shouldInclude = !isEmpty && keyCheck(key);
-      console.log(`Filtering ${key}:`, { isEmpty, shouldInclude, value });
+      console.log(`Filtering ${key}:`, { 
+        isEmpty, 
+        shouldInclude, 
+        value,
+        priority: value?.priority,
+        prompt: value?.prompt 
+      });
       return shouldInclude;
     }).reduce((acc, [key, value]) => ({
       ...acc,

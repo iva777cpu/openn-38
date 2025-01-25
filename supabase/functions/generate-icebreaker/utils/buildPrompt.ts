@@ -16,7 +16,8 @@ export const buildPrompt = (
     return Object.entries(traits)
       .map(([key, value]) => {
         console.log(`Processing trait ${key}:`, value);
-        const priorityText = value.priority ? ` (Priority: ${value.priority})` : '';
+        // Make sure priority is explicitly included in the instruction
+        const priorityText = value.priority ? ` [Priority: ${value.priority}]` : '';
         return `${value.questionText}: ${value.value}\nINSTRUCTION: ${value.prompt}${priorityText}`;
       })
       .join('\n');
