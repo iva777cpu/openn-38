@@ -30,11 +30,11 @@ Shared experiences or hypotheticals
 Fun facts or bold statements
 Other creative options
 
-Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
+Focus on charm, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing when possible. try to be friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, political events, quotes, proverbs, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker combined with a reference explanation is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Use mostly information from the context below
-- Return exactly 10 responses, numbered 1-10
+- Mostly use information from the context below
+- Return exactly 10 responses, numbered 1-10, where the last 3 should be general icebreakers not related to any traits
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
 - NEVER ask the person to:
@@ -46,7 +46,7 @@ CRITICAL GUIDELINES:
 - For each trait or piece of information, use the priority value to determine how much emphasis to give it
 - Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
 - Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
-- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, focus on building upon existing familiarity'}
+- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
