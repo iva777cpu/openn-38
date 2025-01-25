@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ProfileRouting } from "./profile/ProfileRouting";
 import { ProfileStateManager } from "./profile/ProfileStateManager";
 import { useIcebreakersState } from "./profile/useIcebreakersState";
@@ -46,10 +46,24 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
 
+  // Store form data before auth redirect
+  useEffect(() => {
+    if (Object.keys(currentProfile).length > 0) {
+      localStorage.setItem('tempFormData', JSON.stringify(currentProfile));
+    }
+  }, [currentProfile]);
+
   const handleProfileSelect = (profile: any) => {
+    // Clear temp form data when explicitly selecting a profile
+    localStorage.removeItem('tempFormData');
     clearIcebreakers();
     handleSelectProfile(profile);
-    setShowProfiles(false); // Add this line to close profiles view
+    setShowProfiles(false);
+  };
+
+  const handleNewProfile = () => {
+    // Clear temp form data when explicitly creating new profile
+    localStorage.removeItem('tempFormData');
   };
 
   const contentProps = {
@@ -82,6 +96,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
         handleIcebreakersUpdate={handleIcebreakersUpdate}
         clearIcebreakers={clearIcebreakers}
         checkAuth={checkAuth}
+        onNewProfile={handleNewProfile}
       />
     </ProfileStateManager>
   );
