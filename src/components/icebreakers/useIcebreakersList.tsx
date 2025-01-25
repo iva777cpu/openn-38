@@ -18,7 +18,6 @@ export const useIcebreakersList = () => {
         .order("created_at", { ascending: false });
       
       if (error) throw error;
-      console.log('Fetched saved messages:', data);
       return data;
     },
   });

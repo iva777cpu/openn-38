@@ -11,8 +11,6 @@ export const useReporting = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      console.log('Reporting message with explanation:', { icebreaker, explanation });
-      
       const { error } = await supabase.from('reported_messages').insert([{
         message_text: icebreaker,
         reported_by: user?.id,

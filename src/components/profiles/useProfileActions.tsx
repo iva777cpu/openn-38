@@ -18,7 +18,7 @@ export const useProfileActions = () => {
         .from("user_profiles")
         .select("*")
         .eq("user_id", user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }); // Sort by created_at in descending order
       
       if (error) throw error;
       return data;
