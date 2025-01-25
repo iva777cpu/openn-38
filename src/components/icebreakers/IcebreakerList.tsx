@@ -86,6 +86,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
         [icebreaker]: { text: explanation, loading: false, generated: true }
       }));
 
+      // If the icebreaker is saved, update its explanation in the database
       if (savedIcebreakers.has(icebreaker)) {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -95,6 +96,11 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
             .eq('user_id', user.id)
             .eq('message_text', icebreaker);
         }
+      }
+
+      // Automatically save the explanation with the icebreaker if it's already saved
+      if (savedIcebreakers.has(icebreaker)) {
+        onToggleSave(icebreaker, explanation);
       }
     } catch (error) {
       console.error('Error generating explanation:', error);

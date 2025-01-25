@@ -33,8 +33,11 @@ Other creative options
 Focus on charm, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing when possible. try to be friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, political events, quotes, proverbs, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker combined with a reference explanation is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Mostly use information from the context below
-- Return exactly 10 responses, numbered 1-10, where the last 3 should be general icebreakers not related to any traits
+- Use a mix of approaches:
+  - At least 3 icebreakers should be based on provided traits and situation
+  - At least 3 should be general or creative icebreakers not tied to specific traits
+  - The remaining can be a combination, mixing traits with general approaches
+- Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
 - NEVER ask the person to:
@@ -43,9 +46,11 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- For each trait or piece of information, use the priority value to determine how much emphasis to give it
-- Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
-- Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
+- Priority values guide importance:
+  - High priority (0.6-0.9): Use these traits prominently in multiple responses
+  - Medium priority (0.4-0.5): Reference occasionally
+  - Low priority (0.2-0.3): Use sparingly or as subtle context
+  - Mix priorities creatively for more dynamic responses
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
 
 IMPORTANT DISTINCTION:
