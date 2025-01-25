@@ -19,6 +19,7 @@ export const useIcebreakers = () => {
     console.log('Clearing all icebreakers and removing from localStorage');
     setIcebreakers([]);
     localStorage.removeItem('currentIcebreakers');
+    localStorage.removeItem('currentExplanations');
   }, []);
 
   const toggleIcebreaker = async (icebreaker: string, explanation?: string) => {

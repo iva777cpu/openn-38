@@ -22,14 +22,19 @@ export const useProfileState = () => {
   };
 
   const handleNewProfile = () => {
-    console.log("Creating new profile - clearing all state");
+    console.log("Creating new profile - clearing all state and localStorage");
+    // Clear all profile-related localStorage
     localStorage.removeItem('currentProfile');
     localStorage.removeItem('currentIcebreakers');
     localStorage.removeItem('currentExplanations');
+    
+    // Reset all states
     setCurrentProfile(emptyProfile);
     setOriginalProfile(emptyProfile);
     setSelectedProfileId(null);
     setSelectedProfileName("");
+    
+    // Clear icebreakers state and storage
     clearAllIcebreakers();
   };
 
