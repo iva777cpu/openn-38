@@ -25,6 +25,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
   const [explanations, setExplanations] = useState<ExplanationState>({});
 
+  // Load explanations from localStorage when component mounts
   useEffect(() => {
     const savedExplanations = localStorage.getItem('currentExplanations');
     if (savedExplanations) {
@@ -32,15 +33,19 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
     }
   }, []);
 
+  // Save explanations to localStorage whenever they change
   useEffect(() => {
     if (Object.keys(explanations).length > 0) {
       localStorage.setItem('currentExplanations', JSON.stringify(explanations));
     }
   }, [explanations]);
 
+  // Clear explanations when icebreakers change
   useEffect(() => {
-    setExplanations({});
-    localStorage.removeItem('currentExplanations');
+    if (icebreakers.length === 0) {
+      setExplanations({});
+      localStorage.removeItem('currentExplanations');
+    }
   }, [icebreakers]);
 
   const handleReport = async (icebreaker: string) => {
