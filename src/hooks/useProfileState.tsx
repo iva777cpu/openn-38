@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProfileState, emptyProfile } from "@/types/profile";
 import { useIcebreakers } from "./useIcebreakers";
 
 export const useProfileState = () => {
-  const [currentProfile, setCurrentProfile] = useState<ProfileState>(emptyProfile);
+  const [currentProfile, setCurrentProfile] = useState<ProfileState>(() => {
+    const savedProfile = localStorage.getItem('currentProfile');
+    return savedProfile ? JSON.parse(savedProfile) : emptyProfile;
+  });
+  
   const [originalProfile, setOriginalProfile] = useState<ProfileState>(emptyProfile);
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
   const [selectedProfileName, setSelectedProfileName] = useState<string>("");
@@ -19,11 +23,13 @@ export const useProfileState = () => {
 
   const handleNewProfile = () => {
     console.log("Creating new profile - clearing all state");
+    localStorage.removeItem('currentProfile');
+    localStorage.removeItem('currentIcebreakers');
     setCurrentProfile(emptyProfile);
     setOriginalProfile(emptyProfile);
     setSelectedProfileId(null);
     setSelectedProfileName("");
-    clearAllIcebreakers(); // Add this line to ensure icebreakers are cleared
+    clearAllIcebreakers();
   };
 
   return {

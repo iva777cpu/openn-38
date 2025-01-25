@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useIcebreakersState } from "./useIcebreakersState";
 
-// Base props for the ProfileStateManager
 interface ProfileStateManagerProps {
   currentProfile: Record<string, string>;
   children: React.ReactNode;
@@ -9,7 +8,6 @@ interface ProfileStateManagerProps {
   showSavedIcebreakers: boolean;
 }
 
-// Props that will be passed to children
 export interface ProfileStateExtendedProps {
   isFirstTime: boolean;
   setIsFirstTime: (value: boolean) => void;
@@ -39,7 +37,7 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
     }
   }, [showProfiles, showSavedIcebreakers]);
 
-  // Save form data to localStorage
+  // Save form data to localStorage when it changes
   useEffect(() => {
     if (currentProfile && Object.keys(currentProfile).length > 0) {
       localStorage.setItem('currentProfile', JSON.stringify(currentProfile));

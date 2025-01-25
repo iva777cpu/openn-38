@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { BookmarkPlus, Flag } from "lucide-react";
 import { toast } from "sonner";
@@ -15,7 +15,13 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   savedIcebreakers,
   onToggleSave,
 }) => {
+  const [reportedIcebreakers, setReportedIcebreakers] = useState<Set<string>>(new Set());
+
   const handleReport = async (icebreaker: string) => {
+    if (reportedIcebreakers.has(icebreaker)) {
+      return; // Prevent reporting the same message multiple times
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('report-message', {
         body: { message: icebreaker }
@@ -27,6 +33,9 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       }
 
       console.log("Response from report-message function:", data);
+      
+      // Update reported icebreakers state
+      setReportedIcebreakers(prev => new Set([...prev, icebreaker]));
 
       toast.success("Message reported successfully", {
         position: "top-center",
@@ -64,9 +73,16 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
               variant="ghost"
               size="icon"
               onClick={() => handleReport(icebreaker)}
-              className="hover:bg-[#1A2A1D] transition-all opacity-60 hover:opacity-100"
+              disabled={reportedIcebreakers.has(icebreaker)}
+              className={`transition-all ${
+                reportedIcebreakers.has(icebreaker)
+                  ? 'bg-[#1A2A1D] opacity-60 cursor-not-allowed'
+                  : 'hover:bg-[#1A2A1D] opacity-60 hover:opacity-100'
+              }`}
             >
-              <Flag className="h-4 w-4 stroke-[#E5D4BC]" />
+              <Flag className={`h-4 w-4 stroke-[#E5D4BC] ${
+                reportedIcebreakers.has(icebreaker) ? 'fill-[#E5D4BC]' : ''
+              }`} />
             </Button>
           </div>
         </div>
