@@ -12,13 +12,13 @@ export const buildPrompt = (
   });
   
   const formatTraits = (traits: Record<string, any>, section: string) => {
-    console.log(`Formatting ${section} traits:`, traits);
+    console.log(`Formatting ${section} traits with priorities:`, traits);
     return Object.entries(traits)
       .map(([key, value]) => {
         console.log(`Processing trait ${key}:`, value);
-        // Make sure priority is explicitly included in the instruction
         const priorityText = value.priority ? ` [Priority: ${value.priority}]` : '';
-        return `${value.questionText}: ${value.value}\nINSTRUCTION: ${value.prompt}${priorityText}`;
+        return `${value.questionText}: ${value.value}
+INSTRUCTION: ${value.prompt}${priorityText}`;
       })
       .join('\n');
   };
@@ -69,5 +69,7 @@ Context (USE ONLY THIS INFORMATION):
 ${contextString}
 
 Additional Context:
-- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, build upon existing familiarity'}`;
+- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, build upon existing familiarity'}
+
+IMPORTANT: Pay close attention to the Priority values in square brackets after each trait. Higher priority traits (0.7-0.9) should be used more frequently and prominently in your responses, while lower priority traits (0.2-0.4) should only be referenced occasionally or subtly.`;
 };

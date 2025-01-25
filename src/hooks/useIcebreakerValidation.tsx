@@ -20,11 +20,10 @@ export const useIcebreakerValidation = () => {
         const question = allQuestions.find(q => q.id === key);
         
         if (question) {
-          // Log each field's processing details
           console.log(`Processing field ${key}:`, {
             value: value.trim(),
             prompt: question.prompt,
-            priority: question.priority,
+            priority: question.priority, // Explicitly log priority
             questionText: question.text
           });
           
@@ -38,11 +37,11 @@ export const useIcebreakerValidation = () => {
             }
           };
         }
-        console.log(`Warning: No question definition found for field ${key}`);
+        console.warn(`Warning: No question definition found for field ${key}`);
         return acc;
       }, {});
 
-    console.log('Final processed fields:', JSON.stringify(filledFields, null, 2));
+    console.log('Final processed fields with priorities:', JSON.stringify(filledFields, null, 2));
     return filledFields;
   };
 
