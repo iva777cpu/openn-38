@@ -41,7 +41,7 @@ serve(async (req) => {
           message_text: message,
           reported_by: userId,
           status: 'pending',
-          explanation: explanation || null
+          explanation: explanation
         }
       ]);
 
