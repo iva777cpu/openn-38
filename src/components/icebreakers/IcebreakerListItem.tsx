@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { QuestionMarkCircle } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -108,7 +108,7 @@ export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
             disabled={explanation !== null || isLoadingExplanation}
           >
             <div className="relative">
-              <QuestionMarkCircle 
+              <HelpCircle 
                 className={cn(
                   "h-5 w-5 text-[#E5D4BC]",
                   { "animate-spin": isLoadingExplanation }
