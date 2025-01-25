@@ -21,17 +21,28 @@ serve(async (req) => {
       totalFields: Object.keys(answers).length,
       fields: Object.keys(answers)
     });
-    
-    console.log('Detailed answers received:', JSON.stringify(answers, null, 2));
 
-    const userTraits = Object.entries(answers)
+    // Filter out empty fields and undefined values
+    const filteredAnswers = Object.entries(answers).reduce((acc, [key, value]: [string, any]) => {
+      if (value?.value && value.value.toString().trim() !== '') {
+        return {
+          ...acc,
+          [key]: value
+        };
+      }
+      return acc;
+    }, {});
+    
+    console.log('Filtered answers:', JSON.stringify(filteredAnswers, null, 2));
+
+    const userTraits = Object.entries(filteredAnswers)
       .filter(([key]: [string, any]) => key.startsWith('user'))
       .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
         [key]: value
       }), {});
 
-    const targetTraits = Object.entries(answers)
+    const targetTraits = Object.entries(filteredAnswers)
       .filter(([key]: [string, any]) => 
         key.startsWith('target') || 
         ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
@@ -41,7 +52,7 @@ serve(async (req) => {
         [key]: value
       }), {});
 
-    const situationInfo = Object.entries(answers)
+    const situationInfo = Object.entries(filteredAnswers)
       .filter(([key]: [string, any]) => ['situation', 'previousTopics'].includes(key))
       .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
