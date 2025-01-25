@@ -35,8 +35,8 @@ Focus on charm, humor, and clever phrasing. Use contrasts for dramatic effect, p
 CRITICAL GUIDELINES:
 - Use a mix of approaches:
   - At least 4 icebreakers should be based on provided traits and situation
-  - At least 1 should be general or creative icebreakers not tied to specific traits
-  - The remaining 5 can be combination of mixing traits and situation with general approaches
+  - At least 2 should be general or creative icebreakers not tied to specific traits
+  - at least 4 must be combination of mixing traits and situation with general approaches, meaning you dont necessary need to refrence or use the traits in your responses but have them in mind and mostly lean on generateing general icebreakers
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -47,9 +47,9 @@ CRITICAL GUIDELINES:
   - Share shopping preferences
   - Explain where they got something
 - Priority values guide importance:
-  - High priority (0.6-0.9): Use these traits more prominently in responses
-  - Medium priority (0.4-0.5): Reference occasionally
-  - Low priority (0.2-0.3): Use sparingly or as subtle context
+  - High priority (0.5-0.7): Reference more occasionally
+  - Medium priority (0.3-0.4): Reference occasionally
+  - Low priority (0.1-0.2): Use sparingly or as subtle context
   - Mix priorities creatively for more dynamic responses
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, at least once'}
 
