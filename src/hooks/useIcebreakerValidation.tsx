@@ -2,22 +2,11 @@ import { questions } from "@/utils/questions";
 
 export const useIcebreakerValidation = () => {
   const validateAndProcessFields = (userProfile: Record<string, string>) => {
-    console.log('Starting validation with profile:', userProfile);
-    
     const filledFields = Object.entries(userProfile)
-      .filter(([_, value]) => {
-        const trimmedValue = value?.toString().trim();
-        return trimmedValue !== undefined && trimmedValue !== null && trimmedValue !== '';
-      })
+      .filter(([_, value]) => value && value.toString().trim() !== '')
       .reduce((acc, [key, value]) => {
-        // Find matching question across all categories
-        const allQuestions = [
-          ...questions.userTraits,
-          ...questions.targetTraits,
-          ...questions.generalInfo
-        ];
-        
-        const question = allQuestions.find(q => q.id === key);
+        const question = [...questions.userTraits, ...questions.targetTraits, ...questions.generalInfo]
+          .find(q => q.id === key);
         
         if (question) {
           console.log(`Processing field ${key}:`, {
@@ -37,11 +26,10 @@ export const useIcebreakerValidation = () => {
             }
           };
         }
-        console.warn(`Warning: No question definition found for field ${key}`);
+        console.log(`Warning: No question definition found for field ${key}`);
         return acc;
       }, {});
 
-    console.log('Final processed fields with priorities:', JSON.stringify(filledFields, null, 2));
     return filledFields;
   };
 

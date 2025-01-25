@@ -27,10 +27,7 @@ export const useIcebreakerGeneration = (
         }
       });
 
-      if (error) {
-        console.error('Error from Supabase function:', error);
-        throw error;
-      }
+      if (error) throw error;
       
       console.log('Raw AI response:', data);
 
@@ -38,11 +35,7 @@ export const useIcebreakerGeneration = (
         throw new Error('Invalid response format from AI');
       }
 
-      const newIcebreakers = data.icebreakers
-        .split(/\d+\./)
-        .filter(Boolean)
-        .map((text: string) => text.trim());
-      
+      const newIcebreakers = data.icebreakers.split(/\d+\./).filter(Boolean).map((text: string) => text.trim());
       console.log('Processed icebreakers:', newIcebreakers);
       
       if (newIcebreakers.length === 0) {

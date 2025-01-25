@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { Button } from "../ui/button";
+import { BookmarkPlus, Flag } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { IcebreakerItem } from "./IcebreakerItem";
 
 interface IcebreakerListProps {
   icebreakers: string[];
   savedIcebreakers: Set<string>;
-  onToggleSave: (icebreaker: string, explanation?: string) => void;
-}
-
-interface ExplanationState {
-  [key: string]: {
-    text: string;
-    loading: boolean;
-    generated: boolean;
-  };
+  onToggleSave: (icebreaker: string) => void;
 }
 
 export const IcebreakerList: React.FC<IcebreakerListProps> = ({
@@ -22,87 +15,26 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   savedIcebreakers,
   onToggleSave,
 }) => {
-  const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
-  const [explanations, setExplanations] = useState<ExplanationState>({});
-
-  useEffect(() => {
-    const savedExplanations = localStorage.getItem('currentExplanations');
-    if (savedExplanations) {
-      setExplanations(JSON.parse(savedExplanations));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (Object.keys(explanations).length > 0) {
-      localStorage.setItem('currentExplanations', JSON.stringify(explanations));
-    }
-  }, [explanations]);
-
-  useEffect(() => {
-    setExplanations({});
-    localStorage.removeItem('currentExplanations');
-  }, [icebreakers]);
-
   const handleReport = async (icebreaker: string) => {
-    if (reportedMessages.has(icebreaker)) return;
-
     try {
-      const explanation = explanations[icebreaker]?.text;
-      const { error } = await supabase.functions.invoke('report-message', {
-        body: { message: icebreaker, explanation }
-      });
-
-      if (error) throw error;
-      
-      setReportedMessages(prev => new Set([...prev, icebreaker]));
-      toast.success("Message reported successfully");
-    } catch (error) {
-      console.error('Error reporting message:', error);
-      toast.error("Failed to report message. Please try again later.");
-    }
-  };
-
-  const generateExplanation = async (icebreaker: string) => {
-    if (explanations[icebreaker]?.generated || reportedMessages.has(icebreaker)) {
-      return;
-    }
-
-    setExplanations(prev => ({
-      ...prev,
-      [icebreaker]: { text: '', loading: true, generated: false }
-    }));
-
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-explanation', {
+      const { data, error } = await supabase.functions.invoke('report-message', {
         body: { message: icebreaker }
       });
 
-      if (error) throw error;
-
-      const explanation = data.explanation;
-      
-      setExplanations(prev => ({
-        ...prev,
-        [icebreaker]: { text: explanation, loading: false, generated: true }
-      }));
-
-      if (savedIcebreakers.has(icebreaker)) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase
-            .from('saved_messages')
-            .update({ explanation })
-            .eq('user_id', user.id)
-            .eq('message_text', icebreaker);
-        }
+      if (error) {
+        console.error('Error from report-message function:', error);
+        throw error;
       }
+
+      console.log("Response from report-message function:", data);
+
+      toast.success("Message reported successfully", {
+        position: "top-center",
+        duration: 2000,
+      });
     } catch (error) {
-      console.error('Error generating explanation:', error);
-      toast.error("Failed to generate explanation. Please try again later.");
-      setExplanations(prev => ({
-        ...prev,
-        [icebreaker]: { text: '', loading: false, generated: false }
-      }));
+      console.error('Error reporting message:', error);
+      toast.error("Failed to report message. Please try again later.");
     }
   };
 
@@ -111,18 +43,33 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   return (
     <div className="space-y-2">
       {icebreakers.map((icebreaker, index) => (
-        <IcebreakerItem
-          key={index}
-          icebreaker={icebreaker}
-          explanation={explanations[icebreaker]?.text || ''}
-          isSelected={savedIcebreakers.has(icebreaker)}
-          isReported={reportedMessages.has(icebreaker)}
-          isExplanationLoading={explanations[icebreaker]?.loading || false}
-          isExplanationGenerated={explanations[icebreaker]?.generated || false}
-          onToggleSave={() => onToggleSave(icebreaker, explanations[icebreaker]?.text)}
-          onGenerateExplanation={() => generateExplanation(icebreaker)}
-          onReport={() => handleReport(icebreaker)}
-        />
+        <div key={index} className="p-4 bg-[#47624B] dark:bg-[#2D4531] rounded-md flex justify-between items-start border border-[#E5D4BC]">
+          <span className="text-[15px] text-[#E5D4BC]">{icebreaker}</span>
+          <div className="flex flex-col gap-2 ml-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onToggleSave(icebreaker)}
+              className="hover:bg-[#1A2A1D] transition-all"
+            >
+              <BookmarkPlus 
+                className={`h-4 w-4 ${
+                  savedIcebreakers.has(icebreaker) 
+                    ? 'fill-[#E5D4BC] stroke-[#E5D4BC]' 
+                    : 'stroke-[#E5D4BC]'
+                }`}
+              />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleReport(icebreaker)}
+              className="hover:bg-[#1A2A1D] transition-all opacity-60 hover:opacity-100"
+            >
+              <Flag className="h-4 w-4 stroke-[#E5D4BC]" />
+            </Button>
+          </div>
+        </div>
       ))}
     </div>
   );

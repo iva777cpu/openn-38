@@ -25,7 +25,6 @@ interface ProfileRoutingProps {
   handleIcebreakersUpdate: (icebreakers: string[]) => void;
   clearIcebreakers: () => void;
   checkAuth: (action: () => void) => Promise<void>;
-  onNewProfile: () => void;
 }
 
 export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
@@ -39,7 +38,6 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   handleIcebreakersUpdate,
   clearIcebreakers,
   checkAuth,
-  onNewProfile,
 }) => {
   if (showProfiles) {
     return (
@@ -49,7 +47,6 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
           setShowProfiles(false);
         }}
         onBack={() => setShowProfiles(false)}
-        onNewProfile={onNewProfile}
       />
     );
   }

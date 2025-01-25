@@ -80,7 +80,6 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
             handleSelectProfile(profile);
             setShowProfiles(false);
           }}
-          onNewProfile={handleNewProfile}
         />
       ) : showSavedIcebreakers ? (
         <SavedIcebreakers 

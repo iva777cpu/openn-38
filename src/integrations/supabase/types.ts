@@ -12,7 +12,6 @@ export type Database = {
       reported_messages: {
         Row: {
           created_at: string
-          explanation: string | null
           id: string
           message_text: string
           reported_by: string | null
@@ -20,7 +19,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          explanation?: string | null
           id?: string
           message_text: string
           reported_by?: string | null
@@ -28,7 +26,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          explanation?: string | null
           id?: string
           message_text?: string
           reported_by?: string | null
@@ -39,29 +36,23 @@ export type Database = {
       saved_messages: {
         Row: {
           created_at: string
-          explanation: string | null
           id: string
           is_edited: boolean | null
           message_text: string
-          updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          explanation?: string | null
           id?: string
           is_edited?: boolean | null
           message_text: string
-          updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          explanation?: string | null
           id?: string
           is_edited?: boolean | null
           message_text?: string
-          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -199,7 +190,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -211,10 +202,10 @@ export type Tables<
         PublicSchema["Views"])
     ? (PublicSchema["Tables"] &
         PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
+      Row: infer R
+    }
+    ? R
+    : never
     : never
 
 export type TablesInsert<
