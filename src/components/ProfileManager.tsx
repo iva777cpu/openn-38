@@ -47,10 +47,19 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
   } = useIcebreakersState(currentProfile);
 
   const handleProfileSelect = (profile: any) => {
+    // Clear icebreakers before selecting new profile
     clearIcebreakers();
     handleSelectProfile(profile);
-    setShowProfiles(false); // Add this line to close profiles view
+    setShowProfiles(false);
   };
+
+  // Clear icebreakers when showing profile form (new profile)
+  React.useEffect(() => {
+    if (!showProfiles && !showSavedIcebreakers && !selectedProfileId) {
+      console.log('Clearing icebreakers for new profile form');
+      clearIcebreakers();
+    }
+  }, [showProfiles, showSavedIcebreakers, selectedProfileId, clearIcebreakers]);
 
   const contentProps = {
     currentProfile,
