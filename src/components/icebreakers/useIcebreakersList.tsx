@@ -13,7 +13,7 @@ export const useIcebreakersList = () => {
       
       const { data, error } = await supabase
         .from("saved_messages")
-        .select("*")
+        .select("id, message_text, explanation, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       

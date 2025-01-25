@@ -75,7 +75,8 @@ export const useIcebreakers = () => {
           .insert([{ 
             user_id: user.id, 
             message_text: icebreaker,
-            explanation: explanation || null
+            explanation: explanation || null,
+            created_at: new Date().toISOString()
           }]);
 
         if (error) {
