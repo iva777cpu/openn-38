@@ -14,8 +14,9 @@ export const buildPrompt = (
   const formatTraits = (traits: Record<string, any>, section: string) => {
     console.log(`Formatting ${section} traits with priorities:`, traits);
     return Object.entries(traits)
+      .sort((a, b) => (b[1].priority || 0) - (a[1].priority || 0)) // Sort by priority
       .map(([key, value]) => {
-        console.log(`Processing trait ${key}:`, value);
+        console.log(`Processing trait ${key} with priority ${value.priority}`);
         const priorityText = value.priority ? ` [Priority: ${value.priority}]` : '';
         return `${value.questionText}: ${value.value}
 INSTRUCTION: ${value.prompt}${priorityText}`;
