@@ -1,3 +1,5 @@
+import { questions } from "@/utils/questions";
+
 export const useIcebreakerValidation = () => {
   const validateAndProcessFields = (userProfile: Record<string, string>) => {
     const filledFields = Object.entries(userProfile)
