@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { BookmarkPlus, Flag } from "lucide-react";
 import { toast } from "sonner";
@@ -15,7 +15,13 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   savedIcebreakers,
   onToggleSave,
 }) => {
+  const [reportedMessages, setReportedMessages] = useState<Set<string>>(new Set());
+
   const handleReport = async (icebreaker: string) => {
+    if (reportedMessages.has(icebreaker)) {
+      return; // Message already reported
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('report-message', {
         body: { message: icebreaker }
@@ -27,6 +33,9 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       }
 
       console.log("Response from report-message function:", data);
+      
+      // Add message to reported set
+      setReportedMessages(prev => new Set([...prev, icebreaker]));
 
       toast.success("Message reported successfully", {
         position: "top-center",
@@ -64,9 +73,20 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
               variant="ghost"
               size="icon"
               onClick={() => handleReport(icebreaker)}
-              className="hover:bg-[#1A2A1D] transition-all opacity-60 hover:opacity-100"
+              disabled={reportedMessages.has(icebreaker)}
+              className={`hover:bg-[#1A2A1D] transition-all ${
+                reportedMessages.has(icebreaker)
+                  ? 'bg-[#1A2A1D] opacity-100'
+                  : 'opacity-60 hover:opacity-100'
+              }`}
             >
-              <Flag className="h-4 w-4 stroke-[#E5D4BC]" />
+              <Flag 
+                className={`h-4 w-4 ${
+                  reportedMessages.has(icebreaker)
+                    ? 'fill-[#E5D4BC] stroke-[#E5D4BC]'
+                    : 'stroke-[#E5D4BC]'
+                }`}
+              />
             </Button>
           </div>
         </div>
