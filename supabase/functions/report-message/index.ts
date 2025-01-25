@@ -21,19 +21,18 @@ serve(async (req) => {
     const { message } = await req.json();
     console.log("Received message to report:", message);
 
-    // Get the user ID from the authorization header
+    // Get the user ID from the authorization header if it exists
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
+    let userId = null;
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    );
+    if (authHeader) {
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+        authHeader.replace('Bearer ', '')
+      );
 
-    if (userError || !user) {
-      console.error("Error getting user:", userError);
-      throw new Error('Unauthorized');
+      if (!userError && user) {
+        userId = user.id;
+      }
     }
 
     // Insert the reported message into the database
@@ -42,7 +41,7 @@ serve(async (req) => {
       .insert([
         {
           message_text: message,
-          reported_by: user.id,
+          reported_by: userId,
           status: 'pending'
         }
       ]);
