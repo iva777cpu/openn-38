@@ -15,9 +15,7 @@ export const useIcebreakers = () => {
   const loadSavedIcebreakers = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        return;
-      }
+      if (!user) return;
 
       const { data, error } = await supabase
         .from('saved_messages')
@@ -43,7 +41,7 @@ export const useIcebreakers = () => {
     }
   }, [icebreakers]);
 
-  const toggleIcebreaker = async (icebreaker: string) => {
+  const toggleIcebreaker = async (icebreaker: string, explanation?: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -65,7 +63,11 @@ export const useIcebreakers = () => {
       } else {
         const { error } = await supabase
           .from('saved_messages')
-          .insert([{ user_id: user.id, message_text: icebreaker }]);
+          .insert([{ 
+            user_id: user.id, 
+            message_text: icebreaker,
+            explanation: explanation 
+          }]);
 
         if (error) throw error;
 
