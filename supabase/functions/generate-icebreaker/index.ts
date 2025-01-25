@@ -24,31 +24,41 @@ serve(async (req) => {
     
     console.log('Detailed answers received:', JSON.stringify(answers, null, 2));
 
+    // Filter out empty fields
     const userTraits = Object.entries(answers)
-      .filter(([key]: [string, any]) => key.startsWith('user'))
+      .filter(([key, value]: [string, any]) => {
+        const isEmpty = !value?.value || value.value.toString().trim() === '';
+        return !isEmpty && key.startsWith('user');
+      })
       .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
         [key]: value
       }), {});
 
     const targetTraits = Object.entries(answers)
-      .filter(([key]: [string, any]) => 
-        key.startsWith('target') || 
-        ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
-      )
+      .filter(([key, value]: [string, any]) => {
+        const isEmpty = !value?.value || value.value.toString().trim() === '';
+        return !isEmpty && (
+          key.startsWith('target') || 
+          ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
+        );
+      })
       .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
         [key]: value
       }), {});
 
     const situationInfo = Object.entries(answers)
-      .filter(([key]: [string, any]) => ['situation', 'previousTopics'].includes(key))
+      .filter(([key, value]: [string, any]) => {
+        const isEmpty = !value?.value || value.value.toString().trim() === '';
+        return !isEmpty && ['situation', 'previousTopics'].includes(key);
+      })
       .reduce((acc, [key, value]: [string, any]) => ({
         ...acc,
         [key]: value
       }), {});
 
-    console.log('Processed traits:', {
+    console.log('Processed traits after filtering empty values:', {
       userTraits: Object.keys(userTraits),
       targetTraits: Object.keys(targetTraits),
       situationInfo: Object.keys(situationInfo)
@@ -85,7 +95,7 @@ Other creative options
 Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Use mostly information from the context below
+- Use ONLY information from the context below
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -99,6 +109,8 @@ CRITICAL GUIDELINES:
 - Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
 - Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, focus on building upon existing familiarity'}
+- NEVER reference any past conversations or topics unless explicitly provided in the context below
+- NEVER make assumptions about previous interactions unless explicitly stated in the context
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
@@ -118,9 +130,12 @@ Additional Context:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [
-          { role: 'system', content: systemPrompt }
+          { 
+            role: 'system', 
+            content: systemPrompt 
+          }
         ],
         temperature: 0.7,
       }),
