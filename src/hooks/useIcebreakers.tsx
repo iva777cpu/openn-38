@@ -23,7 +23,8 @@ export const useIcebreakers = () => {
       const { data, error } = await supabase
         .from('saved_messages')
         .select('message_text')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -70,7 +71,7 @@ export const useIcebreakers = () => {
           .insert([{ 
             user_id: user.id, 
             message_text: icebreaker,
-            explanation: explanation || null // Ensure explanation is included when saving
+            explanation: explanation || null
           }]);
 
         if (error) throw error;
