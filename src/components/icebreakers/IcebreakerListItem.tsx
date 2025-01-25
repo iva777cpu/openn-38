@@ -8,8 +8,7 @@ interface SavedMessage {
   id: string;
   message_text: string;
   created_at: string;
-  is_edited: boolean;
-  user_id: string;
+  explanation?: string | null;
 }
 
 interface IcebreakerListItemProps {
@@ -42,7 +41,12 @@ export const IcebreakerListItem: React.FC<IcebreakerListItemProps> = ({
           onCheckedChange={() => onToggleSelection(message.id)}
           className="first-time-checkbox mt-1 border-[#2D4531] dark:border-[#E5D4BC]"
         />
-        <p className="flex-1">{message.message_text}</p>
+        <div className="flex-1">
+          <p>{message.message_text}</p>
+          {message.explanation && (
+            <p className="text-sm mt-2 text-[#E5D4BC]/80">{message.explanation}</p>
+          )}
+        </div>
       </div>
     </Card>
   );
