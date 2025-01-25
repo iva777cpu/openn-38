@@ -10,6 +10,7 @@ export const useIcebreakerValidation = () => {
         return trimmedValue !== undefined && trimmedValue !== null && trimmedValue !== '';
       })
       .reduce((acc, [key, value]) => {
+        // Find matching question across all categories
         const allQuestions = [
           ...questions.userTraits,
           ...questions.targetTraits,
@@ -31,8 +32,8 @@ export const useIcebreakerValidation = () => {
             ...acc,
             [key]: {
               value: value.trim(),
-              prompt: question.prompt || `Consider ${key}`,
-              priority: question.priority || 0.5,
+              prompt: question.prompt,
+              priority: question.priority,
               questionText: question.text
             }
           };
