@@ -30,7 +30,11 @@ export const useAuthSetup = () => {
         console.log("Auth event:", event);
         
         if (event === 'SIGNED_IN') {
-          navigate("/");
+          if (session?.user?.email_confirmed_at) {
+            navigate("/");
+          } else {
+            navigate("/confirm-email");
+          }
         } else if (event === 'SIGNED_OUT') {
           navigate("/login");
         } else if (event === 'PASSWORD_RECOVERY') {
