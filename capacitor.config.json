@@ -1,27 +1,9 @@
 {
-  "appId": "com.openera.app",
+  "appId": "com.openera.icebreakers",
   "appName": "Openera",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https",
-    "cleartext": true,
-    "hostname": "localhost"
-  },
-  "android": {
-    "buildOptions": {
-      "keystorePath": null,
-      "keystorePassword": null,
-      "keystoreAlias": null,
-      "keystoreAliasPassword": null
-    }
-  },
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 2000,
-      "backgroundColor": "#2D4531",
-      "showSpinner": true,
-      "androidSpinnerStyle": "large",
-      "spinnerColor": "#E5D4BC"
-    }
+    "url": "https://your-netlify-url.netlify.app",
+    "cleartext": true
   }
 }
