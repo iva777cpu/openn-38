@@ -5,11 +5,11 @@ import { useAuthSetup } from "@/hooks/useAuthSetup";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
-  const redirectUrl = "https://maneblod.com/confirm-email";
 
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
@@ -69,7 +69,6 @@ export default function Login() {
               },
             }}
             providers={[]}
-            redirectTo={redirectUrl}
             localization={{
               variables: {
                 sign_in: {

@@ -11,24 +11,37 @@ export default function ConfirmEmail() {
 
   useEffect(() => {
     const handleConfirmation = async () => {
-      // Handle redirect from Supabase hosted confirmation
       const refreshToken = searchParams.get('refresh_token');
       const type = searchParams.get('type');
+      const accessToken = searchParams.get('access_token');
 
-      if (type === 'signup' && refreshToken) {
-        const { error } = await supabase.auth.refreshSession({
-          refresh_token: refreshToken
-        });
-        
-        if (error) {
-          console.error("Error refreshing session:", error);
+      // Handle email confirmation
+      if ((type === 'signup' || type === 'recovery') && (refreshToken || accessToken)) {
+        try {
+          let session;
+          
+          if (refreshToken) {
+            const { data, error } = await supabase.auth.refreshSession({
+              refresh_token: refreshToken
+            });
+            
+            if (error) throw error;
+            session = data.session;
+          } else if (accessToken) {
+            const { data, error } = await supabase.auth.getSession();
+            if (error) throw error;
+            session = data.session;
+          }
+
+          if (session?.user?.email_confirmed_at) {
+            toast.success("Email confirmed successfully!");
+            navigate("/");
+            return;
+          }
+        } catch (error) {
+          console.error("Error during confirmation:", error);
           toast.error("Failed to confirm email. Please try again.");
-          return;
         }
-        
-        toast.success("Email confirmed successfully!");
-        navigate("/");
-        return;
       }
 
       // Check if already confirmed
