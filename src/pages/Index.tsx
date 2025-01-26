@@ -8,5 +8,13 @@ interface IndexProps {
 }
 
 export default function Index({ onDeleteAccount, onSignOut, isAuthenticated }: IndexProps) {
-  return <MainLayout onDeleteAccount={onDeleteAccount} onSignOut={onSignOut} isAuthenticated={isAuthenticated} />;
+  useAuthCheck();
+  
+  return (
+    <MainLayout 
+      onDeleteAccount={onDeleteAccount} 
+      onSignOut={onSignOut} 
+      isAuthenticated={isAuthenticated} 
+    />
+  );
 }
