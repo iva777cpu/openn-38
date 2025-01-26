@@ -44,6 +44,16 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
     if (!showProfiles && !showSavedIcebreakers) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
+
+    // Return cleanup function that logs after state change
+    return () => {
+      console.log('After localStorage values:', {
+        currentProfile: localStorage.getItem('currentProfile'),
+        currentIcebreakers: localStorage.getItem('currentIcebreakers'),
+        currentExplanations: localStorage.getItem('currentExplanations'),
+        theme: localStorage.getItem('theme')
+      });
+    };
   }, [showProfiles, showSavedIcebreakers]);
 
   // Save form data to localStorage when it changes
