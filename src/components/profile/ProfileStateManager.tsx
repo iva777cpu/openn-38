@@ -30,8 +30,17 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
     clearIcebreakers,
   } = useIcebreakersState(currentProfile);
 
-  // Reset scroll position when showing forms
+  // Log state changes
   useEffect(() => {
+    console.log('--- ProfileStateManager State Change ---');
+    console.log('Before localStorage values:', {
+      currentProfile: localStorage.getItem('currentProfile'),
+      currentIcebreakers: localStorage.getItem('currentIcebreakers'),
+      currentExplanations: localStorage.getItem('currentExplanations'),
+      theme: localStorage.getItem('theme')
+    });
+    
+    // Reset scroll position when showing forms
     if (!showProfiles && !showSavedIcebreakers) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -40,15 +49,33 @@ export const ProfileStateManager: React.FC<ProfileStateManagerProps> = ({
   // Save form data to localStorage when it changes
   useEffect(() => {
     if (currentProfile && Object.keys(currentProfile).length > 0) {
+      console.log('Saving profile to localStorage:', currentProfile);
       localStorage.setItem('currentProfile', JSON.stringify(currentProfile));
     }
+    
+    // Log after state change
+    console.log('After localStorage values:', {
+      currentProfile: localStorage.getItem('currentProfile'),
+      currentIcebreakers: localStorage.getItem('currentIcebreakers'),
+      currentExplanations: localStorage.getItem('currentExplanations'),
+      theme: localStorage.getItem('theme')
+    });
   }, [currentProfile]);
 
   // Save icebreakers to localStorage
   useEffect(() => {
     if (persistedIcebreakers.length > 0) {
+      console.log('Saving icebreakers to localStorage:', persistedIcebreakers);
       localStorage.setItem('currentIcebreakers', JSON.stringify(persistedIcebreakers));
     }
+    
+    // Log after icebreakers change
+    console.log('After icebreakers change:', {
+      currentProfile: localStorage.getItem('currentProfile'),
+      currentIcebreakers: localStorage.getItem('currentIcebreakers'),
+      currentExplanations: localStorage.getItem('currentExplanations'),
+      theme: localStorage.getItem('theme')
+    });
   }, [persistedIcebreakers]);
 
   const childrenWithProps = React.Children.map(children, (child) => {
