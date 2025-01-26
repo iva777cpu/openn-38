@@ -6,7 +6,7 @@
     "androidScheme": "https",
     "cleartext": true,
     "hostname": "maneblod.com",
-    "url": "https://maneblod.com"
+    "url": "https://maneblod.com/app"
   },
   "android": {
     "buildOptions": {
