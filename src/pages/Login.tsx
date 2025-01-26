@@ -11,6 +11,20 @@ export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
 
+  // Add event listener for auth state changes
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log("Auth state changed:", event, session);
+    if (event === 'SIGNED_IN') {
+      console.log("User signed in:", session?.user);
+      navigate('/');
+    } else if (event === 'SIGNED_OUT') {
+      console.log("User signed out");
+      navigate('/login');
+    } else if (event === 'USER_UPDATED') {
+      console.log("User updated:", session?.user);
+    }
+  });
+
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -69,6 +83,8 @@ export default function Login() {
               },
             }}
             providers={[]}
+            onlyThirdPartyProviders={false}
+            redirectTo={`${window.location.origin}/confirm-email`}
             localization={{
               variables: {
                 sign_in: {
