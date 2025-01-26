@@ -5,11 +5,13 @@ import { useAuthSetup } from "@/hooks/useAuthSetup";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
+
+  // Get the current origin for redirect URLs
+  const origin = window.location.origin;
 
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
@@ -69,6 +71,7 @@ export default function Login() {
               },
             }}
             providers={[]}
+            redirectTo={`${origin}/confirm-email`}
             localization={{
               variables: {
                 sign_in: {
