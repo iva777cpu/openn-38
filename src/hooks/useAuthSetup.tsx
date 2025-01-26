@@ -89,8 +89,8 @@ export const useAuthSetup = () => {
       return true;
     }
 
-    if (error.message?.includes("Email rate limit exceeded")) {
-      toast.error("Too many attempts. Please try again in a few minutes.");
+    if (error.message?.includes("Email rate limit exceeded") || error.message?.includes("over_email_send_rate_limit")) {
+      toast.error("Too many email attempts. Please wait a few minutes before trying again.");
       return true;
     }
 
