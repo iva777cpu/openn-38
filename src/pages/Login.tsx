@@ -11,27 +11,6 @@ export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
 
-  const handleAuthError = (error: any) => {
-    console.error("Auth error:", error);
-    
-    if (error.message?.includes("Email not confirmed")) {
-      toast.error("Please confirm your email before signing in. Check your inbox for the confirmation link.");
-      return;
-    }
-    
-    if (error.message?.includes("Invalid login credentials")) {
-      toast.error("Invalid email or password. Please try again.");
-      return;
-    }
-
-    if (error.message?.includes("Email rate limit exceeded")) {
-      toast.error("Too many attempts. Please try again in a few minutes.");
-      return;
-    }
-
-    toast.error("An error occurred during authentication. Please try again.");
-  };
-
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -90,7 +69,30 @@ export default function Login() {
               },
             }}
             providers={[]}
-            onError={handleAuthError}
+            localization={{
+              variables: {
+                sign_in: {
+                  email_input_placeholder: 'Your email address',
+                  password_input_placeholder: 'Your password',
+                  email_label: 'Email address',
+                  password_label: 'Password',
+                  button_label: 'Sign in',
+                  loading_button_label: 'Signing in ...',
+                  social_provider_text: 'Sign in with {{provider}}',
+                  link_text: "Already have an account? Sign in",
+                },
+                sign_up: {
+                  email_input_placeholder: 'Your email address',
+                  password_input_placeholder: 'Your password',
+                  email_label: 'Email address',
+                  password_label: 'Password',
+                  button_label: 'Sign up',
+                  loading_button_label: 'Signing up ...',
+                  social_provider_text: 'Sign up with {{provider}}',
+                  link_text: "Don't have an account? Sign up",
+                },
+              },
+            }}
           />
         </div>
       </div>

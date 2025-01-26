@@ -27,9 +27,21 @@ export const useAuthSetup = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'PASSWORD_RECOVERY') {
+        console.log("Auth event:", event);
+        
+        if (event === 'SIGNED_IN') {
+          navigate("/");
+        } else if (event === 'SIGNED_OUT') {
+          navigate("/login");
+        } else if (event === 'USER_DELETED') {
+          toast.success("Account successfully deleted");
+          navigate("/login");
+        } else if (event === 'PASSWORD_RECOVERY') {
           toast.error("Please wait at least 38 seconds before requesting another password reset.");
-          return;
+        } else if (event === 'USER_UPDATED') {
+          toast.success("Account successfully updated");
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log("Token refreshed");
         }
 
         if (session) {
@@ -49,16 +61,13 @@ export const useAuthSetup = () => {
                 user_id: session.user.id, 
                 theme: systemPrefersDark ? 'dark' : 'light',
                 updated_at: new Date().toISOString()
-              }, {
-                onConflict: 'user_id'
               });
 
             if (upsertError) {
               console.error("Error upserting theme preferences:", upsertError);
+              toast.error("Failed to save theme preference");
             }
           }
-
-          navigate("/");
         }
       }
     );
@@ -68,16 +77,25 @@ export const useAuthSetup = () => {
 
   // Add error handler for rate limits
   const handleAuthError = (error: any) => {
-    if (error?.status === 429) {
-      const message = error.message || "Too many requests. Please wait before trying again.";
-      if (message.includes("over_email_send_rate_limit")) {
-        toast.error("Please wait at least 38 seconds before requesting another password reset.");
-      } else {
-        toast.error(message);
-      }
+    console.error("Auth error:", error);
+    
+    if (error.message?.includes("Email not confirmed")) {
+      toast.error("Please confirm your email before signing in. Check your inbox for the confirmation link.");
       return true;
     }
-    return false;
+    
+    if (error.message?.includes("Invalid login credentials")) {
+      toast.error("Invalid email or password. Please try again.");
+      return true;
+    }
+
+    if (error.message?.includes("Email rate limit exceeded")) {
+      toast.error("Too many attempts. Please try again in a few minutes.");
+      return true;
+    }
+
+    toast.error("An error occurred during authentication. Please try again.");
+    return true;
   };
 
   return { error, handleAuthError };
