@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
-  const redirectUrl = "https://yourdomain.com/confirm-email";
+  const redirectUrl = "https://maneblod.com/confirm-email";
 
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
