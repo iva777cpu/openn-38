@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { toast } from "sonner";
@@ -7,17 +7,39 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function ConfirmEmail() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const checkConfirmation = async () => {
+    const handleConfirmation = async () => {
+      // Handle redirect from Supabase hosted confirmation
+      const refreshToken = searchParams.get('refresh_token');
+      const type = searchParams.get('type');
+
+      if (type === 'signup' && refreshToken) {
+        const { error } = await supabase.auth.refreshSession({
+          refresh_token: refreshToken
+        });
+        
+        if (error) {
+          console.error("Error refreshing session:", error);
+          toast.error("Failed to confirm email. Please try again.");
+          return;
+        }
+        
+        toast.success("Email confirmed successfully!");
+        navigate("/");
+        return;
+      }
+
+      // Check if already confirmed
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user?.email_confirmed_at) {
-        toast.success("Email confirmed successfully!");
+        toast.success("Email already confirmed!");
         navigate("/");
       }
     };
 
-    checkConfirmation();
+    handleConfirmation();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_IN") {
@@ -26,7 +48,7 @@ export default function ConfirmEmail() {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   const handleResendEmail = async () => {
     const { data: { session } } = await supabase.auth.getSession();
