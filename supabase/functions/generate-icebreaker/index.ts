@@ -88,15 +88,14 @@ ${Object.entries(situationInfo)
 
     const systemPrompt = `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 
-Teasing or playful banter (if appropriate)
-Shared experiences or hypotheticals
-Fun facts or bold statements
+Teasing or playful banter
+Fun facts, bold statements, hypotheticals and quotes
 Other creative options
 
-Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
+Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Use mostly information from the context below
+- Use ONLY information from the context below
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -120,7 +119,7 @@ Context (USE ONLY THIS INFORMATION):
 ${contextString}
 
 Additional Context:
-- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, build upon existing familiarity'}`;
+- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, at least once'}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
