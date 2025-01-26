@@ -5,7 +5,8 @@
   "server": {
     "androidScheme": "https",
     "cleartext": true,
-    "hostname": "localhost"
+    "hostname": "localhost",
+    "url": "https://yourdomain.com"
   },
   "android": {
     "buildOptions": {
