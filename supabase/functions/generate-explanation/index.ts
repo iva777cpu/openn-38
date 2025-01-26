@@ -14,7 +14,6 @@ serve(async (req) => {
   try {
     const { message, prompt } = await req.json();
 
-    // Create a Supabase client
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -25,7 +24,6 @@ serve(async (req) => {
       }
     );
 
-    // Call OpenAI API
     const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -33,7 +31,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: [
           {
             role: "system",

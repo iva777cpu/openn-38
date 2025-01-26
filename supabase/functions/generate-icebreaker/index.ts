@@ -119,10 +119,7 @@ IMPORTANT DISTINCTION:
 - Make sure to maintain this distinction in your responses
 
 Context (USE AS INSPIRATION):
-${contextString}
-
-Additional Context:
-- First time conversation: ${isFirstTime ? 'Yes - Focus on initial introductions and getting to know each other' : 'No - They have talked before, at least once'}`;
+${contextString}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
