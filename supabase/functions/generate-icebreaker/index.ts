@@ -92,10 +92,12 @@ Teasing or playful banter
 Fun facts, bold statements, hypotheticals and quotes
 Other creative options
 
-Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. If referencing anything that may need context (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the context and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
+Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately.
 
 CRITICAL GUIDELINES:
-- Use ONLY information from the context below
+- Use the provided context as inspiration but don't feel constrained by it
+- At least 4 responses should directly reference the context information
+- The remaining responses should be creative and engaging while keeping the context in mind
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
@@ -105,9 +107,10 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- For each trait or piece of information, use the priority value to determine how much emphasis to give it
-- Higher priorities (0.7-0.9) mean these traits should be prominently featured in responses
-- Lower priorities (0.2-0.4) mean these traits should be referenced less frequently or subtly
+- Priority levels guide how much emphasis to give traits:
+  - High (0.7-0.9): Use these traits in 2-3 responses max
+  - Medium (0.5-0.6): Use these traits in 1-2 responses
+  - Low (0.2-0.4): Use these traits subtly or as background context
 - Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, focus on building upon existing familiarity'}
 
 IMPORTANT DISTINCTION:
@@ -115,7 +118,7 @@ IMPORTANT DISTINCTION:
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
 - Make sure to maintain this distinction in your responses
 
-Context (USE ONLY THIS INFORMATION):
+Context (USE AS INSPIRATION):
 ${contextString}
 
 Additional Context:
@@ -128,7 +131,7 @@ Additional Context:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt }
         ],
