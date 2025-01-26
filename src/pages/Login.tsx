@@ -5,10 +5,32 @@ import { useAuthSetup } from "@/hooks/useAuthSetup";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Login() {
   const { error } = useAuthSetup();
   const navigate = useNavigate();
+
+  const handleAuthError = (error: any) => {
+    console.error("Auth error:", error);
+    
+    if (error.message?.includes("Email not confirmed")) {
+      toast.error("Please confirm your email before signing in. Check your inbox for the confirmation link.");
+      return;
+    }
+    
+    if (error.message?.includes("Invalid login credentials")) {
+      toast.error("Invalid email or password. Please try again.");
+      return;
+    }
+
+    if (error.message?.includes("Email rate limit exceeded")) {
+      toast.error("Too many attempts. Please try again in a few minutes.");
+      return;
+    }
+
+    toast.error("An error occurred during authentication. Please try again.");
+  };
 
   return (
     <div className="fixed inset-0 bg-[#E5D4BC] dark:bg-[#303D24]">
@@ -68,6 +90,7 @@ export default function Login() {
               },
             }}
             providers={[]}
+            onError={handleAuthError}
           />
         </div>
       </div>
