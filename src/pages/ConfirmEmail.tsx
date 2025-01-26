@@ -11,9 +11,6 @@ export default function ConfirmEmail() {
 
   useEffect(() => {
     const handleConfirmation = async () => {
-      console.log("Starting confirmation process");
-      console.log("Search params:", Object.fromEntries(searchParams.entries()));
-      
       const refreshToken = searchParams.get('refresh_token');
       const type = searchParams.get('type');
       const accessToken = searchParams.get('access_token');
@@ -24,35 +21,22 @@ export default function ConfirmEmail() {
           let session;
           
           if (refreshToken) {
-            console.log("Using refresh token for confirmation");
             const { data, error } = await supabase.auth.refreshSession({
               refresh_token: refreshToken
             });
             
-            if (error) {
-              console.error("Refresh token error:", error);
-              throw error;
-            }
+            if (error) throw error;
             session = data.session;
           } else if (accessToken) {
-            console.log("Using access token for confirmation");
             const { data, error } = await supabase.auth.getSession();
-            if (error) {
-              console.error("Get session error:", error);
-              throw error;
-            }
+            if (error) throw error;
             session = data.session;
           }
 
-          console.log("Session state:", session);
-
           if (session?.user?.email_confirmed_at) {
-            console.log("Email confirmed successfully");
             toast.success("Email confirmed successfully!");
             navigate("/");
             return;
-          } else {
-            console.log("Session exists but email not confirmed");
           }
         } catch (error) {
           console.error("Error during confirmation:", error);
@@ -63,7 +47,6 @@ export default function ConfirmEmail() {
       // Check if already confirmed
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user?.email_confirmed_at) {
-        console.log("Email already confirmed");
         toast.success("Email already confirmed!");
         navigate("/");
       }
@@ -72,7 +55,6 @@ export default function ConfirmEmail() {
     handleConfirmation();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      console.log("Auth state changed:", event);
       if (event === "SIGNED_IN") {
         navigate("/");
       }
@@ -82,36 +64,25 @@ export default function ConfirmEmail() {
   }, [navigate, searchParams]);
 
   const handleResendEmail = async () => {
-    try {
-      console.log("Attempting to resend confirmation email");
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.email) {
-        console.log("No email found in session");
-        toast.error("No email found. Please try signing up again.");
-        navigate("/login");
-        return;
-      }
-
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: session.user.email,
-        options: {
-          emailRedirectTo: 'https://lovable.dev/projects/49b6d0a8-6a39-4ad5-9b40-61f71ef20038/confirm-email'
-        }
-      });
-
-      if (error) {
-        console.error("Error resending confirmation:", error);
-        toast.error("Failed to resend confirmation email. Please try again.");
-        return;
-      }
-
-      console.log("Confirmation email resent successfully");
-      toast.success("Confirmation email resent. Please check your inbox.");
-    } catch (error) {
-      console.error("Unexpected error during resend:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.email) {
+      toast.error("No email found. Please try signing up again.");
+      navigate("/login");
+      return;
     }
+
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: session.user.email
+    });
+
+    if (error) {
+      console.error("Error resending confirmation:", error);
+      toast.error("Failed to resend confirmation email. Please try again.");
+      return;
+    }
+
+    toast.success("Confirmation email resent. Please check your inbox.");
   };
 
   return (
