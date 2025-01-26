@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    headers: {
+      'Content-Security-Policy': "default-src 'self' https://*.supabase.co https://maneblod.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://*.supabase.co https://maneblod.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://maneblod.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://api.cohere.ai https://api.anthropic.com https://generativelanguage.googleapis.com https://maneblod.com; frame-src 'self' https://*.supabase.co https://maneblod.com;"
+    }
   },
   plugins: [
     react(),
