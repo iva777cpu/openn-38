@@ -33,9 +33,6 @@ export const useAuthSetup = () => {
           navigate("/");
         } else if (event === 'SIGNED_OUT') {
           navigate("/login");
-        } else if (event === 'USER_DELETED') {
-          toast.success("Account successfully deleted");
-          navigate("/login");
         } else if (event === 'PASSWORD_RECOVERY') {
           toast.error("Please wait at least 38 seconds before requesting another password reset.");
         } else if (event === 'USER_UPDATED') {
@@ -75,7 +72,6 @@ export const useAuthSetup = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Add error handler for rate limits
   const handleAuthError = (error: any) => {
     console.error("Auth error:", error);
     
