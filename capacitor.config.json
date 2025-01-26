@@ -5,7 +5,7 @@
   "server": {
     "androidScheme": "https",
     "cleartext": true,
-    "hostname": "localhost",
+    "hostname": "maneblod.com",
     "url": "https://maneblod.com"
   },
   "android": {
