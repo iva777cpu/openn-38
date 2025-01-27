@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { utcToZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 
 interface IcebreakerGeneratorProps {
   userProfile: Record<string, string>;
@@ -159,7 +159,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
     : 2 - getAnonGenerations();
 
   const nextReset = getNextResetTime();
-  const formattedResetTime = format(utcToZonedTime(nextReset, 'GMT'), 'HH:mm');
+  const formattedResetTime = format(toZonedTime(nextReset, 'GMT'), 'HH:mm');
 
   return (
     <div>

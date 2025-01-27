@@ -17,7 +17,7 @@ interface ProfileContentProps {
   persistedIcebreakers: string[];
   handleIcebreakersUpdate: (icebreakers: string[]) => void;
   checkAuth: (action: () => void) => Promise<void>;
-  isAuthenticated: boolean;  // Add this prop
+  isAuthenticated: boolean;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -33,7 +33,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   persistedIcebreakers,
   handleIcebreakersUpdate,
   checkAuth,
-  isAuthenticated,  // Add this prop
+  isAuthenticated,
 }) => {
   const [isFirstTime, setIsFirstTime] = useState(false);
 
@@ -87,7 +87,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         onIcebreakersUpdate={handleIcebreakersUpdate}
         isFirstTime={isFirstTime}
         checkAuth={checkAuth}
-        isAuthenticated={isAuthenticated}  // Add this prop
+        isAuthenticated={isAuthenticated}
       />
       <div className="text-xs text-[#47624B] dark:text-[#E5D4BC] mt-6 text-left">
         hey its Edda, the developer :D I&apos;d really appreciate your thoughts on the app :3<br />

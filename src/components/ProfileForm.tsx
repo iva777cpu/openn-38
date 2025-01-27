@@ -12,6 +12,7 @@ interface ProfileFormProps {
   onIcebreakersUpdate: (icebreakers: string[]) => void;
   isFirstTime: boolean;
   checkAuth: (action: () => void) => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 export const ProfileForm: React.FC<ProfileFormProps> = ({ 
@@ -20,7 +21,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   onIcebreakersUpdate,
   isFirstTime,
   persistedIcebreakers,
-  checkAuth
+  checkAuth,
+  isAuthenticated
 }) => {
   const navigate = useNavigate();
 
@@ -38,6 +40,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           onIcebreakersUpdate={onIcebreakersUpdate}
           isFirstTime={isFirstTime}
           checkAuth={checkAuth}
+          isAuthenticated={isAuthenticated}
         />
       </FormSection>
     </section>

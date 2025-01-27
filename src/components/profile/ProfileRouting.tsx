@@ -20,11 +20,13 @@ interface ProfileRoutingProps {
     hasChanges?: boolean;
     selectedProfileName?: string;
     checkAuth: (action: () => void) => Promise<void>;
+    isAuthenticated: boolean;
   };
   persistedIcebreakers: string[];
   handleIcebreakersUpdate: (icebreakers: string[]) => void;
   clearIcebreakers: () => void;
   checkAuth: (action: () => void) => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
@@ -38,6 +40,7 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
   handleIcebreakersUpdate,
   clearIcebreakers,
   checkAuth,
+  isAuthenticated,
 }) => {
   if (showProfiles) {
     return (
@@ -64,6 +67,7 @@ export const ProfileRouting: React.FC<ProfileRoutingProps> = ({
       {...contentProps}
       persistedIcebreakers={persistedIcebreakers}
       handleIcebreakersUpdate={handleIcebreakersUpdate}
+      isAuthenticated={isAuthenticated}
     />
   );
 };
