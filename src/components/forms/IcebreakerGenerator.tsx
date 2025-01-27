@@ -54,6 +54,22 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         .eq('user_id', user.id)
         .maybeSingle();
 
+      // If no data exists, create initial record
+      if (!data && !error) {
+        const { data: newData, error: insertError } = await supabase
+          .from('user_generations')
+          .insert({
+            user_id: user.id,
+            generation_count: 0,
+            last_reset: new Date().toISOString()
+          })
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+        return newData;
+      }
+
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
