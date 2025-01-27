@@ -112,13 +112,16 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
   useEffect(() => {
     if (generationData && new Date(generationData.last_reset) < getNextResetTime()) {
       const resetCount = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
         const { error } = await supabase
           .from('user_generations')
           .update({
             generation_count: 0,
             last_reset: new Date().toISOString(),
           })
-          .eq('user_id', generationData.user_id);
+          .eq('user_id', user.id);
 
         if (!error) {
           queryClient.invalidateQueries({ queryKey: ['generationCount'] });
