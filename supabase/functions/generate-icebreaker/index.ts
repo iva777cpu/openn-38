@@ -138,7 +138,7 @@ Additional Context:
 - First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
           }
         ],
-        temperature: 0.8,
+        temperature: 0.6,
         max_tokens: 1000,
       }),
     });
