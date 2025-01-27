@@ -33,58 +33,39 @@ serve(async (req) => {
       return acc;
     }, {});
     
-    console.log('Filtered answers:', JSON.stringify(filteredAnswers, null, 2));
+    console.log('Filtered answers with priorities:', JSON.stringify(filteredAnswers, null, 2));
 
-    const userTraits = Object.entries(filteredAnswers)
-      .filter(([key]: [string, any]) => key.startsWith('user'))
-      .reduce((acc, [key, value]: [string, any]) => ({
-        ...acc,
-        [key]: value
-      }), {});
+    // Sort answers by priority to emphasize high-priority traits in the context
+    const sortedAnswers = Object.entries(filteredAnswers)
+      .sort(([, a]: [string, any], [, b]: [string, any]) => (b.priority || 0) - (a.priority || 0));
 
-    const targetTraits = Object.entries(filteredAnswers)
-      .filter(([key]: [string, any]) => 
-        key.startsWith('target') || 
-        ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
-      )
-      .reduce((acc, [key, value]: [string, any]) => ({
-        ...acc,
-        [key]: value
-      }), {});
-
-    const situationInfo = Object.entries(filteredAnswers)
-      .filter(([key]: [string, any]) => ['situation', 'previousTopics'].includes(key))
-      .reduce((acc, [key, value]: [string, any]) => ({
-        ...acc,
-        [key]: value
-      }), {});
-
-    console.log('Processed traits:', {
-      userTraits: Object.keys(userTraits),
-      targetTraits: Object.keys(targetTraits),
-      situationInfo: Object.keys(situationInfo)
-    });
-
+    // Build context string with priority-based organization
     const contextString = `
 YOUR TRAITS (The person initiating conversation):
-${Object.entries(userTraits)
-  .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}`)
+${sortedAnswers
+  .filter(([key]: [string, any]) => key.startsWith('user'))
+  .map(([, value]: [string, any]) => 
+    `${value.questionText} (Priority ${value.priority}): ${value.value}`)
   .join('\n')}
 
 THEIR TRAITS (The person you're approaching):
-${Object.entries(targetTraits)
-  .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}`)
+${sortedAnswers
+  .filter(([key]: [string, any]) => 
+    key.startsWith('target') || 
+    ['zodiac', 'mbti', 'style', 'humor', 'loves', 'dislikes', 'hobbies', 'books', 'music', 'mood'].includes(key)
+  )
+  .map(([, value]: [string, any]) => 
+    `${value.questionText} (Priority ${value.priority}): ${value.value}`)
   .join('\n')}
 
 SITUATION:
-${Object.entries(situationInfo)
-  .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}`)
+${sortedAnswers
+  .filter(([key]: [string, any]) => ['situation', 'previousTopics'].includes(key))
+  .map(([, value]: [string, any]) => 
+    `${value.questionText} (Priority ${value.priority}): ${value.value}`)
   .join('\n')}`;
 
-    console.log('Final context string being sent to OpenAI:', contextString);
+    console.log('Final context string with priorities being sent to OpenAI:', contextString);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -131,7 +112,7 @@ IMPORTANT DISTINCTION:
           },
           { 
             role: 'user', 
-            content: `Context (USE ONLY INFORMATION as inspiration):
+            content: `Context (USE ONLY INFORMATION as inspiration, prioritize based on priority values):
 ${contextString}
 
 Additional Context:
