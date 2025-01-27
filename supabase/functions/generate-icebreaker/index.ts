@@ -92,13 +92,13 @@ Teasing or playful banter
 Fun facts, bold statements, hypotheticals and quotes
 Other creative options
 
-Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately.
+Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
 - Use the provided context as inspiration but don't feel constrained by it
 - At least 4 responses should directly reference the context information
 - The remaining responses should be creative and engaging while keeping the context in mind
-- Return exactly 10 responses, numbered 1-10
+- You must return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 4 questions in your responses
 - NEVER ask the person to:
@@ -108,10 +108,10 @@ CRITICAL GUIDELINES:
   - Share shopping preferences
   - Explain where they got something
 - Priority levels guide how much emphasis to give traits:
-  - High (0.7-0.9): Use these traits in 2-3 responses max
-  - Medium (0.5-0.6): Use these traits in 1-2 responses
-  - Low (0.2-0.4): Use these traits subtly or as background context
-- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial introductions and ice-breaking' : 'These people have talked before, focus on building upon existing familiarity'}
+  - High (0.6-0.9): Use these traits for subtle guidance of 5 responses max
+  - Medium (0.4-0.5): Use these traits for subtle guidance of 4 responses max
+  - Low (0.2-0.3): Use these traits subtly or as background of 2 responses max
+- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial ice-breaking' : 'These people have talked at least once before'}
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
