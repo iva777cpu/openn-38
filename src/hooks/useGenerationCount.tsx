@@ -43,7 +43,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           return null;
         }
 
-        // Check if we need to reset based on last_reset
+        // Get current time and reset time in UTC
         const now = new Date();
         const resetTime = new Date(now);
         resetTime.setUTCHours(0, 0, 0, 0);
@@ -51,6 +51,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
         console.log("Current time (UTC):", now.toUTCString());
         console.log("Reset time (UTC):", resetTime.toUTCString());
 
+        // First try to get existing data
         const { data: existingData, error: fetchError } = await supabase
           .from('user_generations')
           .select('*')
@@ -64,7 +65,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
 
         console.log("Existing data:", existingData);
         
-        // If no data exists or last_reset is from a previous day, reset the values
+        // If no data exists or last_reset is from a previous day, reset the count
         if (!existingData || new Date(existingData.last_reset) < resetTime) {
           console.log("Resetting generation count - new day or no existing data");
           
@@ -79,7 +80,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
               onConflict: 'user_id'
             })
             .select()
-            .single();
+            .maybeSingle();
 
           if (updateError) {
             console.error("Update error:", updateError);
@@ -126,13 +127,13 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
             onConflict: 'user_id'
           })
           .select()
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         
         console.log("Updated generation data:", data);
         return data;
-      } catch (error) {
+      } catch (error: any) {
         console.error("Update generation count error:", error);
         if (error.message === 'Daily limit reached') {
           toast.error("You've reached your daily generation limit!");
