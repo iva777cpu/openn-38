@@ -33,33 +33,40 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data, error } = await supabase
+      // Check if we need to reset based on last_reset
+      const now = new Date();
+      const resetTime = new Date(now);
+      resetTime.setUTCHours(0, 0, 0, 0);
+
+      const { data: existingData, error: fetchError } = await supabase
         .from('user_generations')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      
-      // If no data exists, create initial record
-      if (!data && !error) {
-        const { data: newData, error: insertError } = await supabase
+      if (fetchError) throw fetchError;
+
+      // If no data exists or last_reset is from a previous day, create/update with reset values
+      if (!existingData || new Date(existingData.last_reset) < resetTime) {
+        const { data: newData, error: upsertError } = await supabase
           .from('user_generations')
-          .insert({
+          .upsert({
             user_id: user.id,
             generation_count: 0,
-            last_reset: new Date().toISOString()
+            last_reset: resetTime.toISOString(),
+            updated_at: new Date().toISOString()
           })
           .select()
           .single();
 
-        if (insertError) throw insertError;
+        if (upsertError) throw upsertError;
         return newData;
       }
 
-      return data;
+      return existingData;
     },
     enabled: isAuthenticated,
+    refetchInterval: 60000, // Refetch every minute to check for reset
   });
 
   // Mutation to update generation count
@@ -68,12 +75,15 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
+      const currentCount = generationData?.generation_count || 0;
+      
       const { data, error } = await supabase
         .from('user_generations')
         .upsert({
           user_id: user.id,
-          generation_count: (generationData?.generation_count || 0) + 1,
+          generation_count: currentCount + 1,
           last_reset: generationData?.last_reset || new Date().toISOString(),
+          updated_at: new Date().toISOString()
         })
         .select()
         .single();
@@ -86,25 +96,6 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     },
   });
 
-  const resetGenerationCount = async () => {
-    if (!isAuthenticated) return;
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('user_generations')
-      .update({
-        generation_count: 0,
-        last_reset: new Date().toISOString(),
-      })
-      .eq('user_id', user.id);
-
-    if (!error) {
-      queryClient.invalidateQueries({ queryKey: ['generationCount'] });
-    }
-  };
-
   const remainingGenerations = isAuthenticated 
     ? 6 - (generationData?.generation_count || 0)
     : 2 - getAnonGenerations();
@@ -116,7 +107,6 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     remainingGenerations,
     formattedResetTime,
     updateGenerationCount,
-    resetGenerationCount,
     getAnonGenerations,
     setAnonGenerations,
     generationData
