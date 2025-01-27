@@ -52,9 +52,9 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           .from('user_generations')
           .select('*')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (fetchError) {
+        if (fetchError && fetchError.code !== 'PGRST116') {
           console.error("Fetch error:", fetchError);
           return null;
         }
@@ -88,7 +88,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     },
     enabled: isAuthenticated,
     refetchInterval: 60000, // Refetch every minute to check for reset
-    retry: 3, // Retry failed requests 3 times
+    retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
