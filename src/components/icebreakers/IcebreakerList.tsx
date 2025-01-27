@@ -31,6 +31,9 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
     const stored = localStorage.getItem('currentExplanations');
     return stored ? JSON.parse(stored) : {};
   });
+  const [sessionId] = useState(() => crypto.randomUUID());
+  const [explanationCount, setExplanationCount] = useState(0);
+  const MAX_EXPLANATIONS = 2;
 
   // Save explanations to localStorage whenever they change
   useEffect(() => {
@@ -43,6 +46,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
   useEffect(() => {
     if (icebreakers.length === 0) {
       setExplanations({});
+      setExplanationCount(0);
       localStorage.removeItem('currentExplanations');
     }
   }, [icebreakers]);
@@ -60,7 +64,6 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 
       if (error) throw error;
 
-      console.log("Response from report-message function:", data);
       setReportedIcebreakers(prev => new Set([...prev, icebreaker]));
 
       toast.success("Message reported successfully", {
@@ -75,17 +78,34 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
 
   const handleExplanationRequest = async (icebreaker: string) => {
     if (explanations[icebreaker]) return;
+    if (explanationCount >= MAX_EXPLANATIONS) {
+      toast.error("You can only get 2 explanations per generation", {
+        position: "top-center",
+        duration: 3000,
+      });
+      return;
+    }
     
     setLoadingExplanations(prev => new Set([...prev, icebreaker]));
     
     try {
+      // Update explanation count in database
+      const { error: usageError } = await supabase
+        .from('explanation_usage')
+        .upsert({
+          session_id: sessionId,
+          explanation_count: explanationCount + 1
+        }, {
+          onConflict: 'session_id'
+        });
+
+      if (usageError) throw usageError;
+
       const { data, error } = await supabase.functions.invoke('generate-explanation', {
         body: { message: icebreaker }
       });
 
       if (error) throw error;
-
-      console.log("Explanation response:", data);
       
       const newExplanation = data.explanation;
       setExplanations(prev => {
@@ -93,6 +113,8 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
         localStorage.setItem('currentExplanations', JSON.stringify(updated));
         return updated;
       });
+
+      setExplanationCount(prev => prev + 1);
 
       // If the icebreaker is already saved, update it with the explanation
       if (savedIcebreakers.has(icebreaker)) {
@@ -138,7 +160,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className="text-[10px]">
                     <p>Save icebreaker</p>
                   </TooltipContent>
                 </Tooltip>
@@ -151,11 +173,11 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       variant="ghost"
                       size="icon"
                       onClick={() => handleExplanationRequest(icebreaker)}
-                      disabled={!!explanations[icebreaker] || reportedIcebreakers.has(icebreaker)}
+                      disabled={!!explanations[icebreaker] || reportedIcebreakers.has(icebreaker) || explanationCount >= MAX_EXPLANATIONS}
                       className={`transition-all ${
                         loadingExplanations.has(icebreaker)
                           ? 'cursor-not-allowed'
-                          : explanations[icebreaker] || reportedIcebreakers.has(icebreaker)
+                          : explanations[icebreaker] || reportedIcebreakers.has(icebreaker) || explanationCount >= MAX_EXPLANATIONS
                           ? 'bg-[#1A2A1D] opacity-60 cursor-not-allowed'
                           : 'hover:bg-[#1A2A1D] opacity-60 hover:opacity-100'
                       }`}
@@ -169,8 +191,11 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       )}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Get explanation</p>
+                  <TooltipContent className="text-[10px]">
+                    <p>{explanationCount >= MAX_EXPLANATIONS 
+                      ? "You can only get 2 explanations per generation" 
+                      : "Get explanation"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -194,7 +219,7 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       }`} />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className="text-[10px]">
                     <p>Report message</p>
                   </TooltipContent>
                 </Tooltip>
