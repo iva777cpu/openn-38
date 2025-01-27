@@ -86,7 +86,18 @@ ${Object.entries(situationInfo)
 
     console.log('Final context string being sent to OpenAI:', contextString);
 
-    const systemPrompt = `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { 
+            role: 'system', 
+            content: `You are a charming conversation expert. Generate numbered, engaging icebreakers that are clever, witty, and fun with refined sentences and flair. Mix formats and types with equal probability, such as:
 
 Teasing or playful banter
 Fun facts, bold statements and quotes
@@ -115,27 +126,19 @@ CRITICAL GUIDELINES:
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
-- Make sure to maintain this distinction in your responses
-
-Context (USE ONLY THIS INFORMATION as inspiration):
+- Make sure to maintain this distinction in your responses`
+          },
+          { 
+            role: 'user', 
+            content: `Context (USE ONLY THIS INFORMATION as inspiration):
 ${contextString}
 
 Additional Context:
-- First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`;
-
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: systemPrompt }
+- First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
+          }
         ],
         temperature: 0.7,
+        max_tokens: 1000,
       }),
     });
 
