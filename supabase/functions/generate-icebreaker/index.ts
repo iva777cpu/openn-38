@@ -69,19 +69,19 @@ serve(async (req) => {
 YOUR TRAITS (The person initiating conversation):
 ${Object.entries(userTraits)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText}: ${value.value}`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}`)
   .join('\n')}
 
 THEIR TRAITS (The person you're approaching):
 ${Object.entries(targetTraits)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText}: ${value.value}`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}`)
   .join('\n')}
 
 SITUATION:
 ${Object.entries(situationInfo)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText}: ${value.value}`)
+    `${value.questionText} (priority ${value.priority}): ${value.value}`)
   .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
