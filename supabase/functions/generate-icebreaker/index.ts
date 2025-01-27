@@ -99,6 +99,7 @@ CRITICAL GUIDELINES:
 - DO NOT ask more than 2 questions
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
+- Use ONLY the provided context as inspiration, DO NOT mix in themes or traits from previous conversations
 - Include NO MORE THAN 2 questions in your responses
 - NEVER prompt the person to:
   - Tell a story
