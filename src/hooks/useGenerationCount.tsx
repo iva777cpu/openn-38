@@ -48,6 +48,9 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
         const resetTime = new Date(now);
         resetTime.setUTCHours(0, 0, 0, 0);
 
+        console.log("Current time (UTC):", now.toUTCString());
+        console.log("Reset time (UTC):", resetTime.toUTCString());
+
         const { data: existingData, error: fetchError } = await supabase
           .from('user_generations')
           .select('*')
@@ -59,8 +62,12 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           return null;
         }
 
+        console.log("Existing data:", existingData);
+        
         // If no data exists or last_reset is from a previous day, create/update with reset values
         if (!existingData || new Date(existingData.last_reset) < resetTime) {
+          console.log("Resetting generation count - new day or no existing data");
+          
           const { data: newData, error: upsertError } = await supabase
             .from('user_generations')
             .upsert({
@@ -77,6 +84,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
             return null;
           }
           
+          console.log("Reset data:", newData);
           return newData;
         }
 
@@ -99,7 +107,12 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
         if (!user) throw new Error('No user found');
 
         const currentCount = generationData?.generation_count ?? 0;
+        console.log("Current count before update:", currentCount);
         
+        if (currentCount >= 6) {
+          throw new Error('Daily limit reached');
+        }
+
         const { data, error } = await supabase
           .from('user_generations')
           .upsert({
@@ -112,10 +125,16 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           .single();
 
         if (error) throw error;
+        
+        console.log("Updated generation data:", data);
         return data;
       } catch (error) {
         console.error("Update generation count error:", error);
-        toast.error("Failed to update generation count. Please try again.");
+        if (error.message === 'Daily limit reached') {
+          toast.error("You've reached your daily generation limit!");
+        } else {
+          toast.error("Failed to update generation count. Please try again.");
+        }
         throw error;
       }
     },
