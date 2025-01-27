@@ -149,8 +149,8 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
   });
 
   const remainingGenerations = isAuthenticated 
-    ? 6 - (generationData?.generation_count || 0)
-    : 2 - getAnonGenerations();
+    ? generationData?.generation_count || 0
+    : getAnonGenerations();
 
   const nextReset = getNextResetTime();
   const formattedResetTime = format(toZonedTime(nextReset, 'GMT'), 'HH:mm');
