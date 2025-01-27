@@ -31,7 +31,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "gpt-4o",  // Updated from gpt-4-turbo to use our allowed model
         messages: [
           {
             role: "system",

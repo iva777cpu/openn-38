@@ -93,7 +93,7 @@ ${Object.entries(situationInfo)
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4-turbo',
         messages: [
           { 
             role: 'system', 
@@ -108,11 +108,11 @@ STRICT RULES FOR QUESTIONS:
 - Any response containing a question mark (?) counts as a question
 - The remaining responses MUST be statements, observations, or other non-question formats
 
-Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything specific such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
+Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything specific such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the reference and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
 - Use ONLY information from the context below as inspiration but don't be restricted by them
-- you must generate 3 general icebreakers that dont contain the context or arent related to the context directly
+- you must generate 3 general icebreakers that don't contain the context or aren't related to the context directly
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Use ONLY the provided context as inspiration, DO NOT mix in themes or traits from previous conversations
@@ -122,7 +122,7 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- For each trait or piece of information, use the priority value to determine how much they should effect your responses (Priority levels guide how much emphasis to give traits), the higher the priority the more it should effect your responses.
+- For each trait or piece of information, use the priority value to determine how much they should affect your responses (Priority levels guide how much emphasis to give traits), the higher the priority the more it should affect your responses.
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
