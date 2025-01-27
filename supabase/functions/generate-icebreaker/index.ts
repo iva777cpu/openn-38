@@ -104,10 +104,9 @@ Fun facts, bold statements and quotes
 Other creative options
 
 STRICT RULES FOR QUESTIONS:
-- You are ONLY allowed to generate a MAXIMUM of 3 responses that contain questions
+- You are ONLY allowed to generate a MAXIMUM of 5 responses that contain questions
 - Any response containing a question mark (?) counts as a question
 - The remaining responses MUST be statements, observations, or other non-question formats
-- Use a lower temperature (0.5) when generating questions to ensure more controlled outputs
 
 Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything specific such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
@@ -141,7 +140,7 @@ Additional Context:
 - First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
           }
         ],
-        temperature: 0.5,
+        temperature: 0.7,
         max_tokens: 1000,
       }),
     });
