@@ -19,6 +19,7 @@ interface ProfileManagerProps {
   hasChanges?: boolean;
   selectedProfileName?: string;
   checkAuth: (action: () => void) => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
@@ -38,6 +39,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     hasChanges,
     selectedProfileName,
     checkAuth,
+    isAuthenticated,
   } = props;
 
   const {
@@ -72,6 +74,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
     hasChanges,
     selectedProfileName,
     checkAuth,
+    isAuthenticated,
   };
 
   return (
@@ -91,6 +94,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = (props) => {
         handleIcebreakersUpdate={handleIcebreakersUpdate}
         clearIcebreakers={clearIcebreakers}
         checkAuth={checkAuth}
+        isAuthenticated={isAuthenticated}
       />
     </ProfileStateManager>
   );
