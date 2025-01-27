@@ -29,7 +29,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert at explaining the psychology and social dynamics behind conversation starters and icebreakers. Explain why specific icebreakers work well and their intended effect. Keep explanations concise (max 2 sentences) but insightful.'
+            content: 'You are a helpful assistant that explains references. Provide clear, concise explanations and information in less than 30 words, assuming the user has no prior knowledge of the reference. note that you must only explain about the reference and the story behind it.'
           },
           {
             role: 'user',
