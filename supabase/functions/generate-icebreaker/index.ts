@@ -95,12 +95,11 @@ Other creative options
 Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Use the provided context as inspiration but don't feel constrained by it
-- At least 4 responses should directly reference the context information
-- The remaining responses should be creative and engaging while keeping the context in mind
+- DO NOT generate more than 3 questions. focus on generating other sorts of icebreakers such as Teasing or playful banter, Fun facts, bold statements and quotes and Other creative options
+- Use the provided context as inspiration
 - You must return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
-- Include NO MORE THAN 4 questions in your responses
+- Include NO MORE THAN 3 questions in your responses
 - NEVER ask the person to:
   - Tell a story
   - Share a joke
