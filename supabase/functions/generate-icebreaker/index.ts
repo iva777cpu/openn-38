@@ -8,66 +8,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Function to count questions in a string
-const countQuestions = (text: string): number => {
-  // Count question marks
-  const questionMarks = (text.match(/\?/g) || []).length;
-  
-  // Count question words (what, why, how, when, where, who)
-  const questionWords = (text.match(/\b(what|why|how|when|where|who)\b/gi) || []).length;
-  
-  // Return the maximum between question marks and question words
-  return Math.max(questionMarks, questionWords);
-};
-
-// Function to process and filter responses
-const processResponses = (text: string): string => {
-  // Split into individual icebreakers
-  const icebreakers = text.split(/\d+\./).filter(Boolean);
-  
-  // Process each icebreaker
-  const processedIcebreakers = icebreakers.map((icebreaker, index) => {
-    let processed = icebreaker.trim();
-    const questionCount = countQuestions(processed);
-    
-    // If there are more than 2 questions, convert some to statements
-    if (questionCount > 2) {
-      // Replace question marks after the second one with periods
-      let questionFound = 0;
-      processed = processed.replace(/\?/g, (match) => {
-        questionFound++;
-        return questionFound <= 2 ? '?' : '.';
-      });
-      
-      // Convert question words to statements after the second question
-      const words = processed.split(' ');
-      let questionsInSentence = 0;
-      processed = words.map((word, i) => {
-        if (/^(what|why|how|when|where|who)$/i.test(word)) {
-          questionsInSentence++;
-          if (questionsInSentence > 2) {
-            // Convert question word to statement
-            const conversions: { [key: string]: string } = {
-              'what': 'that',
-              'why': 'because',
-              'how': 'the way',
-              'when': 'then',
-              'where': 'there',
-              'who': 'someone'
-            };
-            return conversions[word.toLowerCase()] || word;
-          }
-        }
-        return word;
-      }).join(' ');
-    }
-    
-    return `${index + 1}. ${processed}`;
-  });
-
-  return processedIcebreakers.join('\n\n');
-};
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -118,6 +58,12 @@ serve(async (req) => {
         ...acc,
         [key]: value
       }), {});
+
+    console.log('Processed traits:', {
+      userTraits: Object.keys(userTraits),
+      targetTraits: Object.keys(targetTraits),
+      situationInfo: Object.keys(situationInfo)
+    });
 
     const contextString = `
 YOUR TRAITS (The person initiating conversation):
@@ -175,7 +121,12 @@ CRITICAL GUIDELINES:
 - For each trait or piece of information, use the priority value to determine how much they should effect your responses (Priority levels guide how much emphasis to give traits):
   - High (0.6-0.9): mean these traits should be prominently featured for guidance of 4 responses max
   - Medium (0.4-0.5): mean these traits should be prominently featured for guidance of 2 responses max
-  - Low (0.2-0.3): Use these traits subtly or as background for 1 responses max`
+  - Low (0.2-0.3): Use these traits subtly or as background for 1 responses max
+
+IMPORTANT DISTINCTION:
+- When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
+- When using "THEIR TRAITS", these are traits of the person being approached (them)
+- Make sure to maintain this distinction in your responses`
           },
           { 
             role: 'user', 
@@ -198,16 +149,12 @@ Additional Context:
     }
 
     const data = await response.json();
-    const rawIcebreakers = data.choices[0].message.content;
+    const icebreakers = data.choices[0].message.content;
     
-    // Process the responses to ensure max 2 questions
-    const processedIcebreakers = processResponses(rawIcebreakers);
-    
-    console.log('Raw OpenAI response:', rawIcebreakers);
-    console.log('Processed response:', processedIcebreakers);
+    console.log('Raw OpenAI response:', icebreakers);
 
     return new Response(
-      JSON.stringify({ icebreakers: processedIcebreakers }),
+      JSON.stringify({ icebreakers }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
