@@ -64,28 +64,30 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
 
         console.log("Existing data:", existingData);
         
-        // If no data exists or last_reset is from a previous day, create/update with reset values
+        // If no data exists or last_reset is from a previous day, reset the values
         if (!existingData || new Date(existingData.last_reset) < resetTime) {
           console.log("Resetting generation count - new day or no existing data");
           
-          const { data: newData, error: upsertError } = await supabase
+          const { data: updatedData, error: updateError } = await supabase
             .from('user_generations')
             .upsert({
               user_id: user.id,
               generation_count: 0,
               last_reset: resetTime.toISOString(),
               updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
             })
             .select()
             .single();
 
-          if (upsertError) {
-            console.error("Upsert error:", upsertError);
+          if (updateError) {
+            console.error("Update error:", updateError);
             return null;
           }
           
-          console.log("Reset data:", newData);
-          return newData;
+          console.log("Reset data:", updatedData);
+          return updatedData;
         }
 
         return existingData;
@@ -120,6 +122,8 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
             generation_count: currentCount + 1,
             last_reset: generationData?.last_reset || new Date().toISOString(),
             updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
           })
           .select()
           .single();
