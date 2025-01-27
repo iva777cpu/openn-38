@@ -111,7 +111,8 @@ STRICT RULES FOR QUESTIONS:
 Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything specific such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
-- Use ONLY information from the context below
+- Use ONLY information from the context below as inspiration but don't be restricted by them
+- you must generate 3 general icebreakers that dont contain the context or arent related to the context directly
 - Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Use ONLY the provided context as inspiration, DO NOT mix in themes or traits from previous conversations
@@ -121,10 +122,7 @@ CRITICAL GUIDELINES:
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- For each trait or piece of information, use the priority value to determine how much they should effect your responses (Priority levels guide how much emphasis to give traits):
-  - High (0.6-0.9): mean these traits should be prominently featured for guidance of 4 responses max
-  - Medium (0.4-0.5): mean these traits should be prominently featured for guidance of 2 responses max
-  - Low (0.2-0.3): Use these traits subtly or as background for 1 responses max
+- For each trait or piece of information, use the priority value to determine how much they should effect your responses (Priority levels guide how much emphasis to give traits), the higher the priority the more it should effect your responses.
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
@@ -133,14 +131,14 @@ IMPORTANT DISTINCTION:
           },
           { 
             role: 'user', 
-            content: `Context (USE ONLY THIS INFORMATION as inspiration):
+            content: `Context (USE ONLY INFORMATION as inspiration):
 ${contextString}
 
 Additional Context:
 - First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
           }
         ],
-        temperature: 0.7,
+        temperature: 0.8,
         max_tokens: 1000,
       }),
     });
