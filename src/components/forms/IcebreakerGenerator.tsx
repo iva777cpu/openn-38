@@ -29,8 +29,6 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
     remainingGenerations,
     formattedResetTime,
     updateGenerationCount,
-    getAnonGenerations,
-    setAnonGenerations,
   } = useGenerationCount(isAuthenticated);
 
   const handleGenerate = async () => {
@@ -43,30 +41,33 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
 
     const handleGenerateAction = async () => {
       if (isAuthenticated) {
-        if (remainingGenerations <= 0) {
+        if (remainingGenerations >= 6) {
           toast.error("You've reached your daily generation limit!", {
             duration: 3000,
           });
           return;
         }
-        await updateGenerationCount.mutateAsync();
       } else {
-        const anonCount = getAnonGenerations();
-        if (anonCount >= 1) {
+        if (remainingGenerations >= 1) {
           checkAuth(() => {});
           return;
         }
-        setAnonGenerations(anonCount + 1);
       }
       
-      await generateIcebreakers();
+      try {
+        await updateGenerationCount.mutateAsync();
+        await generateIcebreakers();
+      } catch (error) {
+        // Error is already handled in updateGenerationCount
+        return;
+      }
     };
 
     if (isAuthenticated) {
       await handleGenerateAction();
     } else {
-      const anonCount = getAnonGenerations();
-      if (anonCount >= 1) {
+      const currentGenerations = remainingGenerations;
+      if (currentGenerations >= 1) {
         checkAuth(handleGenerateAction);
       } else {
         await handleGenerateAction();

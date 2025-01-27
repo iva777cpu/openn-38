@@ -6,6 +6,8 @@ import { toast } from "sonner";
 
 export const useGenerationCount = (isAuthenticated: boolean) => {
   const queryClient = useQueryClient();
+  const ANON_STORAGE_KEY = 'anonGenerations';
+  const LAST_ANON_RESET_KEY = 'lastAnonReset';
 
   // Get next reset time (midnight GMT)
   const getNextResetTime = () => {
@@ -15,14 +17,32 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     return tomorrow;
   };
 
-  // Track anonymous generations in localStorage
+  // Track anonymous generations in localStorage with daily reset
   const getAnonGenerations = () => {
-    const count = localStorage.getItem('anonGenerations');
+    const lastReset = localStorage.getItem(LAST_ANON_RESET_KEY);
+    const now = new Date();
+    const resetTime = new Date(now);
+    resetTime.setUTCHours(0, 0, 0, 0);
+
+    // If last reset was before today, reset the count
+    if (!lastReset || new Date(lastReset) < resetTime) {
+      localStorage.setItem(ANON_STORAGE_KEY, '0');
+      localStorage.setItem(LAST_ANON_RESET_KEY, now.toISOString());
+      return 0;
+    }
+
+    const count = localStorage.getItem(ANON_STORAGE_KEY);
     return count ? parseInt(count) : 0;
   };
 
   const setAnonGenerations = (count: number) => {
-    localStorage.setItem('anonGenerations', count.toString());
+    localStorage.setItem(ANON_STORAGE_KEY, count.toString());
+  };
+
+  // Clear anonymous state when logging in
+  const clearAnonState = () => {
+    localStorage.removeItem(ANON_STORAGE_KEY);
+    localStorage.removeItem(LAST_ANON_RESET_KEY);
   };
 
   // Query for user's generation count
@@ -88,9 +108,11 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           }
           
           console.log("Reset data:", updatedData);
+          clearAnonState(); // Clear anonymous state when authenticated
           return updatedData;
         }
 
+        clearAnonState(); // Clear anonymous state when authenticated
         return existingData;
       } catch (error) {
         console.error("Generation count query error:", error);
@@ -105,6 +127,15 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
   const updateGenerationCount = useMutation({
     mutationFn: async () => {
       try {
+        if (!isAuthenticated) {
+          const anonCount = getAnonGenerations();
+          if (anonCount >= 1) {
+            throw new Error('Anonymous daily limit reached');
+          }
+          setAnonGenerations(anonCount + 1);
+          return { generation_count: anonCount + 1 };
+        }
+
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError) throw authError;
         if (!user) throw new Error('No user found');
@@ -137,6 +168,8 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
         console.error("Update generation count error:", error);
         if (error.message === 'Daily limit reached') {
           toast.error("You've reached your daily generation limit!");
+        } else if (error.message === 'Anonymous daily limit reached') {
+          toast.error("You've reached the daily limit for anonymous users. Please sign in to continue.");
         } else {
           toast.error("Failed to update generation count. Please try again.");
         }
@@ -161,6 +194,7 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     updateGenerationCount,
     getAnonGenerations,
     setAnonGenerations,
-    generationData
+    generationData,
+    clearAnonState
   };
 };
