@@ -69,19 +69,19 @@ serve(async (req) => {
 YOUR TRAITS (The person initiating conversation):
 ${Object.entries(userTraits)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
+    `${value.questionText}: ${value.value}`)
   .join('\n')}
 
 THEIR TRAITS (The person you're approaching):
 ${Object.entries(targetTraits)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this information'} with priority ${value.priority}.`)
+    `${value.questionText}: ${value.value}`)
   .join('\n')}
 
 SITUATION:
 ${Object.entries(situationInfo)
   .map(([key, value]: [string, any]) => 
-    `${value.questionText} (priority ${value.priority}): ${value.value}\nINSTRUCTION: ${value.prompt || 'Consider this context'} with priority ${value.priority}.`)
+    `${value.questionText}: ${value.value}`)
   .join('\n')}`;
 
     console.log('Final context string being sent to OpenAI:', contextString);
@@ -96,7 +96,7 @@ Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic
 
 CRITICAL GUIDELINES:
 - DO NOT generate more than 3 questions. focus on generating other sorts of icebreakers such as Teasing or playful banter, Fun facts, bold statements and quotes and Other creative options
-- Use the provided context as inspiration
+- Use ONLY the provided context as inspiration, DO NOT mix in themes or traits from previous conversations
 - You must return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
 - Include NO MORE THAN 3 questions in your responses
@@ -116,8 +116,9 @@ IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
 - Make sure to maintain this distinction in your responses
+- DO NOT reference traits or themes that are not explicitly provided in the context
 
-Context (USE AS INSPIRATION):
+Context (USE AS INSPIRATION AND STRICTLY ADHERE TO THESE TRAITS ONLY):
 ${contextString}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
