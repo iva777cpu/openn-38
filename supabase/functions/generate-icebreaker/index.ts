@@ -93,7 +93,7 @@ ${Object.entries(situationInfo)
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4',
         messages: [
           { 
             role: 'system', 
@@ -104,7 +104,7 @@ Fun facts, bold statements and quotes
 Other creative options
 
 STRICT RULES FOR QUESTIONS:
-- You are ONLY allowed to generate a MAXIMUM of 5 responses that contain questions
+- You are ONLY allowed to generate a MAXIMUM of 3 responses that contain questions
 - Any response containing a question mark (?) counts as a question
 - The remaining responses MUST be statements, observations, or other non-question formats
 
@@ -138,7 +138,7 @@ Additional Context:
 - First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
           }
         ],
-        temperature: 0.6,
+        temperature: 0.5,
         max_tokens: 1000,
       }),
     });
