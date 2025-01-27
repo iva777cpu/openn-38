@@ -52,7 +52,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         .from('user_generations')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       return data;
