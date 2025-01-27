@@ -102,6 +102,7 @@ export const MainLayout = ({ onDeleteAccount, onSignOut, isAuthenticated }: Main
           hasChanges={hasChanges}
           selectedProfileName={selectedProfileName}
           checkAuth={checkAuth}
+          isAuthenticated={isAuthenticated}
         />
       )}
 
