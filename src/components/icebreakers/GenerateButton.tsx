@@ -16,7 +16,7 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
   formattedResetTime,
   onClick,
 }) => {
-  const isDisabled = isLoading || (isAuthenticated ? remainingGenerations <= 0 : remainingGenerations <= 0);
+  const isDisabled = isLoading || (isAuthenticated ? remainingGenerations >= 6 : remainingGenerations >= 2);
 
   return (
     <div>
