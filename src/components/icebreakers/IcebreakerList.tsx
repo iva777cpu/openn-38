@@ -31,9 +31,15 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
     const stored = localStorage.getItem('currentExplanations');
     return stored ? JSON.parse(stored) : {};
   });
-  const [sessionId] = useState(() => crypto.randomUUID());
   const [explanationCount, setExplanationCount] = useState(0);
   const MAX_EXPLANATIONS = 2;
+
+  // Clear explanations and count when icebreakers array changes (new generation)
+  useEffect(() => {
+    setExplanations({});
+    setExplanationCount(0);
+    localStorage.removeItem('currentExplanations');
+  }, [icebreakers]);
 
   // Save explanations to localStorage whenever they change
   useEffect(() => {
@@ -41,15 +47,6 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       localStorage.setItem('currentExplanations', JSON.stringify(explanations));
     }
   }, [explanations]);
-
-  // Clear explanations when icebreakers array is empty
-  useEffect(() => {
-    if (icebreakers.length === 0) {
-      setExplanations({});
-      setExplanationCount(0);
-      localStorage.removeItem('currentExplanations');
-    }
-  }, [icebreakers]);
 
   const handleReport = async (icebreaker: string) => {
     if (reportedIcebreakers.has(icebreaker)) return;
@@ -65,7 +62,6 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
       if (error) throw error;
 
       setReportedIcebreakers(prev => new Set([...prev, icebreaker]));
-
       toast.success("Message reported successfully", {
         position: "top-center",
         duration: 2000,
@@ -89,18 +85,6 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
     setLoadingExplanations(prev => new Set([...prev, icebreaker]));
     
     try {
-      // Update explanation count in database
-      const { error: usageError } = await supabase
-        .from('explanation_usage')
-        .upsert({
-          session_id: sessionId,
-          explanation_count: explanationCount + 1
-        }, {
-          onConflict: 'session_id'
-        });
-
-      if (usageError) throw usageError;
-
       const { data, error } = await supabase.functions.invoke('generate-explanation', {
         body: { message: icebreaker }
       });
@@ -160,7 +144,10 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-[10px]">
+                  <TooltipContent 
+                    className="text-[10px] px-2 py-1 backdrop-blur-md bg-opacity-90"
+                    sideOffset={5}
+                  >
                     <p>Save icebreaker</p>
                   </TooltipContent>
                 </Tooltip>
@@ -191,7 +178,10 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       )}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-[10px]">
+                  <TooltipContent 
+                    className="text-[10px] px-2 py-1 backdrop-blur-md bg-opacity-90"
+                    sideOffset={5}
+                  >
                     <p>{explanationCount >= MAX_EXPLANATIONS 
                       ? "You can only get 2 explanations per generation" 
                       : "Get explanation"}
@@ -219,7 +209,10 @@ export const IcebreakerList: React.FC<IcebreakerListProps> = ({
                       }`} />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-[10px]">
+                  <TooltipContent 
+                    className="text-[10px] px-2 py-1 backdrop-blur-md bg-opacity-90"
+                    sideOffset={5}
+                  >
                     <p>Report message</p>
                   </TooltipContent>
                 </Tooltip>
