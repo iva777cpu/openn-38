@@ -95,31 +95,33 @@ Other creative options
 Focus on charm, elegance, humor, and clever phrasing. Use contrasts for dramatic effect, playful twists, or poetic phrasing where possible. Keep everything friendly and sophisticated, ensuring humor is used appropriately. when referencing anything such as (e.g., music, songs, poems, movies, quotes, TV shows, books, jokes, mythology, historical events, celebrities, mythological creatures, scientific facts, riddles, fun facts, wordplay, deities, or cultural references, etc.), assume the user doesn't know the refrence and add a brief explanation in parentheses (max 15 words). Ensure each icebreaker length is less than 40 words.
 
 CRITICAL GUIDELINES:
-- DO NOT generate more than 3 questions. focus on generating other sorts of icebreakers such as Teasing or playful banter, Fun facts, bold statements and quotes and Other creative options
-- Use ONLY the provided context as inspiration, DO NOT mix in themes or traits from previous conversations
-- You must return exactly 10 responses, numbered 1-10
+- Use ONLY information from the context below
+- DO NOT ask more than 2 questions
+- Return exactly 10 responses, numbered 1-10
 - No introductory text or emojis
-- Include NO MORE THAN 3 questions in your responses
-- NEVER ask the person to:
+- Include NO MORE THAN 2 questions in your responses
+- NEVER prompt the person to:
   - Tell a story
   - Share a joke
   - Give a pickup line
   - Share shopping preferences
   - Explain where they got something
-- Priority levels guide how much emphasis to give traits:
-  - High (0.6-0.9): Use these traits for subtle guidance of 5 responses max
-  - Medium (0.4-0.5): Use these traits for subtle guidance of 4 responses max
-  - Low (0.2-0.3): Use these traits subtly or as background of 2 responses max
-- Conversation Context: ${isFirstTime ? 'This is a first-time conversation, focus on initial ice-breaking' : 'These people have talked at least once before'}
+- For each trait or piece of information, use the priority value to determine how much they should effect your responses (Priority levels guide how much emphasis to give traits):
+  - High (0.6-0.9): mean these traits should be prominently featured for guidance of 5 responses max
+  - Medium (0.4-0.5): mean these traits should be prominently featured for guidance of 3 responses max
+  - Low (0.2-0.3): Use these traits subtly or as background for 2 responses max
 
 IMPORTANT DISTINCTION:
 - When using "YOUR TRAITS", these are traits of the person initiating the conversation (you)
 - When using "THEIR TRAITS", these are traits of the person being approached (them)
 - Make sure to maintain this distinction in your responses
-- DO NOT reference traits or themes that are not explicitly provided in the context
 
-Context (USE AS INSPIRATION AND STRICTLY ADHERE TO THESE TRAITS ONLY):
-${contextString}`;
+Context (USE ONLY THIS INFORMATION as inspiration):
+${contextString}
+
+Additional Context:
+- First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`;
+
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
