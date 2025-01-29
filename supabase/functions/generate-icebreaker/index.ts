@@ -39,18 +39,6 @@ serve(async (req) => {
     const sortedAnswers = Object.entries(filteredAnswers)
       .sort(([, a]: [string, any], [, b]: [string, any]) => (b.priority || 0) - (a.priority || 0));
 
-    // Calculate average priority to adjust temperature
-    const priorities = sortedAnswers.map(([, value]: [string, any]) => value.priority || 0);
-    const avgPriority = priorities.length > 0 
-      ? priorities.reduce((sum, priority) => sum + priority, 0) / priorities.length 
-      : 0.5;
-    
-    // Adjust temperature based on average priority
-    // Higher priority = lower temperature for more focused responses
-    const temperature = Math.max(0.3, 1 - avgPriority);
-    
-    console.log('Calculated temperature based on priorities:', temperature);
-
     // Build context string with priority-based organization
     const contextString = `
 YOUR TRAITS (The person initiating conversation):
@@ -131,7 +119,7 @@ Additional Context:
 - First time conversation: ${isFirstTime ? 'Yes - this is the first time they speak, focus on initial icebreakers' : 'No - They have talked before, at least once'}`
           }
         ],
-        temperature: temperature,
+        temperature: 0.6,
         max_tokens: 1000,
       }),
     });
@@ -140,6 +128,7 @@ Additional Context:
       const error = await response.json();
       console.error('OpenAI API error:', error);
       
+      // Check if it's a token limit error
       if (error.error?.code === 'insufficient_quota' || error.error?.type === 'insufficient_quota') {
         return new Response(
           JSON.stringify({ 
