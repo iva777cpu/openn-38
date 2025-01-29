@@ -6,14 +6,17 @@ const corsHeaders = {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
     const { user_id } = await req.json()
+    console.log('Attempting to delete user:', user_id)
     
     if (!user_id) {
+      console.error('No user_id provided')
       return new Response(
         JSON.stringify({ error: 'User ID is required' }),
         { 
@@ -45,6 +48,7 @@ Deno.serve(async (req) => {
     ]
 
     for (const table of tables) {
+      console.log(`Deleting from ${table}...`)
       const { error } = await supabaseAdmin
         .from(table)
         .delete()
@@ -57,14 +61,17 @@ Deno.serve(async (req) => {
     }
 
     // Finally delete the user from auth.users
+    console.log('Deleting user from auth.users...')
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
       user_id
     )
 
     if (deleteError) {
+      console.error('Failed to delete user from auth.users:', deleteError)
       throw new Error(`Failed to delete user: ${deleteError.message}`)
     }
 
+    console.log('Successfully deleted user and all related data')
     return new Response(
       JSON.stringify({ message: 'Account successfully deleted' }),
       { 
