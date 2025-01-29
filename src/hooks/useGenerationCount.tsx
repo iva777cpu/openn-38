@@ -108,11 +108,9 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
           }
           
           console.log("Reset data:", updatedData);
-          clearAnonState(); // Clear anonymous state when authenticated
           return updatedData;
         }
 
-        clearAnonState(); // Clear anonymous state when authenticated
         return existingData;
       } catch (error) {
         console.error("Generation count query error:", error);
@@ -192,9 +190,6 @@ export const useGenerationCount = (isAuthenticated: boolean) => {
     remainingGenerations,
     formattedResetTime,
     updateGenerationCount,
-    getAnonGenerations,
-    setAnonGenerations,
     generationData,
-    clearAnonState
   };
 };
