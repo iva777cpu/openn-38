@@ -1,102 +1,96 @@
-import { useEffect, useState } from "react";
+import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { App as CapacitorApp } from '@capacitor/app';
 
 export const useAuthSetup = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
+
+  const checkSupabaseConnection = async () => {
+    try {
+      const { error } = await supabase.from('user_preferences').select('count').single();
+      if (error) {
+        console.error('Supabase connection error:', error);
+        toast.error('Failed to connect to the database');
+      }
+    } catch (error) {
+      console.error('Supabase connection check failed:', error);
+      toast.error('Failed to connect to the database');
+    }
+  };
 
   useEffect(() => {
-    const checkSupabaseConnection = async () => {
+    checkSupabaseConnection();
+
+    // Handle deep links in Capacitor
+    const setupDeepLinks = async () => {
       try {
-        const { error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Supabase connection error:", error);
-          if (error.status === 503) {
-            setError("The authentication service is temporarily unavailable. Please try again in a few moments.");
+        await CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+          const slug = url.split('.app').pop();
+          if (slug) {
+            navigate(slug);
           }
-        }
-      } catch (err) {
-        console.error("Failed to connect to Supabase:", err);
-        setError("Unable to connect to the authentication service. Please try again later.");
+        });
+      } catch (e) {
+        console.log('Deep links setup skipped - not running in Capacitor');
       }
     };
 
-    checkSupabaseConnection();
+    setupDeepLinks();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
         
         if (event === 'SIGNED_IN') {
-          if (session?.user?.email_confirmed_at) {
-            navigate("/");
-          } else {
-            navigate("/confirm-email");
+          if (session?.user?.email) {
+            toast.success(`Welcome back, ${session.user.email}`);
           }
+          navigate("/");
         } else if (event === 'SIGNED_OUT') {
           navigate("/login");
         } else if (event === 'PASSWORD_RECOVERY') {
-          toast.error("Please wait at least 38 seconds before requesting another password reset.");
+          navigate("/reset-password");
         } else if (event === 'USER_UPDATED') {
           toast.success("Account successfully updated");
         } else if (event === 'TOKEN_REFRESHED') {
           console.log("Token refreshed");
         }
 
-        if (session) {
-          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          
-          const { data: existingPref } = await supabase
+        if (session?.user && event === 'SIGNED_IN') {
+          const { data: existingPref, error: prefError } = await supabase
             .from('user_preferences')
-            .select('theme')
+            .select('*')
             .eq('user_id', session.user.id)
             .maybeSingle();
 
           if (!existingPref) {
-            console.log("Creating initial theme preference:", systemPrefersDark ? 'dark' : 'light');
             const { error: upsertError } = await supabase
               .from('user_preferences')
               .upsert({ 
-                user_id: session.user.id, 
-                theme: systemPrefersDark ? 'dark' : 'light',
-                updated_at: new Date().toISOString()
+                user_id: session.user.id,
+                theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
               });
 
             if (upsertError) {
-              console.error("Error upserting theme preferences:", upsertError);
-              toast.error("Failed to save theme preference");
+              console.error("Error creating user preferences:", upsertError);
+              toast.error("Failed to save your preferences");
             }
           }
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleAuthError = (error: any) => {
-    console.error("Auth error:", error);
-    
-    if (error.message?.includes("Email not confirmed")) {
-      toast.error("Please confirm your email before signing in. Check your inbox for the confirmation link.");
-      return true;
-    }
-    
-    if (error.message?.includes("Invalid login credentials")) {
-      toast.error("Invalid email or password. Please try again.");
-      return true;
-    }
-
-    if (error.message?.includes("Email rate limit exceeded") || error.message?.includes("over_email_send_rate_limit")) {
-      toast.error("Too many email attempts. Please wait a few minutes before trying again.");
-      return true;
-    }
-
-    toast.error("An error occurred during authentication. Please try again.");
-    return true;
+    console.error('Auth error:', error);
+    toast.error(error.message || 'An authentication error occurred');
   };
 
-  return { error, handleAuthError };
+  return { handleAuthError };
 };

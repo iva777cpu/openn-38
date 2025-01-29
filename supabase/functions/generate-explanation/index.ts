@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
@@ -14,9 +15,19 @@ serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json();
-    
+    const { message, prompt } = await req.json();
     console.log('Generating explanation for message:', message);
+    console.log('Using prompt:', prompt);
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -29,15 +40,15 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert at explaining the psychology and social dynamics behind conversation starters and icebreakers. Explain why specific icebreakers work well and their intended effect. Keep explanations concise (max 2 sentences) but insightful.'
+            content: 'You are a helpful assistant that explains references. Provide clear, concise explanations and information in less than 30 words, assuming the user has no prior knowledge of the reference. note that you must only explain about the reference and the story behind it'
           },
           {
             role: 'user',
-            content: `Explain why this icebreaker works and its intended effect: "${message}"`
+            content: `${prompt}\n\nMessage: ${message}`
           }
         ],
+        max_tokens: 100,
         temperature: 0.7,
-        max_tokens: 150,
       }),
     });
 
@@ -51,8 +62,10 @@ serve(async (req) => {
     console.log('OpenAI response:', data);
 
     return new Response(
-      JSON.stringify({ explanation: data.choices[0].message.content }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ explanation: data.choices[0].message.content.trim() }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
     );
   } catch (error) {
     console.error('Error in generate-explanation function:', error);

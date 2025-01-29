@@ -56,7 +56,15 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
       
       try {
         await updateGenerationCount.mutateAsync();
-        await generateIcebreakers();
+        const result = await generateIcebreakers();
+        
+        if (result?.error) {
+          toast.error(result.error, {
+            duration: 5000,
+          });
+          return;
+        }
+        
       } catch (error) {
         // Error is already handled in updateGenerationCount
         return;
