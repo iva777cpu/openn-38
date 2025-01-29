@@ -3,7 +3,7 @@
   "appName": "Openera",
   "webDir": "dist",
   "server": {
-    "url": "https://your-netlify-url.netlify.app",
+    "url": "https://openera.netlify.app",
     "cleartext": true
   }
 }

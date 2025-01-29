@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import ConfirmEmail from "./pages/ConfirmEmail";
@@ -53,7 +53,11 @@ function App() {
           />
           <Route 
             path="/login" 
-            element={<Login />}
+            element={
+              isAuthenticated ? 
+                <Navigate to="/" replace /> : 
+                <Login />
+            }
           />
           <Route 
             path="/confirm-email" 
