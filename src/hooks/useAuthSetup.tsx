@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -8,7 +9,7 @@ export const useAuthSetup = () => {
 
   const checkSupabaseConnection = async () => {
     try {
-      const { error } = await supabase.from('profiles').select('count').single();
+      const { error } = await supabase.from('user_preferences').select('count').single();
       if (error) {
         console.error('Supabase connection error:', error);
         toast.error('Failed to connect to the database');
