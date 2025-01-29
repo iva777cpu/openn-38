@@ -20,11 +20,11 @@ serve(async (req) => {
     console.log('Using prompt:', prompt);
 
     const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
+          headers: { Authorization: req.headers.get('Authorization')! },
         },
       }
     );
@@ -36,14 +36,14 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "gpt-4-turbo",
+        model: 'gpt-4-turbo',
         messages: [
           {
-            role: "system",
-            content: "You are a helpful assistant that explains references. Provide clear, concise explanations and information in less than 30 words, assuming the user has no prior knowledge of the reference. note that you must only explain about the reference and the story behind it"
+            role: 'system',
+            content: 'You are a helpful assistant that explains references. Provide clear, concise explanations and information in less than 30 words, assuming the user has no prior knowledge of the reference. note that you must only explain about the reference and the story behind it'
           },
           {
-            role: "user",
+            role: 'user',
             content: `${prompt}\n\nMessage: ${message}`
           }
         ],
