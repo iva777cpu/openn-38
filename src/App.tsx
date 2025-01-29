@@ -1,8 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import ConfirmEmail from "./pages/ConfirmEmail";
-import ResetPassword from "./pages/ResetPassword";
 import { Toaster } from "sonner";
 import { useAuthState } from "@/hooks/useAuthState";
 import "./App.css";
@@ -53,21 +52,12 @@ function App() {
           />
           <Route 
             path="/login" 
-            element={
-              isAuthenticated ? 
-                <Navigate to="/" replace /> : 
-                <Login />
-            }
+            element={<Login />}
           />
           <Route 
             path="/confirm-email" 
             element={<ConfirmEmail />}
           />
-          <Route 
-            path="/reset-password" 
-            element={<ResetPassword />}
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </main>

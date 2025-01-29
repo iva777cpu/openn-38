@@ -127,20 +127,6 @@ Additional Context:
     if (!response.ok) {
       const error = await response.json();
       console.error('OpenAI API error:', error);
-      
-      // Check if it's a token limit error
-      if (error.error?.code === 'insufficient_quota' || error.error?.type === 'insufficient_quota') {
-        return new Response(
-          JSON.stringify({ 
-            error: 'oops looks like ive ran out of tokens, i have to recharge the api. gimme some time :D'
-          }),
-          { 
-            status: 429,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      }
-      
       throw new Error('Failed to generate icebreakers');
     }
 

@@ -3,11 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useIcebreakerValidation } from "./useIcebreakerValidation";
 
-interface GenerateResponse {
-  error?: string;
-  icebreakers?: string[];
-}
-
 export const useIcebreakerGeneration = (
   userProfile: Record<string, string>,
   isFirstTime: boolean,
@@ -16,7 +11,7 @@ export const useIcebreakerGeneration = (
   const [isLoading, setIsLoading] = useState(false);
   const { validateAndProcessFields } = useIcebreakerValidation();
 
-  const generateIcebreakers = async (): Promise<GenerateResponse | undefined> => {
+  const generateIcebreakers = async () => {
     console.log('Starting icebreaker generation with profile:', userProfile);
     console.log('Is first time?:', isFirstTime);
     
@@ -48,14 +43,10 @@ export const useIcebreakerGeneration = (
       }
 
       onIcebreakersGenerated(newIcebreakers);
-      return { icebreakers: newIcebreakers };
 
     } catch (error) {
       console.error('Error generating icebreakers:', error);
-      if (error instanceof Error) {
-        return { error: error.message };
-      }
-      return { error: 'Failed to generate icebreakers. Please try again.' };
+      toast.error('Failed to generate icebreakers. Please try again.');
     } finally {
       setIsLoading(false);
     }

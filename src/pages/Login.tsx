@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function Login() {
-  const { handleAuthError } = useAuthSetup();
+  const { error } = useAuthSetup();
   const navigate = useNavigate();
 
   return (
@@ -26,6 +26,11 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-[#E5D4BC] text-center mb-8">
             Welcome to Openera
           </h1>
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/50 rounded-md p-4 mb-6">
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            </div>
+          )}
           <Auth
             supabaseClient={supabase}
             appearance={{

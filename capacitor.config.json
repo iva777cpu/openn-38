@@ -1,16 +1,9 @@
 {
-  "appId": "com.openera.app",
+  "appId": "com.openera.icebreakers",
   "appName": "Openera",
   "webDir": "dist",
   "server": {
-    "url": "https://openera.netlify.app",
+    "url": "https://your-netlify-url.netlify.app",
     "cleartext": true
-  },
-  "plugins": {
-    "App": {
-      "appUrlOpen": {
-        "enabled": true
-      }
-    }
   }
 }
