@@ -58,7 +58,7 @@ export const IcebreakerGenerator: React.FC<IcebreakerGeneratorProps> = ({
         await updateGenerationCount.mutateAsync();
         const result = await generateIcebreakers();
         
-        if (result?.error === 'oops looks like ive ran out of tokens, i have to recharge the api. gimme some time :D') {
+        if (result?.error) {
           toast.error(result.error, {
             duration: 5000,
           });
