@@ -67,6 +67,7 @@ function App() {
             path="/reset-password" 
             element={<ResetPassword />}
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </main>

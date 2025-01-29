@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { App as CapacitorApp } from '@capacitor/app';
 
 export const useAuthSetup = () => {
   const navigate = useNavigate();
@@ -25,6 +26,22 @@ export const useAuthSetup = () => {
 
     checkSupabaseConnection();
 
+    // Handle deep links in Capacitor
+    const setupDeepLinks = async () => {
+      try {
+        CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+          const slug = url.split('.app').pop();
+          if (slug) {
+            navigate(slug);
+          }
+        });
+      } catch (e) {
+        console.log('Deep links setup skipped - not running in Capacitor');
+      }
+    };
+
+    setupDeepLinks();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth event:", event);
@@ -38,7 +55,7 @@ export const useAuthSetup = () => {
         } else if (event === 'SIGNED_OUT') {
           navigate("/login");
         } else if (event === 'PASSWORD_RECOVERY') {
-          toast.error("Please wait at least 38 seconds before requesting another password reset.");
+          navigate("/reset-password");
         } else if (event === 'USER_UPDATED') {
           toast.success("Account successfully updated");
         } else if (event === 'TOKEN_REFRESHED') {
@@ -55,7 +72,6 @@ export const useAuthSetup = () => {
             .maybeSingle();
 
           if (!existingPref) {
-            console.log("Creating initial theme preference:", systemPrefersDark ? 'dark' : 'light');
             const { error: upsertError } = await supabase
               .from('user_preferences')
               .upsert({ 
@@ -73,7 +89,9 @@ export const useAuthSetup = () => {
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleAuthError = (error: any) => {
